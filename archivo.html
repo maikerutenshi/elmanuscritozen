@@ -23,97 +23,6 @@
       <div class="nav-links">
         <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
         <a href="archivo.html" class="nav-link active" id="nav-archivo">Archivo</a>
-        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre el blog</a>
-        <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
-      </div>
-      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <div class="nav-mobile-menu" id="nav-mobile-menu">
-      <a href="index.html" class="nav-mobile-link">Inicio</a>
-      <a href="archivo.html" class="nav-mobile-link">Archivo</a>
-      <a href="sobre.html" class="nav-mobile-link">Sobre el blog</a>
-      <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
-    </div>
-  </nav>
-
-  <section class="page-hero">
-    <h1 class="page-hero-title">Archivo de <em style="font-style:italic;color:var(--gold-light)">entradas</em></h1>
-    <p class="page-hero-subtitle">Todas las reflexiones · Ordenadas por fecha</p>
-  </section>
-
-  <div class="archive-filter-bar" id="archive-filter-bar">
-    <div class="archive-filter-inner">
-      <button class="filter-btn active" data-filter="all" onclick="filterArchive(this, 'all')">Todas</button>
-      <button class="filter-btn" data-filter="Meditación" onclick="filterArchive(this, 'Meditación')">Meditación</button>
-      <button class="filter-btn" data-filter="Budismo" onclick="filterArchive(this, 'Budismo')">Budismo</button>
-      <button class="filter-btn" data-filter="Mindfulness" onclick="filterArchive(this, 'Mindfulness')">Mindfulness</button>
-      <button class="filter-btn" data-filter="Zen" onclick="filterArchive(this, 'Zen')">Zen</button>
-      <button class="filter-btn" data-filter="Filosofía" onclick="filterArchive(this, 'Filosofía')">Filosofía</button>
-      <button class="filter-btn" data-filter="Práctica" onclick="filterArchive(this, 'Práctica')">Práctica</button>
-      <button class="filter-btn" data-filter="Reflexión" onclick="filterArchive(this, 'Reflexión')">Reflexión</button>
-    </div>
-  </div>
-
-  <ul class="archive-list" id="archive-list">
-    </ul>
-
-  <div id="archive-empty" style="display:none; text-align:center; padding:80px 20px; color:var(--muted); font-family:var(--font-serif); font-size:20px; font-style:italic;">
-    No hay entradas en esta categoría todavía.
-  </div>
-
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-logo">
-        <span class="footer-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
-        <span class="footer-name">El Manuscrito Zen</span>
-      </div>
-      <p class="footer-phrase">"Respira. Estás aquí."</p>
-      
-      <div class="admin-access-zone">
-        <div id="admin-login-form" class="admin-login-form">
-          <input type="text" id="admin-user" placeholder="Usuario..." class="admin-input" />
-          <input type="password" id="admin-password" placeholder="Contraseña..." class="admin-input" />
-          <button onclick="checkAdminAccess()" class="btn-admin-login">Entrar</button>
-        </div>
-        <div id="admin-status" class="admin-status" style="display: none;">
-          <span>Modo Editor Activo (Miguel)</span>
-          <button onclick="logoutAdmin()" class="btn-admin-logout">Salir</button>
-        </div>
-      </div>
-
-      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
-    </div>
-  </footer>
-
- <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Archivo — El Manuscrito Zen</title>
-  <meta name="description" content="Todas las entradas publicadas en El Manuscrito Zen. Un archivo de reflexiones sobre budismo, meditación y mindfulness." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-
-  <nav class="navbar scrolled" id="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
-        <span class="nav-logo-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
-        <span class="nav-logo-text">El Manuscrito Zen</span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
-        <a href="archivo.html" class="nav-link active" id="nav-archivo">Archivo</a>
         <a href="dojo.html" class="nav-link" id="nav-dojo">Dojo Virtual</a>
         <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre el blog</a>
         <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
@@ -153,7 +62,7 @@
     </ul>
 
   <div id="archive-empty" style="display:none; text-align:center; padding:80px 20px; color:var(--muted); font-family:var(--font-serif); font-size:20px; font-style:italic;">
-    No hay entradas en esta categoría todavía.
+    No hay entradas en esta categoría todavía. Recarga el Dojo o escribe tu primera reflexión.
   </div>
 
   <footer class="footer">
