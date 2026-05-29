@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dojo Virtual — El Manuscrito Zen</title>
+  <meta name="description" content="Únete al Dojo Virtual de El Manuscrito Zen y recibe reflexiones sobre budismo y mindfulness directamente en tu correo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="nav-logo-symbol">
+          <img src="enso.png" alt="Ensō" class="enso-img" />
+        </span>
+        <span class="nav-logo-text">El Manuscrito Zen</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
+        <a href="archivo.html" class="nav-link" id="nav-archivo">Archivo</a>
+        <a href="dojo.html" class="nav-link active" id="nav-dojo">Dojo Virtual</a>
+        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre el blog</a>
+        <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
+      </div>
+      <button class="nav-hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+      <a href="index.html" class="nav-mobile-link">Inicio</a>
+      <a href="archivo.html" class="nav-mobile-link">Archivo</a>
+      <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
+      <a href="sobre.html" class="nav-mobile-link">Sobre el blog</a>
+      <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
+    </div>
+  </nav>
+
+  <section class="form-container-section">
+    <div class="form-card">
+      <div class="form-header">
+        <img src="zen_lotus.png" alt="Loto Zen" class="form-lotus-icon" />
+        <h1 class="form-card-title">Entrar al <em>Dojo Virtual</em></h1>
+        <p class="form-card-subtitle">Un espacio de práctica y quietud. Une tu correo al manuscrito para recibir un mensaje de bienvenida y cada nueva reflexión directamente en tu bandeja de entrada.</p>
+      </div>
+
+      <form id="subscriber-form" onsubmit="handleSubscribe(event)">
+        <div class="form-group">
+          <label for="sub-name" class="form-label">Tu nombre</label>
+          <input type="text" id="sub-name" class="form-input-field" placeholder="Ej. Miguel" required />
+        </div>
+        <div class="form-group">
+          <label for="sub-email" class="form-label">Correo electrónico</label>
+          <input type="email" id="sub-email" class="form-input-field" placeholder="tu@email.com" required />
+        </div>
+        <button type="submit" class="btn-submit-form">Unirse al Dojo ✦</button>
+      </form>
+
+      <div id="subscribe-success-msg" style="display: none; text-align: center; padding: 20px 0;">
+        <p style="font-family: var(--font-serif); font-size: 1.3rem; color: var(--gold-light); font-style: italic; margin-bottom: 8px;">"Cada paso es el destino."</p>
+        <p style="color: var(--cream-dim); font-size: 0.95rem;">Bienvenido al Dojo. Tu plaza ha sido registrada con éxito.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-symbol">
+          <img src="enso.png" alt="Ensō" class="enso-img" />
+        </span>
+        <span class="footer-name">El Manuscrito Zen</span>
+      </div>
+      <p class="footer-phrase">"Respira. Estás aquí."</p>
+
+      <div class="admin-access-zone">
+        <div id="admin-login-form" class="admin-login-form">
+          <input type="text" id="admin-user" placeholder="Usuario..." class="admin-input" />
+          <input type="password" id="admin-password" placeholder="Contraseña..." class="admin-input" />
+          <button onclick="checkAdminAccess()" class="btn-admin-login">Entrar</button>
+        </div>
+        <div id="admin-status" class="admin-status" style="display: none;">
+          <span>Modo Editor Activo (Miguel)</span>
+          <button onclick="logoutAdmin()" class="btn-admin-logout">Salir</button>
+        </div>
+      </div>
+
+      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+  <script>
+    // Lógica temporal para guardar los miembros del dojo en el navegador
+    function handleSubscribe(e) {
+      e.preventDefault();
+      const name = document.getElementById('sub-name').value;
+      const email = document.getElementById('sub-email').value;
+
+      let subscribers = JSON.parse(localStorage.getItem('zenSubscribers')) || [];
+      
+      subscribers.push({ name, email, date: new Date().toISOString() });
+      localStorage.setItem('zenSubscribers', JSON.stringify(subscribers));
+
+      document.getElementById('subscriber-form').style.display = 'none';
+      document.getElementById('subscribe-success-msg').style.display = 'block';
+
+      if (typeof showToast === "function") {
+        showToast("¡Bienvenido al Dojo Virtual!");
+      }
+    }
+  </script>
+</body>
+</html>
