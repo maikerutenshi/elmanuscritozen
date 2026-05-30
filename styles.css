@@ -273,3 +273,48 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-weight: 400;
   text-shadow: 0 1px 8px rgba(255, 255, 255, 0.6);
 }
+/* ===================================
+   MENÚ MÓVIL (CONTROL DE PANTALLAS)
+   =================================== */
+
+/* En el ordenador lo escondemos por completo */
+@media (min-width: 769px) {
+  .nav-mobile-menu, #nav-mobile-menu {
+    display: none !important;
+  }
+}
+
+/* En el móvil le damos su diseño zen correcto */
+@media (max-width: 768px) {
+  .navbar .nav-links {
+    display: none; 
+  }
+  .nav-hamburger {
+    display: flex !important; 
+  }
+  .nav-mobile-menu {
+    display: none; 
+    position: fixed;
+    top: 72px; left: 0; right: 0;
+    background: rgba(255, 255, 255, 0.98); 
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .nav-mobile-menu.open {
+    display: flex !important; 
+  }
+  .nav-mobile-link {
+    font-family: var(--font-ui);
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--bg-dark) !important; 
+    padding: 10px 0;
+    display: block;
+  }
+}
