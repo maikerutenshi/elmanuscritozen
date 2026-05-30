@@ -85,16 +85,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   z-index: 1000;
   padding: 0 40px;
   height: 72px;
-  background: rgba(13, 13, 15, 0.0);
+  background: rgba(255, 255, 255, 0.0);
   backdrop-filter: blur(0px);
   border-bottom: 1px solid transparent;
   transition: var(--transition);
 }
 .navbar.scrolled {
-  background: rgba(13, 13, 15, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-bottom-color: var(--border);
-  box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.05);
 }
 .nav-inner {
   max-width: 1280px;
@@ -115,7 +115,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--white);
+  color: var(--bg-dark); /* Cambiado a oscuro para contrastar con fondo blanco */
 }
 .enso-img {
   width: 24px;
@@ -123,7 +123,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   object-fit: contain;
   transform: rotate(-15deg);
   transition: var(--transition);
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)) brightness(1.5);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) invert(1); /* Invertido para que resalte en claro */
 }
 .nav-logo:hover .enso-img {
   transform: rotate(20deg) scale(1.1);
@@ -132,7 +132,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-family: var(--font-amanojaku);
   font-size: 23px;
   font-weight: normal;
-  color: var(--white);
+  color: var(--bg-dark); /* Letras del logo en oscuro */
   letter-spacing: 0.04em;
 }
 .nav-links {
@@ -143,10 +143,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-link {
   font-family: var(--font-ui);
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--cream-dim);
+  color: #4a4a5a; /* Gris oscuro para lectura suave en fondo claro */
   transition: var(--transition);
   position: relative;
 }
@@ -155,11 +155,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   position: absolute;
   bottom: -4px; left: 0;
   width: 0; height: 1px;
-  background: var(--white);
+  background: var(--bg-dark);
   transition: width 0.3s ease;
 }
 .nav-link:hover, .nav-link.active {
-  color: var(--white);
+  color: var(--bg-dark);
 }
 .nav-link:hover::after, .nav-link.active::after {
   width: 100%;
@@ -170,16 +170,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--bg-dark);
-  background: linear-gradient(135deg, var(--white), var(--cream));
+  color: var(--white);
+  background: linear-gradient(135deg, var(--bg-dark), #252530); /* Botón invertido a oscuro */
   padding: 10px 22px;
   border-radius: 100px;
   transition: var(--transition);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 .btn-escribir:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 .nav-hamburger {
   display: none;
@@ -193,7 +193,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-hamburger span {
   display: block;
   width: 26px; height: 2px;
-  background: var(--white);
+  background: var(--bg-dark);
   transition: var(--transition);
 }
 
@@ -229,10 +229,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(13,13,15,0.65) 0%,
-    rgba(13,13,15,0.35) 40%,
-    rgba(13,13,15,0.75) 80%,
-    rgba(13,13,15,1.00) 100
+    rgba(255,255,255,0.4) 0%,   /* Suavizado transparente arriba */
+    rgba(255,255,255,0.1) 40%,
+    rgba(255,255,255,0.3) 80%,
+    rgba(255,255,255,0.9) 100%  /* Fundido suave hacia el fondo inferior */
   );
 }
 .hero-content {
@@ -254,3 +254,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-family: var(--font-amanojaku);
   font-size: clamp(48px, 8vw, 95px);
   font-weight: normal;
+  color: #000000; /* Forzado a negro puro para resaltar perfectamente */
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5); /* Sombra clara de apoyo */
+}
