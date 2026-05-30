@@ -102,11 +102,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Envía el logo a la izquierda y el menú bueno a la derecha */
+  justify-content: space-between;
 }
 .nav-logo {
   display: flex;
-  align-items: center; /* Centrado vertical absoluto del logo con el texto */
+  align-items: center;
   gap: 10px;
   transition: var(--transition);
 }
@@ -117,16 +117,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   justify-content: center;
 }
 .enso-img {
-  width: 28px; /* Un pelín más grande para que rompa bien */
-  height: 28px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
   transform: rotate(-15deg);
+  margin-top: -5px; /* <--- Subimos el Ensō para clavarlo a la altura del texto */
   transition: var(--transition);
-  /* Forzamos negro puro eliminando cualquier rastro azul o brillo antiguo */
-  filter: brightness(0) saturate(100%); 
+  filter: brightness(0) saturate(100%); /* Forzado a negro puro */
 }
 .nav-logo:hover .enso-img {
-  transform: rotate(20deg) scale(1.1);
+  transform: rotate(20deg) scale(1.1) translateY(-4px);
 }
 .nav-logo-text {
   font-family: var(--font-amanojaku);
@@ -135,16 +135,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: var(--bg-dark);
   letter-spacing: 0.04em;
   display: inline-block;
-  line-height: 1; /* Alineación perfecta */
+  line-height: 1;
 }
 .nav-links {
   display: flex;
   align-items: center;
   gap: 36px;
-  margin-left: auto; /* Asegura que se pegue a la derecha */
+  margin-left: auto;
 }
 
-/* Ocultamos cualquier menú secundario o raro que ande suelto por la izquierda */
+/* Ocultamos menús fantasma de la izquierda */
 .nav-container-left, .nav-sidebar-left, [class*="left-menu"] {
   display: none !important;
 }
@@ -263,6 +263,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-family: var(--font-amanojaku);
   font-size: clamp(48px, 8vw, 95px);
   font-weight: normal;
-  color: #000000;
+  color: #000000; /* Negro puro */
   text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
+/* --- Forzamos el resto de frases y textos del inicio a Negro/Oscuro --- */
+.hero-subtitle, .hero-tagline, .hero-content p, .hero-description {
+  color: #1c1c24 !important; /* Gris carbón muy oscuro para una lectura limpia */
+  font-weight: 400;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.6);
 }
