@@ -12,9 +12,10 @@
 </head>
 <body>
 
+  <!-- UNIFICADO: Estructura, clases e IDs idénticos para una navegación perfecta -->
   <nav class="navbar scrolled" id="navbar">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
+      <a href="index.html" class="nav-logo" id="nav-logo-link">
         <span class="nav-logo-symbol">
           <img src="enso.png" alt="Ensō" class="enso-img" />
         </span>
@@ -24,10 +25,11 @@
         <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
         <a href="archivo.html" class="nav-link" id="nav-archivo">Archivo</a>
         <a href="dojo.html" class="nav-link active" id="nav-dojo">Dojo Virtual</a>
-        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre el blog</a>
+        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre este sitio</a>
+        <a href="admin.html" class="nav-link" id="nav-admin">Administración</a>
         <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
       </div>
-      <button class="nav-hamburger" onclick="toggleMobileMenu()">
+      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -35,7 +37,8 @@
       <a href="index.html" class="nav-mobile-link">Inicio</a>
       <a href="archivo.html" class="nav-mobile-link">Archivo</a>
       <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
-      <a href="sobre.html" class="nav-mobile-link">Sobre el blog</a>
+      <a href="sobre.html" class="nav-mobile-link">Sobre este sitio</a>
+      <a href="admin.html" class="nav-mobile-link">Administración</a>
       <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
     </div>
   </nav>
@@ -45,7 +48,7 @@
       <div class="form-header">
         <img src="zen_lotus.png" alt="Loto Zen" class="form-lotus-icon" />
         <h1 class="form-card-title">Entrar al <em>Dojo Virtual</em></h1>
-        <p class="form-card-subtitle">Un espacio de práctica y quietud. Une tu correo al manuscrito para recibir un mensaje de bienvenida y cada nueva reflexión directamente en tu bandeja de entrada.</p>
+        <p class="form-card-subtitle">Un espacio de práctica y quietud. Une tu correo al manuscrito para recibir un message de bienvenida y cada nueva reflexión directamente en tu bandeja de entrada.</p>
       </div>
 
       <form id="subscriber-form" onsubmit="handleSubscribe(event)">
