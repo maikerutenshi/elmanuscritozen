@@ -8,7 +8,7 @@ let currentPosts = [];
 let postsPerPage = 6;
 let currentPage = 1;
 
-// 2. INICIALIZACIÓN DE LA WEB
+// 2. INICIALIZACIÓN DEL SITIO
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
@@ -65,10 +65,11 @@ function renderHomePage() {
     featuredContainer.innerHTML = '';
     gridContainer.innerHTML = '';
 
+    // CAMBIO: Se elimina por completo la mención al login del pie de página
     if (posts.length === 0) {
         featuredContainer.innerHTML = `
             <div style="text-align:center; width:100%; padding:60px 20px; color:var(--muted); font-family:var(--font-serif); font-style:italic; font-size:1.2rem;">
-                El manuscrito está en silencio. Entra como administrador en el pie de página para escribir tu primera reflexión.
+                El manuscrito está en silencio.
             </div>
         `;
         if (loadMoreWrap) loadMoreWrap.style.display = 'none';
@@ -355,6 +356,7 @@ function setupNavbarScroll() {
     }
 }
 
+// Muestra avisos discretos en pantalla
 function showToast(message) {
     const toast = document.getElementById('toast');
     if (!toast) return;
@@ -381,5 +383,3 @@ function generateDailyQuote() {
     if (quoteEl && authorEl) {
         quoteEl.innerHTML = `"${quotes[index].q}"`;
         authorEl.innerHTML = `— ${quotes[index].a}`;
-    }
-}
