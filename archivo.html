@@ -8,31 +8,38 @@
 </head>
 <body>
 
-  <nav class="navbar scrolled">
+  <!-- NAVBAR UNIFICADA -->
+  <nav class="navbar">
     <div class="nav-inner">
       <a href="/" class="nav-logo">
-        <div class="nav-logo-symbol"><img src="enso.png" alt="Enso" class="enso-img"></div>
+        <div class="nav-logo-symbol">
+          <img src="enso.png" alt="Enso" class="enso-img">
+        </div>
         <span class="nav-logo-text">El manuscrito zen</span>
       </a>
+      
       <div class="nav-links">
         <a href="/" class="nav-link">Inicio</a>
         <a href="/archivo.html" class="nav-link active">Archivo</a>
         <a href="/sobre-este-sitio" class="nav-link">Sobre este sitio</a>
+        <a href="/admin" class="nav-link">Administración</a>
       </div>
     </div>
   </nav>
 
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="main-content" style="padding-top: 140px;">
     <section class="posts-section">
       <div class="posts-header">
         <h1 class="section-title">Archivo Histórico</h1>
         <div class="section-line" style="margin-top: 20px;"></div>
       </div>
-      <!-- Aquí se irán cargando tus entradas futuras automáticamente -->
-      <div id="archive-container" style="max-width: 800px; margin: 0 auto; text-align: center; color: var(--muted); font-family: var(--font-serif); font-style: italic;">
-        Esperando nuevas reflexiones...
+      
+      <!-- Contenedor vacío. Aquí se inyectarán tus futuras publicaciones reales. -->
+      <div id="archive-container" style="max-width: 800px; margin: 0 auto;">
       </div>
     </section>
   </main>
+
 </body>
 </html>
