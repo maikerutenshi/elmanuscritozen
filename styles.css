@@ -20,26 +20,21 @@
 }
 
 :root {
-  /* CAMBIO CLAVE: Cambiamos el fondo oscuro a un color arena/crema muy suave y luminoso */
-  --bg-dark:        #f5f0e8; /* Tu color crema original ahora actúa como lienzo general */
-  --bg-card:        #ffffff; /* Las tarjetas ahora serán blancas puras muy limpias */
+  --bg-dark:        #f5f0e8; 
+  --bg-card:        #ffffff; 
   --bg-card-hover:  #faf8f5; 
   --surface:        #ffffff;
   --border:         rgba(184, 159, 119, 0.25);
   --border-hover:   rgba(184, 159, 119, 0.45);
 
-  --gold:           #b38f4e; /* Oscurecemos un pelín el oro para que contraste genial sobre claro */
+  --gold:           #b38f4e; 
   --gold-light:     #d4af6e;
   --gold-dim:       rgba(184, 159, 119, 0.5);
   --cream:          #f5f0e8;
-  --cream-dim:      #8a8270; /* Oscurecido para perfecta lectura */
-  --muted:          #6b6b75; /* Gris más oscuro para que se lea impecable */
-  --white:          #2c2c35; /* CAMBIO CLAVE: El texto general ya no es blanco, ahora es carbón oscuro */
+  --cream-dim:      #8a8270; 
+  --muted:          #6b6b75; 
+  --white:          #2c2c35; 
   --pure-white:     #ffffff;
-
-  --accent-purple:  #7052a3;
-  --accent-pink:    #a8628c;
-  --accent-teal:    #3e7d6f;
 
   --font-serif:     'Cormorant Garamond', 'Georgia', serif;
   --font-body:      'Noto Serif', serif;
@@ -57,7 +52,7 @@
   --radius-lg:  24px;
   --radius-xl:  40px;
 
-  --shadow-card: 0 10px 40px rgba(0,0,0,0.04); /* Sombra ultra sutil y elegante para fondo claro */
+  --shadow-card: 0 10px 40px rgba(0,0,0,0.04); 
   --shadow-glow: 0 0 60px rgba(184, 159, 119, 0.05);
 
   --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -68,7 +63,7 @@
 html { scroll-behavior: smooth; }
 body {
   background-color: var(--bg-dark);
-  color: var(--white); /* Texto oscuro para máxima legibilidad */
+  color: var(--white); 
   font-family: var(--font-body);
   font-weight: 400;
   line-height: 1.8;
@@ -79,7 +74,7 @@ a { color: inherit; text-decoration: none; }
 button { cursor: pointer; border: none; background: none; font-family: inherit; }
 
 /* ==================
-   NAVBAR (Barra de Navegación)
+   NAVBAR
    ================== */
 .navbar {
   position: fixed;
@@ -87,13 +82,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   z-index: 1000;
   padding: 0 40px;
   height: 72px;
-  background: rgba(245, 240, 232, 0.0); /* Transparente al inicio */
+  background: rgba(245, 240, 232, 0.0); 
   backdrop-filter: blur(0px);
   border-bottom: 1px solid transparent;
   transition: var(--transition);
 }
 .navbar.scrolled {
-  background: rgba(245, 240, 232, 0.95); /* Color arena con desenfoque al bajar */
+  background: rgba(245, 240, 232, 0.95); 
   backdrop-filter: blur(20px);
   border-bottom-color: rgba(0, 0, 0, 0.06);
   box-shadow: 0 4px 30px rgba(0,0,0,0.02);
@@ -125,7 +120,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transform: rotate(-15deg);
   margin-top: -5px;
   transition: var(--transition);
-  filter: brightness(0) saturate(100%); /* Forzado a negro puro */
+  filter: brightness(0) saturate(100%); 
 }
 .nav-logo:hover .enso-img {
   transform: rotate(20deg) scale(1.1) translateY(-4px);
@@ -174,23 +169,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-link:hover::after, .nav-link.active::after {
   width: 100%;
 }
-.btn-escribir {
-  font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #ffffff;
-  background: linear-gradient(135deg, #0d0d0f, #252530);
-  padding: 10px 22px;
-  border-radius: 100px;
-  transition: var(--transition);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-.btn-escribir:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-}
 .nav-hamburger {
   display: none;
   flex-direction: column;
@@ -208,7 +186,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* ==================
-   HERO (Pantalla de bienvenida)
+   HERO
    ================== */
 .hero {
   position: relative;
@@ -237,7 +215,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  /* Transición fluida de la foto clara al fondo crema de la web */
   background: linear-gradient(
     to bottom,
     rgba(255,255,255,0.2) 0%,
@@ -307,10 +284,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* ===================================
-   ZONA DE ENTRADAS RECIENTES (Fondo Claro)
+   ZONA DE ENTRADAS RECIENTES
    =================================== */
 .main-content {
-  background-color: var(--bg-dark); /* Color crema continuo sin cortes */
+  background-color: var(--bg-dark); 
   padding: 100px 40px;
 }
 
@@ -324,12 +301,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 60px;
 }
 
+/* CORRECCIÓN FINAL: Fuente serif limpia, tamaño imponente y espaciado perfecto */
 .section-title {
-  font-family: var(--font-harukaze);
-  font-size: 36px;
+  font-family: var(--font-body) !important;
+  font-size: 46px !important;
+  font-weight: 300;
   color: #0d0d0f;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+  text-transform: none;
 }
 
 .section-line {
@@ -339,7 +319,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin: 0 auto;
 }
 
-/* Estilos limpios para cuando inyectes entradas con app.js */
 .featured-post, .posts-grid {
   margin-bottom: 40px;
 }
@@ -368,10 +347,213 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* ===================================
-   PIE DE PÁGINA (Footer en tono suave)
+   PIE DE PÁGINA 
    =================================== */
 .footer {
-  background-color: #eae3d5; /* Un tono un pelín más asentado que el crema general */
+  background-color: #eae3d5; 
   color: #4a4a55;
   padding: 80px 40px 40px;
-  border-top:
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-name {
+  font-family: var(--font-amanojaku);
+  font-size: 20px;
+  color: #0d0d0f;
+}
+
+.footer-phrase {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-style: italic;
+  color: #2c2c35;
+}
+
+.footer-tags {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tag {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: #7a7a8a;
+  letter-spacing: 0.05em;
+}
+
+.footer-copy {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: #9a9a9a;
+  margin-top: 20px;
+}
+
+/* ===================================
+   MENÚ MÓVIL (CONTROL DE PANTALLAS)
+   =================================== */
+@media (min-width: 769px) {
+  .nav-mobile-menu, #nav-mobile-menu {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 20px;
+  }
+  .navbar .nav-links {
+    display: none; 
+  }
+  .nav-hamburger {
+    display: flex !important; 
+  }
+  .nav-mobile-menu {
+    display: none; 
+    position: fixed;
+    top: 72px; left: 0; right: 0;
+    background: rgba(245, 240, 232, 0.98); 
+    backdrop-filter: blur(10px);
+    padding: 30px 20px;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  }
+  .nav-mobile-menu.open {
+    display: flex !important; 
+  }
+  .nav-mobile-link {
+    font-family: var(--font-ui);
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #0d0d0f !important; 
+    padding: 10px 0;
+    display: block;
+  }
+  .main-content {
+    padding: 60px 20px;
+  }
+}
+
+/* ===================================
+   ESTILOS DE LA PÁGINA DE ADMINISTRACIÓN
+   =================================== */
+.admin-page-container {
+  padding-top: 140px !important; 
+  min-height: 80vh;
+}
+.admin-section {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.admin-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 40px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+.admin-card h3 {
+  font-family: var(--font-body);
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #0d0d0f;
+}
+.admin-subtitle {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+.admin-form-group {
+  display: flex;
+  gap: 15px;
+}
+.admin-input-text {
+  flex: 1;
+  background: #faf8f5;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: #0d0d0f;
+}
+.btn-admin-action, .btn-submit-post {
+  background: #0d0d0f;
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+}
+.btn-admin-action:hover, .btn-submit-post:hover {
+  background: var(--gold);
+}
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding-bottom: 15px;
+}
+.btn-logout {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #a8628c;
+  font-weight: 500;
+}
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.form-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.form-control label {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: #0d0d0f;
+}
+.form-control input, .form-control textarea {
+  background: #faf8f5;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: #0d0d0f;
+  width: 100%;
+}
+.form-control textarea {
+  resize: vertical;
+}
