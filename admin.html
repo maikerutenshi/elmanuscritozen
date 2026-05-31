@@ -23,14 +23,15 @@
     </div>
   </header>
 
-  <main class="main-content" style="padding: 60px 20px; max-width: 400px; margin: 0 auto; text-align: center;">
+  <main style="padding: 60px 20px; max-width: 400px; margin: 0 auto; text-align: center;">
     
-    <div id="login-section">
-      <h2 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.2rem; margin-bottom: 1rem;">Acceso restringido</h2>
-      <div class="form-control" style="margin-bottom: 15px;">
-        <input type="password" id="admin-pass" placeholder="Introduce tu contraseña" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-      </div>
-      <button onclick="checkPass()" class="btn-submit-post">Ingresar</button>
+    <div id="login-section" style="display: block;">
+      <h2 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.2rem; margin-bottom: 20px;">Acceso restringido</h2>
+      
+      <input type="password" id="admin-pass" placeholder="Contraseña" 
+             style="display: block; width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+      
+      <button onclick="checkPass()" style="background: #333; color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 1rem;">Ingresar</button>
     </div>
 
   </main>
@@ -38,7 +39,7 @@
   <script>
     function checkPass() {
       const pass = document.getElementById('admin-pass').value;
-      // Sustituye 'TU_CONTRASEÑA' por la tuya
+      // Sustituye 'TU_CONTRASEÑA' por tu clave
       if (pass === "TU_CONTRASEÑA") { 
         window.location.href = "publicar.html";
       } else {
