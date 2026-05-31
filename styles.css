@@ -63,7 +63,7 @@
 
 html { 
   scroll-behavior: smooth; 
-  overflow-y: scroll; /* Fuerza la barra de scroll para que todas las páginas midan exactamente lo mismo de ancho */
+  overflow-y: scroll; 
 }
 
 body {
@@ -83,7 +83,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    ================== */
 .navbar {
   position: fixed;
-  top: 0; left: 0; right: 0; /* Restaurado el comportamiento original que no rompe el rótulo */
+  top: 0; left: 0; right: 0; 
   z-index: 1000;
   padding: 0 40px;
   height: 72px;
@@ -464,7 +464,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    =================================== */
 .admin-page-container {
   padding-top: 140px !important; 
-  min-height: 80vh;
+  min-height: 101vh; /* Obliga a la sección a tener un scroll permanente */
 }
 .admin-section {
   max-width: 700px;
