@@ -63,7 +63,7 @@
 
 html { 
   scroll-behavior: smooth; 
-  overflow-y: scroll; 
+  overflow-y: scroll !important; /* Fuerza la barra de scroll a nivel global para que el ancho de pantalla nunca cambie */
 }
 
 body {
@@ -464,7 +464,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    =================================== */
 .admin-page-container {
   padding-top: 140px !important; 
-  min-height: 101vh; /* Obliga a la sección a tener un scroll permanente */
+  min-height: 80vh; /* Devuelto a su medida original limpia */
 }
 .admin-section {
   max-width: 700px;
