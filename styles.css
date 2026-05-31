@@ -64,7 +64,7 @@
 html { 
   scroll-behavior: smooth; 
   overflow-y: auto !important;
-  scrollbar-gutter: stable !important; /* ◄ TRUCO MAESTRO: Reserva el espacio del scroll fijo en TODO el sitio para que nada baile */
+  scrollbar-gutter: stable !important; /* Mantiene el carril del scroll reservado siempre */
 }
 
 body {
@@ -143,7 +143,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 16px; 
   margin-left: auto;
 }
 
@@ -160,11 +160,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: #4a4a5a;
   transition: var(--transition);
   position: relative;
+  
+  /* Bloqueo simétrico de tamaño */
+  display: inline-block;
+  min-width: 130px; 
+  text-align: center;
 }
 .nav-link::after {
   content: '';
   position: absolute;
-  bottom: -4px; left: 0;
+  bottom: -4px; left: 5%;
   width: 0; height: 1px;
   background: #0d0d0f;
   transition: width 0.3s ease;
@@ -173,7 +178,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: #0d0d0f;
 }
 .nav-link:hover::after, .nav-link.active::after {
-  width: 100%;
+  width: 90%; 
 }
 .nav-hamburger {
   display: none;
