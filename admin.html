@@ -4,46 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Administración — El Manuscrito Zen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css">
-  <style>
-    /* Estilos de emergencia para forzar visibilidad */
-    .emergency-box {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-      margin-top: 50px !important;
-    }
-    input[type="password"] {
-      display: block !important;
-      visibility: visible !important;
-      width: 100% !important;
-      padding: 15px !important;
-      border: 2px solid #000 !important;
-      background: white !important;
-      color: black !important;
-      z-index: 9999 !important;
-    }
-  </style>
 </head>
 <body>
 
   <!-- El Navbar se inyecta vía navbar.js -->
 
-  <main style="padding: 100px 20px; max-width: 400px; margin: 0 auto; text-align: center;">
+  <header class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="Fondo_inicio.png" alt="Jardín zen al amanecer" class="hero-img">
+      <div class="hero-overlay"></div>
+    </div>
     
-    <div id="login-section" class="emergency-box">
-      <h2>Acceso restringido</h2>
+    <div class="hero-content">
+      <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 0.5rem;">Administración</h1>
+      <p class="hero-subtitle">Gestión privada</p>
+    </div>
+  </header>
+
+  <main class="main-content" style="padding: 60px 20px; max-width: 400px; margin: 0 auto; text-align: center;">
+    
+    <div id="login-section">
+      <h2 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.2rem; margin-bottom: 1.5rem;">Acceso restringido</h2>
       
-      <input type="password" id="admin-pass" placeholder="Introduce tu contraseña">
+      <!-- Input con diseño coherente al sitio -->
+      <div class="form-control" style="margin-bottom: 15px;">
+        <input type="password" id="admin-pass" placeholder="Introduce tu contraseña" 
+               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Zen Kaku Gothic New', sans-serif;">
+      </div>
       
-      <button onclick="checkPass()" style="margin-top: 20px; padding: 10px 20px;">Ingresar</button>
+      <button onclick="checkPass()" class="btn-submit-post" 
+              style="padding: 10px 25px; cursor: pointer; font-family: 'Zen Kaku Gothic New', sans-serif;">Ingresar</button>
     </div>
 
   </main>
 
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-symbol"><img src="enso.png" alt="Ensō" class="enso-img" /></span>
+        <span class="footer-name">El Manuscrito Zen</span>
+      </div>
+      <p class="footer-phrase">"Respira. Estás aquí."</p>
+      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
+    </div>
+  </footer>
+
   <script>
     function checkPass() {
       const pass = document.getElementById('admin-pass').value;
+      // Sustituye TU_CONTRASEÑA por la tuya
       if (pass === "TU_CONTRASEÑA") { 
         window.location.href = "publicar.html";
       } else {
