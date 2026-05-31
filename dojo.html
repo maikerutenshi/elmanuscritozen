@@ -11,30 +11,31 @@
 </head>
 <body>
 
-  <!-- El Navbar se inyecta vía navbar.js -->
-
-  <main class="main-content" style="padding-top: 100px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+  <header class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="Fondo_inicio.png" alt="Jardín zen al amanecer" class="hero-img">
+      <div class="hero-overlay"></div>
+    </div>
     
-    <header style="margin-bottom: 2rem;">
-      <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 2rem; font-weight: 400; margin-bottom: 0.5rem;">Ingresar al Dojo</h1>
-      <p style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 0.95rem; color: #666; max-width: 400px; line-height: 1.5;">
+    <div class="hero-content">
+      <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 0.5rem;">Ingresar al Dojo</h1>
+      <p style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1rem; margin-bottom: 2rem; opacity: 0.9;">
         Ingresa al Dojo para recibir nuevas entradas en tu correo electrónico.
       </p>
-    </header>
 
-    <form class="admin-form" id="dojo-enroll-form" style="width: 100%; max-width: 350px;">
-      <div class="form-control">
-        <label>Tu nombre</label>
-        <input type="text" name="name" required>
-      </div>
-      <div class="form-control">
-        <label>Correo electrónico</label>
-        <input type="email" name="email" required>
-      </div>
-      <button type="submit" class="btn-submit-post">Unirse a la práctica</button>
-    </form>
-
-  </main>
+      <form class="admin-form" id="dojo-enroll-form" style="width: 100%; max-width: 350px; margin: 0 auto;">
+        <div class="form-control">
+          <label>Tu nombre</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="form-control">
+          <label>Correo electrónico</label>
+          <input type="email" name="email" required>
+        </div>
+        <button type="submit" class="btn-submit-post">Unirse a la práctica</button>
+      </form>
+    </div>
+  </header>
 
   <footer class="footer">
     <div class="footer-inner">
