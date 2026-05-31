@@ -4,34 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Administración — El Manuscrito Zen</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos de emergencia para forzar visibilidad */
+    .emergency-box {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      margin-top: 50px !important;
+    }
+    input[type="password"] {
+      display: block !important;
+      visibility: visible !important;
+      width: 100% !important;
+      padding: 15px !important;
+      border: 2px solid #000 !important;
+      background: white !important;
+      color: black !important;
+      z-index: 9999 !important;
+    }
+  </style>
 </head>
 <body>
 
-  <header class="hero" id="hero">
-    <div class="hero-bg">
-      <img src="Fondo_inicio.png" alt="Jardín zen al amanecer" class="hero-img">
-      <div class="hero-overlay"></div>
-    </div>
-    
-    <div class="hero-content">
-      <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 0.5rem;">Administración</h1>
-      <p class="hero-subtitle">Gestión privada</p>
-    </div>
-  </header>
+  <!-- El Navbar se inyecta vía navbar.js -->
 
-  <main style="padding: 60px 20px; max-width: 400px; margin: 0 auto; text-align: center;">
+  <main style="padding: 100px 20px; max-width: 400px; margin: 0 auto; text-align: center;">
     
-    <div id="login-section" style="display: block;">
-      <h2 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.2rem; margin-bottom: 20px;">Acceso restringido</h2>
+    <div id="login-section" class="emergency-box">
+      <h2>Acceso restringido</h2>
       
-      <input type="password" id="admin-pass" placeholder="Contraseña" 
-             style="display: block; width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+      <input type="password" id="admin-pass" placeholder="Introduce tu contraseña">
       
-      <button onclick="checkPass()" style="background: #333; color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 1rem;">Ingresar</button>
+      <button onclick="checkPass()" style="margin-top: 20px; padding: 10px 20px;">Ingresar</button>
     </div>
 
   </main>
@@ -39,7 +44,6 @@
   <script>
     function checkPass() {
       const pass = document.getElementById('admin-pass').value;
-      // Sustituye 'TU_CONTRASEÑA' por tu clave
       if (pass === "TU_CONTRASEÑA") { 
         window.location.href = "publicar.html";
       } else {
