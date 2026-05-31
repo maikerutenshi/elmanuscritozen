@@ -3,25 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Publicar — El Manuscrito Zen</title>
+  <title>Editor — El Manuscrito Zen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <main class="main-content" style="padding: 60px 20px; max-width: 600px; margin: 0 auto;">
-    <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif;">Crear nueva entrada</h1>
-    <form id="post-form">
-      <div class="form-control">
-        <label>Título</label>
-        <input type="text" name="title" required>
+  <header class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="Fondo_inicio.png" alt="Jardín zen" class="hero-img">
+      <div class="hero-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+      <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 2rem;">Panel de Editor</h1>
+
+      <form class="admin-form" id="post-editor-form" style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+        <div class="form-control">
+          <label>Título de la entrada</label>
+          <input type="text" name="title" required>
+        </div>
+        
+        <div class="form-control">
+          <label>Insertar Imagen destacada</label>
+          <input type="file" name="image" accept="image/*">
+        </div>
+
+        <div class="form-control">
+          <label>Contenido (Markdown o texto)</label>
+          <textarea name="content" rows="8" required></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="submit" class="btn-submit-post" style="flex: 1;">Publicar nueva</button>
+          <button type="button" class="btn-submit-post" style="flex: 1; background: #b38f4e;">Editar existente</button>
+        </div>
+      </form>
+    </div>
+  </header>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-symbol"><img src="enso.png" alt="Ensō" class="enso-img" /></span>
+        <span class="footer-name">El Manuscrito Zen</span>
       </div>
-      <div class="form-control">
-        <label>Contenido</label>
-        <textarea name="content" rows="10" required></textarea>
-      </div>
-      <button type="submit" class="btn-submit-post">Publicar entrada</button>
-    </form>
-  </main>
+      <p class="footer-phrase">"Respira. Estás aquí."</p>
+      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
+    </div>
+  </footer>
 
   <script src="navbar.js"></script>
 </body>
