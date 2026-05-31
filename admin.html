@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Administración — El Manuscrito Zen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="nav-logo-symbol">
+          <img src="enso.png" alt="Ensō" class="enso-img" />
+        </span>
+        <span class="nav-logo-text">El Manuscrito Zen</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Inicio</a>
+        <a href="archivo.html" class="nav-link">Archivo</a>
+        <a href="dojo.html" class="nav-link">Dojo Virtual</a>
+        <a href="sobre.html" class="nav-link">Sobre el blog</a>
+        <a href="admin.html" class="nav-link active">Administración</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content admin-page-container">
+    <section class="admin-section">
+      <div class="posts-header">
+        <h2 class="section-title">Panel de Control</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <!-- Zona de Login -->
+      <div id="admin-login-zone" class="admin-card">
+        <h3>Acceso Restringido</h3>
+        <p class="admin-subtitle">Introduce la clave para gestionar las entradas del manuscrito.</p>
+        <div class="admin-form-group">
+          <input type="password" id="admin-password" class="admin-input-text" placeholder="Clave de acceso..." />
+          <button class="btn-admin-action" onclick="loginAdmin()">Entrar</button>
+        </div>
+      </div>
+
+      <!-- Zona de Gestión (Oculta por defecto, se activa con tu JS) -->
+      <div id="admin-management-zone" class="admin-card" style="display: none;">
+        <div class="admin-card-header">
+          <h3>Nueva Entrada</h3>
+          <button class="btn-logout" onclick="logoutAdmin()">Cerrar Sesión</button>
+        </div>
+        
+        <form id="new-post-form" onsubmit="createNewPost(event)" class="admin-form">
+          <div class="form-control">
+            <label for="post-title">Título de la entrada</label>
+            <input type="text" id="post-title" required placeholder="Ej. La mente en calma" />
+          </div>
+          
+          <div class="form-control">
+            <label for="post-category">Categoría / Etiqueta</label>
+            <input type="text" id="post-category" placeholder="Ej. Meditación" />
+          </div>
+
+          <div class="form-control">
+            <label for="post-content">Contenido del Manuscrito (Soporta HTML)</label>
+            <textarea id="post-content" rows="12" required placeholder="Escribe aquí tu reflexión zen..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit-post">Publicar en el Manuscrito</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 El Manuscrito Zen · Panel de Administración Privado</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Reutilizamos tu lógica de app.js -->
+  <script src="app.js"></script>
+</body>
+</html>
