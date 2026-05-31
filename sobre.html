@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sobre el blog — El Manuscrito Zen</title>
-  <meta name="description" content="Conoce la historia y filosofía detrás de El Manuscrito Zen, un blog de reflexiones diarias sobre budismo, meditación y mindfulness." />
+  <title>Sobre este sitio — El Manuscrito Zen</title>
+  <meta name="description" content="Conoce la historia y filosofía detrás de El Manuscrito Zen, un espacio de reflexiones sobre budismo, meditación y mindfulness." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
@@ -12,40 +12,41 @@
 </head>
 <body>
 
-  <!-- NAVIGATION -->
   <nav class="navbar scrolled" id="navbar">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
+      <a href="index.html" class="nav-logo" id="nav-logo-link">
         <span class="nav-logo-symbol">
           <img src="enso.png" alt="Ensō" class="enso-img" />
         </span>
         <span class="nav-logo-text">El Manuscrito Zen</span>
       </a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link">Inicio</a>
-        <a href="archivo.html" class="nav-link">Archivo</a>
-        <a href="sobre.html" class="nav-link active">Sobre el blog</a>
-        <button class="btn-escribir" onclick="openEditor()">✦ Escribir entrada</button>
+        <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
+        <a href="archivo.html" class="nav-link" id="nav-archivo">Archivo</a>
+        <a href="dojo.html" class="nav-link" id="nav-dojo">Dojo Virtual</a>
+        <a href="sobre.html" class="nav-link active" id="nav-sobre">Sobre este sitio</a>
+        <a href="admin.html" class="nav-link" id="nav-admin">Administración</a>
+        <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
       </div>
-      <button class="nav-hamburger" onclick="toggleMobileMenu()">
+      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
       </button>
     </div>
     <div class="nav-mobile-menu" id="nav-mobile-menu">
       <a href="index.html" class="nav-mobile-link">Inicio</a>
       <a href="archivo.html" class="nav-mobile-link">Archivo</a>
-      <a href="sobre.html" class="nav-mobile-link">Sobre el blog</a>
-      <button class="btn-escribir mobile" onclick="openEditor()">✦ Escribir entrada</button>
+      <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
+      <a href="sobre.html" class="nav-mobile-link">Sobre este sitio</a>
+      <a href="admin.html" class="nav-mobile-link">Administración</a>
+      <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
     </div>
   </nav>
 
-  <!-- PAGE HERO -->
   <section class="page-hero">
     <h1 class="page-hero-title">Sobre el <em style="font-style:italic;color:var(--gold-light)">manuscrito</em></h1>
     <p class="page-hero-subtitle">El origen de estas palabras</p>
   </section>
 
-  <!-- PAGE CONTENT -->
   <div class="page-content">
 
     <blockquote>
@@ -58,142 +59,4 @@
       El Manuscrito Zen nació de una necesidad muy simple: encontrar un espacio donde las palabras pudieran respirar. Un lugar donde la reflexión no tuviera prisa, donde cada entrada fuera una invitación a detenerse, mirar hacia adentro y regresar al momento presente.
     </p>
     <p>
-      Este blog es un diario de práctica. No un manual de instrucciones, no una guía definitiva. Es el registro honesto de alguien que camina el sendero del Dharma y comparte lo que encuentra a su paso: textos clásicos que resuenan hoy, experiencias de meditación, preguntas sin respuesta, y el silencio entre las palabras.
-    </p>
-
-    <h2>La filosofía del blog</h2>
-    <p>
-      El budismo nos enseña que todo es impermanente — incluso estas palabras. Cada entrada existe por sí misma, completa en su momento. No hay un gran arco narrativo que seguir. Puedes empezar desde hoy, desde cualquier entrada, desde el principio o desde el final.
-    </p>
-    <p>
-      El mindfulness, en su esencia más pura, no es una técnica. Es una forma de relacionarse con la vida que cultiva la presencia, la compasión y la sabiduría. En este espacio encontrarás reflexiones sobre esa práctica: tanto la formal (sentarse en meditación) como la informal (lavar los platos, caminar, escuchar).
-    </p>
-
-    <h2>Las categorías</h2>
-    <p>
-      Las entradas se organizan en categorías que reflejan los distintos aspectos del camino:
-    </p>
-    <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin:24px 0;">
-      <li style="display:flex;gap:16px;align-items:flex-start;">
-        <span style="color:var(--gold);font-family:var(--font-ui);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding-top:4px;min-width:90px;">Meditación</span>
-        <span style="color:var(--cream-dim);font-size:16px;">Técnicas, experiencias y obstáculos en la práctica sentada.</span>
-      </li>
-      <li style="display:flex;gap:16px;align-items:flex-start;">
-        <span style="color:var(--gold);font-family:var(--font-ui);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding-top:4px;min-width:90px;">Budismo</span>
-        <span style="color:var(--cream-dim);font-size:16px;">Las enseñanzas del Buda, los textos sagrados y su aplicación contemporánea.</span>
-      </li>
-      <li style="display:flex;gap:16px;align-items:flex-start;">
-        <span style="color:var(--gold);font-family:var(--font-ui);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding-top:4px;min-width:90px;">Mindfulness</span>
-        <span style="color:var(--cream-dim);font-size:16px;">La atención plena en la vida cotidiana, fuera del cojín de meditación.</span>
-      </li>
-      <li style="display:flex;gap:16px;align-items:flex-start;">
-        <span style="color:var(--gold);font-family:var(--font-ui);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding-top:4px;min-width:90px;">Zen</span>
-        <span style="color:var(--cream-dim);font-size:16px;">Koans, historia del Zen y la tradición de los maestros japoneses y chinos.</span>
-      </li>
-      <li style="display:flex;gap:16px;align-items:flex-start;">
-        <span style="color:var(--gold);font-family:var(--font-ui);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding-top:4px;min-width:90px;">Filosofía</span>
-        <span style="color:var(--cream-dim);font-size:16px;">La impermanencia, el no-yo, el sufrimiento y el camino hacia la liberación.</span>
-      </li>
-    </ul>
-
-    <h2>Una invitación</h2>
-    <p>
-      Si llegaste hasta aquí, quizás sientas el llamado de la quietud. Quizás buscas algo que no sabes nombrar del todo. Bienvenido. Siéntate un momento. Respira. Deja que las palabras lleguen a ti sin esfuerzo.
-    </p>
-    <p>
-      Este manuscrito no tiene autor definitivo. Es tuyo también.
-    </p>
-
-    <div style="text-align:center;margin-top:60px;padding-top:40px;border-top:1px solid var(--border);">
-      <span style="font-family:var(--font-serif);font-size:48px;color:var(--gold-dim);">☸</span>
-      <p style="font-family:var(--font-serif);font-size:20px;font-style:italic;color:var(--cream-dim);margin-top:16px;">Que todos los seres sean felices.</p>
-    </div>
-
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-logo">
-        <span class="footer-symbol">
-          <svg class="enso-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M50 15 C30 15, 15 30, 15 50 C15 70, 30 85, 50 85 C68 85, 83 72, 85 53 C86 42, 79 32, 69 36 C60 40, 61 54, 66 61 C71 68, 80 68, 83 61 C86 52, 81 40, 75 31" />
-          </svg>
-        </span>
-        <span class="footer-name">El Manuscrito Zen</span>
-      </div>
-      <p class="footer-phrase">"Respira. Estás aquí."</p>
-      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
-    </div>
-  </footer>
-
-  <!-- EDITOR MODAL -->
-  <div class="modal-overlay" id="modal-overlay" onclick="closeEditorOnOverlay(event)">
-    <div class="editor-modal" id="editor-modal">
-      <div class="editor-header">
-        <h2 class="editor-title">✦ Nueva entrada</h2>
-        <button class="editor-close" onclick="closeEditor()">✕</button>
-      </div>
-      <div class="editor-body">
-        <div class="editor-field">
-          <label class="editor-label" for="post-title-input">Título</label>
-          <input type="text" id="post-title-input" class="editor-input" placeholder="El título de tu reflexión..." maxlength="120" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-category-input">Categoría</label>
-          <select id="post-category-input" class="editor-select">
-            <option value="Meditación">Meditación</option>
-            <option value="Budismo">Budismo</option>
-            <option value="Mindfulness">Mindfulness</option>
-            <option value="Zen">Zen</option>
-            <option value="Filosofía">Filosofía</option>
-            <option value="Práctica">Práctica</option>
-            <option value="Reflexión">Reflexión</option>
-          </select>
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-excerpt-input">Extracto (resumen breve)</label>
-          <input type="text" id="post-excerpt-input" class="editor-input" placeholder="Una frase que invite a leer..." maxlength="200" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-content-input">Contenido</label>
-          <div class="editor-toolbar">
-            <button class="toolbar-btn" onclick="formatText('bold')"><b>B</b></button>
-            <button class="toolbar-btn" onclick="formatText('italic')"><i>I</i></button>
-            <button class="toolbar-btn" onclick="insertQuote()">❝</button>
-            <button class="toolbar-btn" onclick="insertDivider()">—</button>
-            <div class="toolbar-separator"></div>
-            <button class="toolbar-btn toolbar-btn-img" onclick="triggerImageUpload()" title="Insertar imagen">🖼</button>
-            <button class="toolbar-btn toolbar-btn-img" onclick="triggerCoverUpload()" title="Imagen de portada">⬛ Portada</button>
-          </div>
-          <div class="img-drop-hint" id="img-drop-hint">Arrastra imágenes aquí o usa el botón 🖼</div>
-          <div class="editor-textarea" id="post-content-input" contenteditable="true" data-placeholder="Escribe tu reflexión aquí..."></div>
-          <input type="file" id="img-upload-input" accept="image/*" style="display:none" onchange="handleImageUpload(event,'inline')" />
-          <input type="file" id="cover-upload-input" accept="image/*" style="display:none" onchange="handleImageUpload(event,'cover')" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-tags-input">Etiquetas</label>
-          <input type="text" id="post-tags-input" class="editor-input" placeholder="budismo, meditación, silencio..." />
-        </div>
-      </div>
-      <div class="editor-footer">
-        <button class="btn-cancel" onclick="closeEditor()">Cancelar</button>
-        <button class="btn-publish" onclick="publishPost()">Publicar entrada ✦</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- POST VIEW MODAL -->
-  <div class="modal-overlay" id="post-view-overlay" onclick="closePostViewOnOverlay(event)">
-    <div class="post-view-modal" id="post-view-modal">
-      <div class="post-view-header">
-        <button class="editor-close" onclick="closePostView()">✕</button>
-      </div>
-      <div class="post-view-body" id="post-view-body"></div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-  <script src="app.js"></script>
-</body>
-</html>
+      Este sitio es un diario de práctica. No un manual
