@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Archivo — El Manuscrito Zen</title>
-  <meta name="description" content="Todas las entradas publicadas en El Manuscrito Zen. Un archivo de reflexiones sobre budismo, meditación y mindfulness." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
@@ -12,7 +11,7 @@
 </head>
 <body>
 
-  <!-- La barra de navegación se inyectará automáticamente aquí desde navbar.js -->
+  <!-- El menú se inyectará automáticamente mediante navbar.js -->
 
   <section class="page-hero">
     <h1 class="page-hero-title">Archivo de <em style="font-style:italic;color:var(--gold-light)">entradas</em></h1>
@@ -32,64 +31,24 @@
     </div>
   </div>
 
-  <ul class="archive-list" id="archive-list">
-  </ul>
+  <ul class="archive-list" id="archive-list"></ul>
 
   <div id="archive-empty" style="display:none; text-align:center; padding:80px 20px; color:var(--muted); font-family:var(--font-serif); font-size:20px; font-style:italic;">
-    No hay entradas en esta categoría todavía. Recarga el Dojo o escribe tu primera reflexión.
+    No hay entradas en esta categoría todavía.
   </div>
 
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-logo">
-        <span class="footer-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
+        <span class="footer-symbol"><img src="enso.png" alt="Ensō" class="enso-img" /></span>
         <span class="footer-name">El Manuscrito Zen</span>
       </div>
       <p class="footer-phrase">"Respira. Estás aquí."</p>
-      
-      <div class="admin-access-zone">
-        <div id="admin-login-form" class="admin-login-form">
-          <input type="text" id="admin-user" placeholder="Usuario..." class="admin-input" />
-          <input type="password" id="admin-password" placeholder="Contraseña..." class="admin-input" />
-          <button onclick="checkAdminAccess()" class="btn-admin-login">Entrar</button>
-        </div>
-        <div id="admin-status" class="admin-status" style="display: none;">
-          <span>Modo Editor Activo (Miguel)</span>
-          <button onclick="logoutAdmin()" class="btn-admin-logout">Salir</button>
-        </div>
-      </div>
-
       <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
     </div>
   </footer>
 
-  <!-- Los modales y scripts se mantienen -->
-  <div class="modal-overlay" id="modal-overlay" onclick="closeEditorOnOverlay(event)">
-    <div class="editor-modal" id="editor-modal">
-        <!-- Contenido del editor omitido para brevedad, sigue igual -->
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="post-view-overlay" onclick="closePostViewOnOverlay(event)">
-    <div class="post-view-modal" id="post-view-modal">
-      <div class="post-view-header">
-        <button class="editor-close" onclick="closePostView()">✕</button>
-      </div>
-      <div class="post-view-body" id="post-view-body"></div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-
   <script src="navbar.js"></script>
   <script src="app.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      renderArchive('all');
-    });
-    // ... resto de tus funciones de renderizado
-  </script>
 </body>
 </html>
