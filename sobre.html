@@ -1,62 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sobre este sitio — El Manuscrito Zen</title>
-  <meta name="description" content="Conoce la historia y filosofía detrás de El Manuscrito Zen, un espacio de reflexiones sobre budismo, meditación y mindfulness." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre este lugar — El Manuscrito Zen</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <nav class="navbar scrolled" id="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo" id="nav-logo-link">
-        <span class="nav-logo-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
-        <span class="nav-logo-text">El Manuscrito Zen</span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
-        <a href="archivo.html" class="nav-link" id="nav-archivo">Archivo</a>
-        <a href="dojo.html" class="nav-link" id="nav-dojo">Dojo Virtual</a>
-        <a href="sobre.html" class="nav-link active" id="nav-sobre">Sobre este sitio</a>
-        <a href="admin.html" class="nav-link" id="nav-admin">Administración</a>
-        <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
+  <!-- El Navbar se inyecta vía navbar.js -->
+
+  <header class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="Fondo_inicio.png" alt="Jardín zen al amanecer" class="hero-img">
+      <div class="hero-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+      <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 0.5rem;">Sobre este lugar</h1>
+      <p class="hero-subtitle">Un espacio de calma y reflexión</p>
+    </div>
+  </header>
+
+  <main class="main-content" style="padding: 60px 20px; max-width: 800px; margin: 0 auto; line-height: 1.8;">
+    <section>
+      <h2 style="font-family: 'Zen Kaku Gothic New', sans-serif;">El origen</h2>
+      <p>Aquí escribirás la historia de El Manuscrito Zen, manteniendo el tono personal y pausado que caracteriza a tus publicaciones.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-symbol"><img src="enso.png" alt="Ensō" class="enso-img" /></span>
+        <span class="footer-name">El Manuscrito Zen</span>
       </div>
-      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
-        <span></span><span></span><span></span>
-      </button>
+      <p class="footer-phrase">"Respira. Estás aquí."</p>
+      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
     </div>
-    <div class="nav-mobile-menu" id="nav-mobile-menu">
-      <a href="index.html" class="nav-mobile-link">Inicio</a>
-      <a href="archivo.html" class="nav-mobile-link">Archivo</a>
-      <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
-      <a href="sobre.html" class="nav-mobile-link">Sobre este sitio</a>
-      <a href="admin.html" class="nav-mobile-link">Administración</a>
-      <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
-    </div>
-  </nav>
+  </footer>
 
-  <section class="page-hero">
-    <h1 class="page-hero-title">Sobre el <em style="font-style:italic;color:var(--gold-light)">manuscrito</em></h1>
-    <p class="page-hero-subtitle">El origen de estas palabras</p>
-  </section>
-
-  <div class="page-content">
-
-    <blockquote>
-      "Si tu mente está vacía, está siempre lista para todo; es abierta a todo. En la mente del principiante hay muchas posibilidades, pero en la mente del experto hay pocas."
-      <br /><small style="font-size:14px;font-style:normal;font-family:var(--font-ui);letter-spacing:0.1em;color:var(--gold-dim)">— Shunryu Suzuki</small>
-    </blockquote>
-
-    <h2>¿Qué es El Manuscrito Zen?</h2>
-    <p>
-      El Manuscrito Zen nació de una necesidad muy simple: encontrar un espacio donde las palabras pudieran respirar. Un lugar donde la reflexión no tuviera prisa, donde cada entrada fuera una invitación a detenerse, mirar hacia adentro y regresar al momento presente.
-    </p>
-    <p>
-      Este sitio es un diario de práctica. No un manual
+  <script src="navbar.js"></script>
+</body>
+</html>
