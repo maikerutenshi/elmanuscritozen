@@ -4,29 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Administración — El Manuscrito Zen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .admin-secret { display: none; margin-top: 30px; }
-  </style>
 </head>
 <body>
-
-  <!-- Navbar (inyectado por JS) -->
 
   <header class="hero" id="hero">
     <div class="hero-bg">
       <img src="Fondo_inicio.png" alt="Jardín zen al amanecer" class="hero-img">
       <div class="hero-overlay"></div>
     </div>
+    
     <div class="hero-content">
       <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 0.5rem;">Administración</h1>
       <p class="hero-subtitle">Gestión privada</p>
     </div>
   </header>
 
-  <main class="main-content" style="padding: 60px 20px; max-width: 500px; margin: 0 auto;">
-    
-    <!-- Input de acceso -->
+  <main class="main-content" style="padding: 60px 20px; max-width: 400px; margin: 0 auto; text-align: center;">
     <div id="login-section">
       <h2 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1.2rem; margin-bottom: 1rem;">Acceso restringido</h2>
       <div class="form-control">
@@ -34,22 +31,13 @@
       </div>
       <button onclick="checkPass()" class="btn-submit-post">Ingresar</button>
     </div>
-
-    <!-- Sección oculta (Formularios de publicación) -->
-    <section id="editor-section" class="admin-secret">
-      <h2 style="font-family: 'Zen Kaku Gothic New', sans-serif;">Crear nueva entrada</h2>
-      <!-- Aquí irán tus inputs de título, contenido, fecha, etc. -->
-      <p>Bienvenido, Miguel. El editor está activo.</p>
-    </section>
-
   </main>
 
   <script>
     function checkPass() {
       const pass = document.getElementById('admin-pass').value;
-      if (pass === "TU_CONTRASEÑA_AQUI") { // Cambia esto por tu contraseña real
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('editor-section').style.display = 'block';
+      if (pass === "TU_CONTRASEÑA") { 
+        window.location.href = "publicar.html";
       } else {
         alert("Contraseña incorrecta");
       }
