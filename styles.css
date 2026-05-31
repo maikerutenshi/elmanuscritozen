@@ -63,7 +63,7 @@
 
 html { 
   scroll-behavior: smooth; 
-  overflow-y: scroll; /* Reserva el espacio de la barra de scroll siempre para evitar saltos de pantalla */
+  overflow-y: scroll; /* Fuerza la barra de scroll para que todas las páginas midan exactamente lo mismo de ancho */
 }
 
 body {
@@ -83,9 +83,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    ================== */
 .navbar {
   position: fixed;
-  top: 0; 
-  left: 0; 
-  width: 100vw; /* Basado en el viewport para que ignore el ancho cambiante del scroll del body */
+  top: 0; left: 0; right: 0; /* Restaurado el comportamiento original que no rompe el rótulo */
   z-index: 1000;
   padding: 0 40px;
   height: 72px;
@@ -155,7 +153,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-link {
   font-family: var(--font-ui);
   font-size: 13px;
-  font-weight: 500; /* Peso rígido permanente para evitar empuje de anchura */
+  font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #4a4a5a;
@@ -247,4 +245,358 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .hero-title {
   font-family: var(--font-amanojaku);
-  font
+  font-size: clamp(48px, 8vw, 95px);
+  font-weight: normal;
+  color: #000000;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.4);
+}
+.hero-subtitle, .hero-content p {
+  color: #1c1c24 !important;
+  font-weight: 400;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.5);
+}
+.hero-divider {
+  color: #b38f4e;
+  font-size: 18px;
+}
+.hero-quote {
+  font-size: 20px;
+  font-style: italic;
+  max-width: 600px;
+}
+.hero-quote-author {
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #555565;
+}
+.scroll-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(to bottom, #555565, transparent);
+}
+
+/* ===================================
+   ZONA DE ENTRADAS RECIENTES
+   =================================== */
+.main-content {
+  background-color: var(--bg-dark); 
+  padding: 100px 40px;
+}
+
+.posts-section {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.posts-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.section-title {
+  font-family: var(--font-body) !important;
+  font-size: 46px !important;
+  font-weight: 300;
+  color: #0d0d0f;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+  text-transform: none;
+}
+
+.section-line {
+  width: 60px;
+  height: 1px;
+  background-color: var(--gold);
+  margin: 0 auto;
+}
+
+.featured-post, .posts-grid {
+  margin-bottom: 40px;
+}
+
+.load-more-wrap {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.btn-load-more {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #0d0d0f;
+  border: 1px solid rgba(0,0,0,0.15);
+  padding: 12px 30px;
+  border-radius: 100px;
+  transition: var(--transition);
+}
+
+.btn-load-more:hover {
+  background-color: #0d0d0f;
+  color: #ffffff;
+}
+
+/* ===================================
+   PIE DE PÁGINA 
+   =================================== */
+.footer {
+  background-color: #eae3d5; 
+  color: #4a4a55;
+  padding: 80px 40px 40px;
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-name {
+  font-family: var(--font-amanojaku);
+  font-size: 20px;
+  color: #0d0d0f;
+}
+
+.footer-phrase {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-style: italic;
+  color: #2c2c35;
+}
+
+.footer-tags {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tag {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: #7a7a8a;
+  letter-spacing: 0.05em;
+}
+
+.footer-copy {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: #9a9a9a;
+  margin-top: 20px;
+}
+
+/* ===================================
+   MENÚ MÓVIL (CONTROL DE PANTALLAS)
+   =================================== */
+@media (min-width: 769px) {
+  .nav-mobile-menu, #nav-mobile-menu {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 20px;
+  }
+  .navbar .nav-links {
+    display: none; 
+  }
+  .nav-hamburger {
+    display: flex !important; 
+  }
+  .nav-mobile-menu {
+    display: none; 
+    position: fixed;
+    top: 72px; left: 0; right: 0;
+    background: rgba(245, 240, 232, 0.98); 
+    backdrop-filter: blur(10px);
+    padding: 30px 20px;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  }
+  .nav-mobile-menu.open {
+    display: flex !important; 
+  }
+  .nav-mobile-link {
+    font-family: var(--font-ui);
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #0d0d0f !important; 
+    padding: 10px 0;
+    display: block;
+  }
+  .main-content {
+    padding: 60px 20px;
+  }
+}
+
+/* ===================================
+   ESTILOS DE LA PÁGINA DE ADMINISTRACIÓN
+   =================================== */
+.admin-page-container {
+  padding-top: 140px !important; 
+  min-height: 80vh;
+}
+.admin-section {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.admin-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 40px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+.admin-card h3 {
+  font-family: var(--font-body);
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #0d0d0f;
+}
+.admin-subtitle {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+.admin-form-group {
+  display: flex;
+  gap: 15px;
+}
+.admin-input-text {
+  flex: 1;
+  background: #faf8f5;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: #0d0d0f;
+}
+.btn-admin-action, .btn-submit-post {
+  background: #0d0d0f;
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+}
+.btn-admin-action:hover, .btn-submit-post:hover {
+  background: var(--gold);
+}
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding-bottom: 15px;
+}
+.btn-logout {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #a8628c;
+  font-weight: 500;
+}
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.form-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.form-control label {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: #0d0d0f;
+}
+.form-control input, .form-control textarea {
+  background: #faf8f5;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: #0d0d0f;
+  width: 100%;
+}
+.form-control textarea {
+  resize: vertical;
+}
+
+/* ==================================================
+   REAJUSTE DE CENTRADO Y EQUILIBRIO EN DISPOSITIVOS MÓVILES
+   ================================================== */
+@media (max-width: 768px) {
+  .hero {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .hero-img {
+    object-position: center center !important;
+    transform: scale(1.05); 
+    animation: none !important; 
+  }
+
+  .hero-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 24px !important;
+    margin: 0 auto !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+    text-align: center !important;
+    transform: none !important; 
+  }
+
+  .hero-title, 
+  .hero-subtitle, 
+  .hero-divider, 
+  .hero-quote, 
+  .hero-quote-author {
+    width: 100%;
+    text-align: center !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
