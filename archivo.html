@@ -1,244 +1,134 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Archivo — El Manuscrito Zen</title>
-  <meta name="description" content="Todas las entradas publicadas en El Manuscrito Zen. Un archivo de reflexiones sobre budismo, meditación y mindfulness." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archivo de Publicaciones — El manuscrito zen</title>
+  
+  <!-- Fuentes sugeridas para mantener la estética -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif:wght@300;400&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tu archivo de estilos unificado -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- UNIFICADO: Menú idéntico al de inicio con la palabra "sitio" y opción de Administración -->
-  <nav class="navbar scrolled" id="navbar">
+  <!-- NAVBAR UNIFICADA -->
+  <nav class="navbar scrolled"> <!-- Usamos 'scrolled' para que el menú sea visible desde el principio sin opacidad cero -->
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo" id="nav-logo-link">
-        <span class="nav-logo-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
-        <span class="nav-logo-text">El Manuscrito Zen</span>
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-symbol">
+          <img src="enso.png" alt="Enso" class="enso-img">
+        </div>
+        <span class="nav-logo-text">El manuscrito zen</span>
       </a>
+      
       <div class="nav-links">
-        <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
-        <a href="archivo.html" class="nav-link active" id="nav-archivo">Archivo</a>
-        <a href="dojo.html" class="nav-link" id="nav-dojo">Dojo Virtual</a>
-        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre este sitio</a>
-        <a href="admin.html" class="nav-link" id="nav-admin">Administración</a>
-        <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
+        <a href="/" class="nav-link">Inicio</a>
+        <a href="/archivo.html" class="nav-link active">Archivo</a>
+        <a href="/sobre-este-sitio" class="nav-link">Sobre este sitio</a>
       </div>
-      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <div class="nav-mobile-menu" id="nav-mobile-menu">
-      <a href="index.html" class="nav-mobile-link">Inicio</a>
-      <a href="archivo.html" class="nav-mobile-link">Archivo</a>
-      <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
-      <a href="sobre.html" class="nav-mobile-link">Sobre este sitio</a>
-      <a href="admin.html" class="nav-mobile-link">Administración</a>
-      <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
     </div>
   </nav>
 
-  <section class="page-hero">
-    <h1 class="page-hero-title">Archivo de <em style="font-style:italic;color:var(--gold-light)">entradas</em></h1>
-    <p class="page-hero-subtitle">Todas las reflexiones · Ordenadas por fecha</p>
-  </section>
+  <!-- CONTENEDOR PRINCIPAL DEL ARCHIVO -->
+  <main class="main-content" style="padding-top: 140px;">
+    <section class="posts-section">
+      
+      <div class="posts-header">
+        <h1 class="section-title">Archivo Histórico</h1>
+        <p style="font-family: var(--font-serif); font-style: italic; color: var(--muted); margin-top: -10px; font-size: 18px;">
+          Un viaje cronológico a través de la quietud y la reflexión.
+        </p>
+        <div class="section-line" style="margin-top: 20px;"></div>
+      </div>
 
-  <div class="archive-filter-bar" id="archive-filter-bar">
-    <div class="archive-filter-inner">
-      <button class="filter-btn active" data-filter="all" onclick="filterArchive(this, 'all')">Todas</button>
-      <button class="filter-btn" data-filter="Meditación" onclick="filterArchive(this, 'Meditación')">Meditación</button>
-      <button class="filter-btn" data-filter="Budismo" onclick="filterArchive(this, 'Budismo')">Budismo</button>
-      <button class="filter-btn" data-filter="Mindfulness" onclick="filterArchive(this, 'Mindfulness')">Mindfulness</button>
-      <button class="filter-btn" data-filter="Zen" onclick="filterArchive(this, 'Zen')">Zen</button>
-      <button class="filter-btn" data-filter="Filosofía" onclick="filterArchive(this, 'Filosofía')">Filosofía</button>
-      <button class="filter-btn" data-filter="Práctica" onclick="filterArchive(this, 'Práctica')">Práctica</button>
-      <button class="filter-btn" data-filter="Reflexión" onclick="filterArchive(this, 'Reflexión')">Reflexión</button>
-    </div>
-  </div>
+      <!-- CRONOLOGÍA POR FECHAS -->
+      <div class="archive-timeline" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 50px;">
+        
+        <!-- BLOQUE DE AÑO 2026 -->
+        <div class="archive-year-group">
+          <h2 style="font-family: var(--font-serif); font-size: 32px; color: #0d0d0f; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 10px; margin-bottom: 25px; font-weight: 400;">
+            2026
+          </h2>
+          
+          <!-- Bloque de Mes -->
+          <div class="archive-month-block" style="margin-bottom: 30px; padding-left: 15px;">
+            <h3 style="font-family: var(--font-ui); font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 15px;">
+              Mayo
+            </h3>
+            
+            <!-- Lista de entradas de este mes -->
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+              <li style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed rgba(0,0,0,0.05); padding-bottom: 8px;">
+                <a href="/posts/el-arte-de-la-atencion.html" style="font-family: var(--font-body); font-size: 16px; color: #2c2c35; transition: var(--transition);" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='#2c2c35'">
+                  El arte de la atención plena en el caos cotidiano
+                </a>
+                <span style="font-family: var(--font-ui); font-size: 12px; color: #9a9a9a; white-space: nowrap;">28 Mayo</span>
+              </li>
+              <li style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed rgba(0,0,0,0.05); padding-bottom: 8px;">
+                <a href="/posts/espacios-vacios.html" style="font-family: var(--font-body); font-size: 16px; color: #2c2c35; transition: var(--transition);" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='#2c2c35'">
+                  Encontrando el equilibrio en los espacios vacíos
+                </a>
+                <span style="font-family: var(--font-ui); font-size: 12px; color: #9a9a9a; white-space: nowrap;">15 Mayo</span>
+              </li>
+            </ul>
+          </div>
 
-  <ul class="archive-list" id="archive-list">
-  </ul>
+          <!-- Otro Bloque de Mes (Ejemplo) -->
+          <div class="archive-month-block" style="padding-left: 15px;">
+            <h3 style="font-family: var(--font-ui); font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 15px;">
+              Abril
+            </h3>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+              <li style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed rgba(0,0,0,0.05); padding-bottom: 8px;">
+                <a href="/posts/primeros-pasos-meditacion.html" style="font-family: var(--font-body); font-size: 16px; color: #2c2c35; transition: var(--transition);" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='#2c2c35'">
+                  Primeros pasos hacia una mente en calma: Guía Zafu
+                </a>
+                <span style="font-family: var(--font-ui); font-size: 12px; color: #9a9a9a; white-space: nowrap;">04 Abril</span>
+              </li>
+            </ul>
+          </div>
 
-  <div id="archive-empty" style="display:none; text-align:center; padding:80px 20px; color:var(--muted); font-family:var(--font-serif); font-size:20px; font-style:italic;">
-    No hay entradas en esta categoría todavía. Recarga el Dojo o escribe tu primera reflexión.
-  </div>
+        </div>
 
+        <!-- BLOQUE DE AÑO 2025 (Para cuando importes el histórico) -->
+        <div class="archive-year-group">
+          <h2 style="font-family: var(--font-serif); font-size: 32px; color: #0d0d0f; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 10px; margin-bottom: 25px; font-weight: 400;">
+            2025
+          </h2>
+          <div class="archive-month-block" style="padding-left: 15px;">
+            <h3 style="font-family: var(--font-ui); font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 15px;">
+              Diciembre
+            </h3>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+              <li style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed rgba(0,0,0,0.05); padding-bottom: 8px;">
+                <a href="/posts/resumen-del-ano-silencio.html" style="font-family: var(--font-body); font-size: 16px; color: #2c2c35; transition: var(--transition);" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='#2c2c35'">
+                  Lo que el silencio me enseñó durante este año
+                </a>
+                <span style="font-family: var(--font-ui); font-size: 12px; color: #9a9a9a; white-space: nowrap;">20 Dic</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <!-- PIE DE PÁGINA UNIFICADO -->
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-logo">
-        <span class="footer-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
-        <span class="footer-name">El Manuscrito Zen</span>
+        <span class="footer-name">El manuscrito zen</span>
       </div>
-      <p class="footer-phrase">"Respira. Estás aquí."</p>
-      
-      <div class="admin-access-zone">
-        <div id="admin-login-form" class="admin-login-form">
-          <input type="text" id="admin-user" placeholder="Usuario..." class="admin-input" />
-          <input type="password" id="admin-password" placeholder="Contraseña..." class="admin-input" />
-          <button onclick="checkAdminAccess()" class="btn-admin-login">Entrar</button>
-        </div>
-        <div id="admin-status" class="admin-status" style="display: none;">
-          <span>Modo Editor Activo (Miguel)</span>
-          <button onclick="logoutAdmin()" class="btn-admin-logout">Salir</button>
-        </div>
-      </div>
-
-      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
+      <p class="footer-phrase">"La quietud en el movimiento."</p>
+      <div class="footer-copy">&copy; 2026 El manuscrito zen. Todos los derechos reservados.</div>
     </div>
   </footer>
 
-  <div class="modal-overlay" id="modal-overlay" onclick="closeEditorOnOverlay(event)">
-    <div class="editor-modal" id="editor-modal">
-      <div class="editor-header">
-        <h2 class="editor-title">✦ Nueva entrada</h2>
-        <button class="editor-close" onclick="closeEditor()">✕</button>
-      </div>
-      <div class="editor-body">
-        <div class="editor-field">
-          <label class="editor-label" for="post-title-input">Título</label>
-          <input type="text" id="post-title-input" class="editor-input" placeholder="El título de tu reflexión..." maxlength="120" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-category-input">Categoría</label>
-          <select id="post-category-input" class="editor-select">
-            <option value="Meditación">Meditación</option>
-            <option value="Budismo">Budismo</option>
-            <option value="Mindfulness">Mindfulness</option>
-            <option value="Zen">Zen</option>
-            <option value="Filosofía">Filosofía</option>
-            <option value="Práctica">Práctica</option>
-            <option value="Reflexión">Reflexión</option>
-          </select>
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-excerpt-input">Extracto (resumen breve)</label>
-          <input type="text" id="post-excerpt-input" class="editor-input" placeholder="Una frase que invite a leer..." maxlength="200" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-content-input">Contenido</label>
-          <div class="editor-toolbar">
-            <button class="toolbar-btn" onclick="formatText('bold')" title="Negrita"><b>B</b></button>
-            <button class="toolbar-btn" onclick="formatText('italic')" title="Cursiva"><i>I</i></button>
-            <button class="toolbar-btn" onclick="insertQuote()" title="Cita">❝</button>
-            <button class="toolbar-btn" onclick="insertDivider()" title="Separador">—</button>
-            <div class="toolbar-separator"></div>
-            <button class="toolbar-btn toolbar-btn-img" onclick="triggerImageUpload()" title="Insertar imagen">🖼</button>
-            <button class="toolbar-btn toolbar-btn-img" onclick="triggerCoverUpload()" title="Imagen de portada">⬛ Portada</button>
-          </div>
-          <div class="img-drop-hint" id="img-drop-hint">Arrastra imágenes aquí o usa el botón 🖼</div>
-          <div class="editor-textarea" id="post-content-input" contenteditable="true" data-placeholder="Escribe tu reflexión aquí..."></div>
-          <input type="file" id="img-upload-input" accept="image/*" style="display:none" onchange="handleImageUpload(event,'inline')" />
-          <input type="file" id="cover-upload-input" accept="image/*" style="display:none" onchange="handleImageUpload(event,'cover')" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-tags-input">Etiquetas (separadas por coma)</label>
-          <input type="text" id="post-tags-input" class="editor-input" placeholder="budismo, meditación, silencio..." />
-        </div>
-      </div>
-      <div class="editor-footer">
-        <button class="btn-cancel" onclick="closeEditor()">Cancelar</button>
-        <button class="btn-publish" onclick="publishPost()">Publicar entrada ✦</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="post-view-overlay" onclick="closePostViewOnOverlay(event)">
-    <div class="post-view-modal" id="post-view-modal">
-      <div class="post-view-header">
-        <button class="editor-close" onclick="closePostView()">✕</button>
-      </div>
-      <div class="post-view-body" id="post-view-body"></div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-
-  <style>
-    .archive-filter-bar {
-      padding: 24px 40px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 72px;
-      z-index: 100;
-      background: rgba(13,13,15,0.95);
-      backdrop-filter: blur(16px);
-    }
-    .archive-filter-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      font-family: var(--font-ui);
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 8px 18px;
-      border-radius: 100px;
-      transition: var(--transition);
-      background: transparent;
-    }
-    .filter-btn:hover {
-      color: var(--cream-dim);
-      border-color: rgba(255,255,255,0.15);
-    }
-    .filter-btn.active {
-      color: var(--bg-dark);
-      background: var(--gold);
-      border-color: var(--gold);
-    }
-  </style>
-
-  <script src="app.js"></script>
-  <script>
-    // Render archive on load
-    document.addEventListener('DOMContentLoaded', () => {
-      renderArchive('all');
-    });
-
-    function renderArchive(filter) {
-      const posts = getPosts();
-      const list = document.getElementById('archive-list');
-      const empty = document.getElementById('archive-empty');
-      const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
-      list.innerHTML = '';
-      if (filtered.length === 0) {
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-      filtered.forEach(post => {
-        const li = document.createElement('li');
-        li.className = 'archive-item';
-        li.onclick = () => openPostView(post.id);
-        li.innerHTML = `
-          <div class="archive-item-date">${formatDate(post.date)}</div>
-          <div class="archive-item-info">
-            <div class="archive-item-category">${post.category}</div>
-            <div class="archive-item-title">${post.title}</div>
-            <div class="archive-item-excerpt">${post.excerpt}</div>
-          </div>
-        `;
-        list.appendChild(li);
-      });
-    }
-
-    function filterArchive(btn, filter) {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderArchive(filter);
-    }
-  </script>
 </body>
 </html>
