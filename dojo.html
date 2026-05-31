@@ -49,5 +49,34 @@
   </footer>
 
   <script src="navbar.js"></script>
+  <script>
+  const form = document.getElementById('dojo-enroll-form');
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Evita que la página se recargue
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    // Aquí es donde pondremos la URL de n8n más adelante
+    const WEBHOOK_URL = 'TU_URL_DE_N8N_AQUI'; 
+
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      if(response.ok) {
+        alert('¡Gracias por unirte al Dojo!');
+        form.reset();
+      }
+    } catch (error) {
+      console.error('Error al enviar:', error);
+      alert('Hubo un problema. Inténtalo de nuevo.');
+    }
+  });
+</script>
 </body>
 </html>
