@@ -16,35 +16,6 @@
 </head>
 <body>
 
-  <nav class="navbar" id="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo" id="nav-logo-link">
-        <span class="nav-logo-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
-        <span class="nav-logo-text">El Manuscrito Zen</span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html" class="nav-link active" id="nav-inicio">Inicio</a>
-        <a href="archivo.html" class="nav-link" id="nav-archivo">Archivo</a>
-        <a href="dojo.html" class="nav-link" id="nav-dojo">Dojo Virtual</a>
-        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre este sitio</a>
-        <a href="admin.html" class="nav-link" id="nav-admin">Administración</a>
-      </div>
-      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <!-- UNIFICADO: Cambiado 'Sobre el blog' por 'Sobre este sitio' en el menú móvil también -->
-    <div class="nav-mobile-menu" id="nav-mobile-menu">
-      <a href="index.html" class="nav-mobile-link">Inicio</a>
-      <a href="archivo.html" class="nav-mobile-link">Archivo</a>
-      <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
-      <a href="sobre.html" class="nav-mobile-link">Sobre este sitio</a>
-      <a href="admin.html" class="nav-mobile-link">Administración</a>
-    </div>
-  </nav>
-
   <header class="hero" id="hero">
     <div class="hero-bg">
       <img src="Fondo_inicio.png" alt="Jardín zen al amanecer" class="hero-img" />
@@ -52,7 +23,6 @@
     </div>
     <div class="hero-content">
       <h1 class="hero-title">El Manuscrito<br /><em>Zen</em></h1>
-      <!-- CAMBIO: Modificado 'y sabiduría' por 'e introspección' -->
       <p class="hero-subtitle">Un espacio de silencio e introspección.<br />Budismo · Mindfulness · Meditación</p>
       <div class="hero-divider">
         <span class="divider-symbol">❖</span>
@@ -73,7 +43,6 @@
         <div class="section-line"></div>
       </div>
 
-      <!-- Contenedor dinámico controlado por app.js -->
       <div class="featured-post" id="featured-post-container"></div>
       <div class="posts-grid" id="posts-grid"></div>
 
@@ -115,6 +84,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="navbar.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
