@@ -4,49 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Archivo — El Manuscrito Zen</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- El menú se inyectará automáticamente mediante navbar.js -->
+  <main class="main-content" style="padding-top: 140px;">
+    <section class="page-hero">
+      <h1 class="page-hero-title">Archivo de <em style="font-style:italic;">entradas</em></h1>
+      <p class="page-hero-subtitle">Todas las reflexiones · Ordenadas por fecha</p>
+    </section>
 
-  <section class="page-hero">
-    <h1 class="page-hero-title">Archivo de <em style="font-style:italic;color:var(--gold-light)">entradas</em></h1>
-    <p class="page-hero-subtitle">Todas las reflexiones · Ordenadas por fecha</p>
-  </section>
-
-  <div class="archive-filter-bar" id="archive-filter-bar">
-    <div class="archive-filter-inner">
-      <button class="filter-btn active" data-filter="all" onclick="filterArchive(this, 'all')">Todas</button>
-      <button class="filter-btn" data-filter="Meditación" onclick="filterArchive(this, 'Meditación')">Meditación</button>
-      <button class="filter-btn" data-filter="Budismo" onclick="filterArchive(this, 'Budismo')">Budismo</button>
-      <button class="filter-btn" data-filter="Mindfulness" onclick="filterArchive(this, 'Mindfulness')">Mindfulness</button>
-      <button class="filter-btn" data-filter="Zen" onclick="filterArchive(this, 'Zen')">Zen</button>
-      <button class="filter-btn" data-filter="Filosofía" onclick="filterArchive(this, 'Filosofía')">Filosofía</button>
-      <button class="filter-btn" data-filter="Práctica" onclick="filterArchive(this, 'Práctica')">Práctica</button>
-      <button class="filter-btn" data-filter="Reflexión" onclick="filterArchive(this, 'Reflexión')">Reflexión</button>
-    </div>
-  </div>
-
-  <ul class="archive-list" id="archive-list"></ul>
-
-  <div id="archive-empty" style="display:none; text-align:center; padding:80px 20px; color:var(--muted); font-family:var(--font-serif); font-size:20px; font-style:italic;">
-    No hay entradas en esta categoría todavía.
-  </div>
-
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-logo">
-        <span class="footer-symbol"><img src="enso.png" alt="Ensō" class="enso-img" /></span>
-        <span class="footer-name">El Manuscrito Zen</span>
-      </div>
-      <p class="footer-phrase">"Respira. Estás aquí."</p>
-      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
-    </div>
-  </footer>
+    <div id="archive-list"></div>
+  </main>
 
   <script src="navbar.js"></script>
   <script src="app.js"></script>
