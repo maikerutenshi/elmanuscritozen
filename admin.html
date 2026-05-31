@@ -3,37 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Administración</title>
+  <title>Administración — El Manuscrito Zen</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Estilo forzado sin depender de clases externas */
-    .caja-login {
-      margin: 100px auto;
-      max-width: 400px;
-      text-align: center;
-      padding: 40px;
-      background: white;
-      border: 2px solid black;
-    }
-    input#admin-pass {
-      display: block !important;
-      width: 100% !important;
-      height: 50px !important;
-      padding: 10px !important;
-      margin: 20px 0 !important;
-      border: 2px solid #000 !important;
-      font-size: 18px !important;
-      background: white !important;
-      color: black !important;
+    /* Esto sobreescribe el color del input solo en esta página */
+    .form-control input {
+      border: 1px solid #b38f4e !important; /* El color dorado de tu sitio */
+      background: #ffffff !important;      /* Fondo blanco para que destaque */
     }
   </style>
 </head>
 <body>
-  <div class="caja-login">
-    <h2>Acceso restringido</h2>
-    <input type="password" id="admin-pass" placeholder="Contraseña">
-    <button onclick="checkPass()">Ingresar</button>
-  </div>
+
+  <header class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="Fondo_inicio.png" alt="Jardín zen" class="hero-img">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title" style="font-size: 3rem;">Administración</h1>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="posts-section" style="max-width: 400px; margin: 0 auto; text-align: center;">
+      <h2 class="section-title" style="font-size: 30px !important; margin-bottom: 30px;">Acceso restringido</h2>
+      
+      <div class="form-control">
+        <input type="password" id="admin-pass" placeholder="Introduce tu contraseña">
+      </div>
+      
+      <button onclick="checkPass()" class="btn-submit-post" style="margin-top: 20px;">Ingresar</button>
+    </section>
+  </main>
 
   <script>
     function checkPass() {
