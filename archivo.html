@@ -12,9 +12,10 @@
 </head>
 <body>
 
+  <!-- UNIFICADO: Menú idéntico al de inicio con la palabra "sitio" y opción de Administración -->
   <nav class="navbar scrolled" id="navbar">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
+      <a href="index.html" class="nav-logo" id="nav-logo-link">
         <span class="nav-logo-symbol">
           <img src="enso.png" alt="Ensō" class="enso-img" />
         </span>
@@ -24,7 +25,8 @@
         <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
         <a href="archivo.html" class="nav-link active" id="nav-archivo">Archivo</a>
         <a href="dojo.html" class="nav-link" id="nav-dojo">Dojo Virtual</a>
-        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre el blog</a>
+        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre este sitio</a>
+        <a href="admin.html" class="nav-link" id="nav-admin">Administración</a>
         <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
       </div>
       <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
@@ -35,7 +37,8 @@
       <a href="index.html" class="nav-mobile-link">Inicio</a>
       <a href="archivo.html" class="nav-mobile-link">Archivo</a>
       <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
-      <a href="sobre.html" class="nav-mobile-link">Sobre el blog</a>
+      <a href="sobre.html" class="nav-mobile-link">Sobre este sitio</a>
+      <a href="admin.html" class="nav-mobile-link">Administración</a>
       <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
     </div>
   </nav>
@@ -59,7 +62,7 @@
   </div>
 
   <ul class="archive-list" id="archive-list">
-    </ul>
+  </ul>
 
   <div id="archive-empty" style="display:none; text-align:center; padding:80px 20px; color:var(--muted); font-family:var(--font-serif); font-size:20px; font-style:italic;">
     No hay entradas en esta categoría todavía. Recarga el Dojo o escribe tu primera reflexión.
@@ -130,7 +133,7 @@
             <button class="toolbar-btn toolbar-btn-img" onclick="triggerCoverUpload()" title="Imagen de portada">⬛ Portada</button>
           </div>
           <div class="img-drop-hint" id="img-drop-hint">Arrastra imágenes aquí o usa el botón 🖼</div>
-          <div class="editor-textarea" id="post-content-input" contenteditable="true" data-placeholder="Escribe tu reflexión aquí..."></div >
+          <div class="editor-textarea" id="post-content-input" contenteditable="true" data-placeholder="Escribe tu reflexión aquí..."></div>
           <input type="file" id="img-upload-input" accept="image/*" style="display:none" onchange="handleImageUpload(event,'inline')" />
           <input type="file" id="cover-upload-input" accept="image/*" style="display:none" onchange="handleImageUpload(event,'cover')" />
         </div>
