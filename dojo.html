@@ -1,123 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dojo Virtual — El Manuscrito Zen</title>
-  <meta name="description" content="Únete al Dojo Virtual de El Manuscrito Zen y recibe reflexiones sobre budismo y mindfulness directamente en tu correo." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Dojo — El manuscrito zen</title>
+  
+  <!-- Fuentes para mantener la identidad visual -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif:wght@300;400&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tu archivo de estilos unificado -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- UNIFICADO: Estructura, clases e IDs idénticos para una navegación perfecta -->
-  <nav class="navbar scrolled" id="navbar">
+  <!-- NAVBAR UNIFICADA -->
+  <nav class="navbar">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo" id="nav-logo-link">
-        <span class="nav-logo-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
-        <span class="nav-logo-text">El Manuscrito Zen</span>
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-symbol">
+          <img src="enso.png" alt="Enso" class="enso-img">
+        </div>
+        <span class="nav-logo-text">El manuscrito zen</span>
       </a>
+      
       <div class="nav-links">
-        <a href="index.html" class="nav-link" id="nav-inicio">Inicio</a>
-        <a href="archivo.html" class="nav-link" id="nav-archivo">Archivo</a>
-        <a href="dojo.html" class="nav-link active" id="nav-dojo">Dojo Virtual</a>
-        <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre este sitio</a>
-        <a href="admin.html" class="nav-link" id="nav-admin">Administración</a>
-        <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
+        <a href="/" class="nav-link">Inicio</a>
+        <a href="/archivo.html" class="nav-link">Archivo</a>
+        <a href="/sobre-este-sitio" class="nav-link">Sobre este sitio</a>
       </div>
-      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <div class="nav-mobile-menu" id="nav-mobile-menu">
-      <a href="index.html" class="nav-mobile-link">Inicio</a>
-      <a href="archivo.html" class="nav-mobile-link">Archivo</a>
-      <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
-      <a href="sobre.html" class="nav-mobile-link">Sobre este sitio</a>
-      <a href="admin.html" class="nav-mobile-link">Administración</a>
-      <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
     </div>
   </nav>
 
-  <section class="form-container-section">
-    <div class="form-card">
-      <div class="form-header">
-        <img src="zen_lotus.png" alt="Loto Zen" class="form-lotus-icon" />
-        <h1 class="form-card-title">Entrar al <em>Dojo Virtual</em></h1>
-        <p class="form-card-subtitle">Un espacio de práctica y quietud. Une tu correo al manuscrito para recibir un message de bienvenida y cada nueva reflexión directamente en tu bandeja de entrada.</p>
-      </div>
-
-      <form id="subscriber-form" onsubmit="handleSubscribe(event)">
-        <div class="form-group">
-          <label for="sub-name" class="form-label">Tu nombre</label>
-          <input type="text" id="sub-name" class="form-input-field" placeholder="Ej. Miguel" required />
-        </div>
-        <div class="form-group">
-          <label for="sub-email" class="form-label">Correo electrónico</label>
-          <input type="email" id="sub-email" class="form-input-field" placeholder="tu@email.com" required />
-        </div>
-        <button type="submit" class="btn-submit-form">Unirse al Dojo ✦</button>
-      </form>
-
-      <div id="subscribe-success-msg" style="display: none; text-align: center; padding: 20px 0;">
-        <p style="font-family: var(--font-serif); font-size: 1.3rem; color: var(--gold-light); font-style: italic; margin-bottom: 8px;">"Cada paso es el destino."</p>
-        <p style="color: var(--cream-dim); font-size: 0.95rem;">Bienvenido al Dojo. Tu plaza ha sido registrada con éxito.</p>
-      </div>
+  <!-- CONTENEDOR HERO COMO FONDO DE PANTALLA COMPLETA -->
+  <main class="hero">
+    
+    <!-- Fondo idéntico al de la página de inicio -->
+    <div class="hero-bg">
+      <img src="hero.jpg" alt="Fondo Zen" class="hero-img"> <!-- Usa la misma ruta de imagen que tengas en tu index -->
     </div>
-  </section>
+    <div class="hero-overlay"></div>
 
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-logo">
-        <span class="footer-symbol">
-          <img src="enso.png" alt="Ensō" class="enso-img" />
-        </span>
-        <span class="footer-name">El Manuscrito Zen</span>
-      </div>
-      <p class="footer-phrase">"Respira. Estás aquí."</p>
-
-      <div class="admin-access-zone">
-        <div id="admin-login-form" class="admin-login-form">
-          <input type="text" id="admin-user" placeholder="Usuario..." class="admin-input" />
-          <input type="password" id="admin-password" placeholder="Contraseña..." class="admin-input" />
-          <button onclick="checkAdminAccess()" class="btn-admin-login">Entrar</button>
-        </div>
-        <div id="admin-status" class="admin-status" style="display: none;">
-          <span>Modo Editor Activo (Miguel)</span>
-          <button onclick="logoutAdmin()" class="btn-admin-logout">Salir</button>
-        </div>
-      </div>
-
-      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
-    </div>
-  </footer>
-
-  <div class="toast" id="toast"></div>
-
-  <script src="app.js"></script>
-  <script>
-    // Lógica temporal para guardar los miembros del dojo en el navegador
-    function handleSubscribe(e) {
-      e.preventDefault();
-      const name = document.getElementById('sub-name').value;
-      const email = document.getElementById('sub-email').value;
-
-      let subscribers = JSON.parse(localStorage.getItem('zenSubscribers')) || [];
+    <!-- TARJETA CENTRAL DE INSCRIPCIÓN -->
+    <div class="hero-content" style="animation: fadeInUp 1.2s ease both; max-width: 500px; width: 100%; padding: 0 20px; z-index: 5;">
       
-      subscribers.push({ name, email, date: new Date().toISOString() });
-      localStorage.setItem('zenSubscribers', JSON.stringify(subscribers));
+      <div style="background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); padding: 40px; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-card); width: 100%;">
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="font-family: var(--font-body); font-size: 32px; color: #0d0d0f; font-weight: 300; letter-spacing: 0.05em; margin-bottom: 10px;">
+            Ingresar al Dojo
+          </h1>
+          <p style="font-family: var(--font-serif); font-style: italic; color: var(--muted); font-size: 16px;">
+            Inscríbete para recibir lecturas privadas, cuadernos de meditación y prácticas semanales de quietud.
+          </p>
+          <div style="width: 40px; height: 1px; background-color: var(--gold); margin: 15px auto 0;"></div>
+        </div>
 
-      document.getElementById('subscriber-form').style.display = 'none';
-      document.getElementById('subscribe-success-msg').style.display = 'block';
+        <!-- Formulario de inscripción -->
+        <form class="admin-form" id="dojo-enroll-form" style="display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- Campo Nombre -->
+          <div class="form-control" style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="enroll-name" style="font-family: var(--font-ui); font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: #4a4a5a;">
+              Tu nombre
+            </label>
+            <input type="text" id="enroll-name" name="name" placeholder="Ej. Miguel" required style="background: #faf8f5; border: 1px solid rgba(0,0,0,0.08); padding: 12px 16px; border-radius: var(--radius-sm); font-family: var(--font-ui); font-size: 14px; color: #0d0d0f; width: 100%;">
+          </div>
 
-      if (typeof showToast === "function") {
-        showToast("¡Bienvenido al Dojo Virtual!");
-      }
-    }
+          <!-- Campo Email -->
+          <div class="form-control" style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="enroll-email" style="font-family: var(--font-ui); font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: #4a4a5a;">
+              Correo electrónico
+            </label>
+            <input type="email" id="enroll-email" name="email" placeholder="tu@email.com" required style="background: #faf8f5; border: 1px solid rgba(0,0,0,0.08); padding: 12px 16px; border-radius: var(--radius-sm); font-family: var(--font-ui); font-size: 14px; color: #0d0d0f; width: 100%;">
+          </div>
+
+          <!-- Botón de acción -->
+          <button type="submit" class="btn-submit-post" style="width: 100%; margin-top: 10px; padding: 14px; font-size: 12px;">
+            Unirse a la práctica
+          </button>
+          
+        </form>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Script básico opcional para controlar el envío en el futuro -->
+  <script>
+    document.getElementById('dojo-enroll-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Aquí se conectará tu automatización (n8n o Make) más adelante.
+      alert('Gracias por tu inscripción. Pronto recibirás noticias en el Dojo.');
+    });
   </script>
+
 </body>
 </html>
