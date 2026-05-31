@@ -4,27 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>El Dojo — El manuscrito zen</title>
-  
-  <!-- Fuentes para mantener la identidad visual -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif:wght@300;400&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
-  
-  <!-- Tu archivo de estilos unificado -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- NAVBAR UNIFICADA -->
-  <nav class="navbar">
+  <nav class="navbar scrolled">
     <div class="nav-inner">
       <a href="/" class="nav-logo">
-        <div class="nav-logo-symbol">
-          <img src="enso.png" alt="Enso" class="enso-img">
-        </div>
+        <div class="nav-logo-symbol"><img src="enso.png" alt="Enso" class="enso-img"></div>
         <span class="nav-logo-text">El manuscrito zen</span>
       </a>
-      
       <div class="nav-links">
         <a href="/" class="nav-link">Inicio</a>
         <a href="/archivo.html" class="nav-link">Archivo</a>
@@ -33,70 +22,19 @@
     </div>
   </nav>
 
-  <!-- CONTENEDOR HERO COMO FONDO DE PANTALLA COMPLETA -->
   <main class="hero">
-    
-    <!-- Fondo idéntico al de la página de inicio -->
-    <div class="hero-bg">
-      <img src="hero.jpg" alt="Fondo Zen" class="hero-img"> <!-- Usa la misma ruta de imagen que tengas en tu index -->
-    </div>
+    <div class="hero-bg"><img src="hero.jpg" alt="Fondo Zen" class="hero-img"></div>
     <div class="hero-overlay"></div>
-
-    <!-- TARJETA CENTRAL DE INSCRIPCIÓN -->
-    <div class="hero-content" style="animation: fadeInUp 1.2s ease both; max-width: 500px; width: 100%; padding: 0 20px; z-index: 5;">
-      
-      <div style="background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); padding: 40px; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-card); width: 100%;">
-        
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="font-family: var(--font-body); font-size: 32px; color: #0d0d0f; font-weight: 300; letter-spacing: 0.05em; margin-bottom: 10px;">
-            Ingresar al Dojo
-          </h1>
-          <p style="font-family: var(--font-serif); font-style: italic; color: var(--muted); font-size: 16px;">
-            Inscríbete para recibir lecturas privadas, cuadernos de meditación y prácticas semanales de quietud.
-          </p>
-          <div style="width: 40px; height: 1px; background-color: var(--gold); margin: 15px auto 0;"></div>
-        </div>
-
-        <!-- Formulario de inscripción -->
-        <form class="admin-form" id="dojo-enroll-form" style="display: flex; flex-direction: column; gap: 20px;">
-          
-          <!-- Campo Nombre -->
-          <div class="form-control" style="display: flex; flex-direction: column; gap: 6px;">
-            <label for="enroll-name" style="font-family: var(--font-ui); font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: #4a4a5a;">
-              Tu nombre
-            </label>
-            <input type="text" id="enroll-name" name="name" placeholder="Ej. Miguel" required style="background: #faf8f5; border: 1px solid rgba(0,0,0,0.08); padding: 12px 16px; border-radius: var(--radius-sm); font-family: var(--font-ui); font-size: 14px; color: #0d0d0f; width: 100%;">
-          </div>
-
-          <!-- Campo Email -->
-          <div class="form-control" style="display: flex; flex-direction: column; gap: 6px;">
-            <label for="enroll-email" style="font-family: var(--font-ui); font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: #4a4a5a;">
-              Correo electrónico
-            </label>
-            <input type="email" id="enroll-email" name="email" placeholder="tu@email.com" required style="background: #faf8f5; border: 1px solid rgba(0,0,0,0.08); padding: 12px 16px; border-radius: var(--radius-sm); font-family: var(--font-ui); font-size: 14px; color: #0d0d0f; width: 100%;">
-          </div>
-
-          <!-- Botón de acción -->
-          <button type="submit" class="btn-submit-post" style="width: 100%; margin-top: 10px; padding: 14px; font-size: 12px;">
-            Unirse a la práctica
-          </button>
-          
+    <div class="hero-content" style="max-width: 500px; width: 100%; padding: 0 20px;">
+      <div style="background: rgba(255, 255, 255, 0.92); padding: 40px; border-radius: var(--radius-md);">
+        <h1 style="font-family: var(--font-body); font-size: 32px; margin-bottom: 20px;">Ingresar al Dojo</h1>
+        <form class="admin-form" id="dojo-enroll-form">
+          <div class="form-control"><label>Tu nombre</label><input type="text" name="name" required></div>
+          <div class="form-control"><label>Correo electrónico</label><input type="email" name="email" required></div>
+          <button type="submit" class="btn-submit-post">Unirse a la práctica</button>
         </form>
-
       </div>
-
     </div>
-
   </main>
-
-  <!-- Script básico opcional para controlar el envío en el futuro -->
-  <script>
-    document.getElementById('dojo-enroll-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      // Aquí se conectará tu automatización (n8n o Make) más adelante.
-      alert('Gracias por tu inscripción. Pronto recibirás noticias en el Dojo.');
-    });
-  </script>
-
 </body>
 </html>
