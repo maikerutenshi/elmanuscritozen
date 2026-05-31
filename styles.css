@@ -557,3 +557,45 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .form-control textarea {
   resize: vertical;
 }
+/* ==================================================
+   REAJUSTE DE CENTRADO Y EQUILIBRIO EN DISPOSITIVOS MÓVILES
+   ================================================== */
+@media (max-width: 768px) {
+  /* Asegura que no haya desbordamiento lateral en la sección principal */
+  .hero {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  /* Centra la imagen de fondo de manera matemática en el eje vertical y horizontal */
+  .hero-img {
+    object-position: center center !important;
+    transform: scale(1.05); /* Mantiene el zoom sutil sin descentrarse */
+    animation: none !important; /* Si la animación la desviaba, aquí la estabilizamos */
+  }
+
+  /* Fuerza a que todo el bloque de texto y el zafu queden perfectamente alineados al eje central */
+  .hero-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 24px !important;
+    margin: 0 auto !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+    text-align: center !important;
+    transform: none !important; /* Elimina cualquier desvío de animaciones previas */
+  }
+
+  /* Asegura el centrado estricto del título, subtítulo y elementos gráficos */
+  .hero-title, 
+  .hero-subtitle, 
+  .hero-divider, 
+  .hero-quote, 
+  .hero-quote-author {
+    width: 100%;
+    text-align: center !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
