@@ -11,22 +11,15 @@
 </head>
 <body>
 
-  <main class="main-content" id="main-content" style="padding-top: 140px;">
-    <section class="posts-section">
+  <main class="main-content" id="main-content">
+    <section class="posts-section" id="archive-section">
       <div class="posts-header">
         <h2 class="section-title">Archivo histórico</h2>
         <div class="section-line"></div>
-        <p style="margin-top: 20px; color: var(--muted);">Navega a través del tiempo y las reflexiones.</p>
       </div>
 
-      <div id="archive-list" class="archive-container">
-        <div class="archive-year">
-          <h3>2026</h3>
-          <ul class="archive-posts">
-            <li><span class="date">29 Marzo</span> <a href="#">Título de la entrada aquí</a></li>
-            <li><span class="date">10 Marzo</span> <a href="#">Título de la entrada aquí</a></li>
-          </ul>
-        </div>
+      <div id="archive-container" class="archive-container">
+        <p class="loading-message">Sumergiéndose en el archivo...</p>
       </div>
     </section>
   </main>
@@ -37,11 +30,17 @@
         <span class="footer-symbol"><img src="enso.png" alt="Ensō" class="enso-img" /></span>
         <span class="footer-name">El Manuscrito Zen</span>
       </div>
+      <p class="footer-phrase">"Respira. Estás aquí."</p>
+      <div class="footer-tags" id="footer-tags">
+        <span class="tag">#budismo</span>
+        <span class="tag">#mindfulness</span>
+        <span class="tag">#meditación</span>
+      </div>
       <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
     </div>
   </footer>
 
   <script src="navbar.js"></script>
-  <script src="archive.js"></script> 
+  <script src="app.js"></script>
 </body>
 </html>
