@@ -4,11 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>El Manuscrito Zen — Blog de Budismo y Mindfulness</title>
-  <meta name="description" content="El Manuscrito Zen es un espacio de reflexión sobre budismo, meditación y mindfulness. Encuentra paz interior a través de palabras que invitan a la presencia y la consciencia." />
-  <meta name="keywords" content="budismo, mindfulness, meditación, zen, bienestar, consciencia, paz interior" />
-  <meta property="og:title" content="El Manuscrito Zen" />
-  <meta property="og:description" content="Reflexiones sobre budismo y mindfulness" />
-  <meta property="og:type" content="website" />
+  <meta name="description" content="El Manuscrito Zen es un espacio de reflexión sobre budismo, meditación y mindfulness." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
@@ -29,7 +25,7 @@
         <a href="archivo.html" class="nav-link" id="nav-archivo">Archivo</a>
         <a href="dojo.html" class="nav-link" id="nav-dojo">Dojo Virtual</a>
         <a href="sobre.html" class="nav-link" id="nav-sobre">Sobre el blog</a>
-        <button class="btn-escribir" id="btn-open-editor" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
+        <a href="admin.html" class="nav-link" id="nav-admin">Administración</a>
       </div>
       <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
@@ -40,7 +36,7 @@
       <a href="archivo.html" class="nav-mobile-link">Archivo</a>
       <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
       <a href="sobre.html" class="nav-mobile-link">Sobre el blog</a>
-      <button class="btn-escribir mobile" id="btn-open-editor-mobile" onclick="openEditor()" style="display: none;">✦ Escribir entrada</button>
+      <a href="admin.html" class="nav-mobile-link">Administración</a>
     </div>
   </nav>
 
@@ -65,27 +61,19 @@
   </header>
 
   <main class="main-content" id="main-content">
-
-    <!-- Se ha eliminado la banda negra de introducción para evitar el corte brusco -->
-
     <section class="posts-section" id="posts-section">
       <div class="posts-header">
         <h2 class="section-title">Entradas recientes</h2>
         <div class="section-line"></div>
       </div>
 
-      <!-- Aquí es donde tu app.js inyectará la última entrada y la cuadrícula cuando las publiques -->
-      <div class="featured-post" id="featured-post-container">
-      </div>
-
-      <div class="posts-grid" id="posts-grid">
-      </div>
+      <div class="featured-post" id="featured-post-container"></div>
+      <div class="posts-grid" id="posts-grid"></div>
 
       <div class="load-more-wrap" id="load-more-wrap">
         <button class="btn-load-more" id="btn-load-more" onclick="loadMorePosts()">Cargar más entradas</button>
       </div>
     </section>
-
   </main>
 
   <footer class="footer">
@@ -101,95 +89,19 @@
         <span class="tag">#budismo</span>
         <span class="tag">#mindfulness</span>
         <span class="tag">#meditación</span>
-        <span class="tag">#zen</span>
-        <span class="tag">#consciencia</span>
-        <span class="tag">#paz</span>
       </div>
-
-      <div class="admin-access-zone">
-        <div id="admin-login-form" class="admin-login-form">
-          <input type="text" id="admin-user" placeholder="Usuario..." class="admin-input" />
-          <input type="password" id="admin-password" placeholder="Contraseña..." class="admin-input" />
-          <button onclick="checkAdminAccess()" class="btn-admin-login">Entrar</button>
-        </div>
-        <div id="admin-status" class="admin-status" style="display: none;">
-          <span>Modo Editor Activo (Miguel)</span>
-          <button onclick="logoutAdmin()" class="btn-admin-logout">Salir</button>
-        </div>
-      </div>
-
       <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
     </div>
   </footer>
 
-  <!-- MODAL DEL EDITOR (Oculto por defecto) -->
-  <div class="modal-overlay" id="modal-overlay" onclick="closeEditorOnOverlay(event)">
-    <div class="editor-modal" id="editor-modal">
-      <div class="editor-header">
-        <h2 class="editor-title">✦ Nueva entrada</h2>
-        <button class="editor-close" id="editor-close-btn" onclick="closeEditor()">✕</button>
-      </div>
-      <div class="editor-body">
-        <div class="editor-field">
-          <label class="editor-label" for="post-title-input">Título</label>
-          <input type="text" id="post-title-input" class="editor-input" placeholder="El título de tu reflexión..." maxlength="120" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-category-input">Categoría</label>
-          <select id="post-category-input" class="editor-select">
-            <option value="Meditación">Meditación</option>
-            <option value="Budismo">Budismo</option>
-            <option value="Mindfulness">Mindfulness</option>
-            <option value="Zen">Zen</option>
-            <option value="Filosofía">Filosofía</option>
-            <option value="Práctica">Práctica</option>
-            <option value="Reflexión">Reflexión</option>
-          </select>
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-excerpt-input">Extracto (resumen breve)</label>
-          <input type="text" id="post-excerpt-input" class="editor-input" placeholder="Una frase que invite a leer..." maxlength="200" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-content-input">Contenido</label>
-          <div class="editor-toolbar" id="editor-toolbar">
-            <button class="toolbar-btn" onclick="formatText('bold')" title="Negrita"><b>B</b></button>
-            <button class="toolbar-btn" onclick="formatText('italic')" title="Cursiva"><i>I</i></button>
-            <button class="toolbar-btn" onclick="insertQuote()" title="Cita">❝</button>
-            <button class="toolbar-btn" onclick="insertDivider()" title="Separador">—</button>
-            <div class="toolbar-separator"></div>
-            <button class="toolbar-btn toolbar-btn-img" onclick="triggerImageUpload()" title="Insertar imagen">🖼</button>
-            <button class="toolbar-btn toolbar-btn-img" onclick="triggerCoverUpload()" title="Imagen de portada">⬛ Portada</button>
-          </div>
-          <div class="img-drop-hint" id="img-drop-hint">Arrastra imágenes aquí o usa el botón 🖼</div>
-          <div class="editor-textarea" id="post-content-input" contenteditable="true" data-placeholder="Escribe tu reflexión aquí... Deja que las palabras fluyan con calma."></div>
-          <input type="file" id="img-upload-input" accept="image/*" style="display:none" onchange="handleImageUpload(event,'inline')" />
-          <input type="file" id="cover-upload-input" accept="image/*" style="display:none" onchange="handleImageUpload(event,'cover')" />
-        </div>
-        <div class="editor-field">
-          <label class="editor-label" for="post-tags-input">Etiquetas (separadas por coma)</label>
-          <input type="text" id="post-tags-input" class="editor-input" placeholder="budismo, meditación, silencio..." />
-        </div>
-      </div>
-      <div class="editor-footer">
-        <button class="btn-cancel" onclick="closeEditor()">Cancelar</button>
-        <button class="btn-publish" id="btn-publish" onclick="publishPost()">Publicar entrada ✦</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL DE VISTA DE ENTRADA -->
   <div class="modal-overlay" id="post-view-overlay" onclick="closePostViewOnOverlay(event)">
     <div class="post-view-modal" id="post-view-modal">
       <div class="post-view-header">
         <button class="editor-close" id="post-view-close-btn" onclick="closePostView()">✕</button>
       </div>
-      <div class="post-view-body" id="post-view-body">
-      </div>
+      <div class="post-view-body" id="post-view-body"></div>
     </div>
   </div>
-
-  <div class="toast" id="toast"></div>
 
   <script src="app.js"></script>
 </body>
