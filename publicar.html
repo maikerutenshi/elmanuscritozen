@@ -6,56 +6,37 @@
   <title>Editor — El Manuscrito Zen</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Estilos específicos para expandir el editor */
-    .editor-container {
-      max-width: 800px; /* Más ancho para texto y fotos */
-      margin: 120px auto 60px auto; /* Separado del top */
-      padding: 40px;
-      background: white;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-card);
-    }
-    textarea {
-      min-height: 500px !important; /* Altura generosa */
-      width: 100%;
-      padding: 20px;
-      font-family: var(--font-body);
-      font-size: 16px;
-      border: 1px solid var(--border);
-    }
+    .editor-container { max-width: 800px; margin: 120px auto 60px auto; padding: 40px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    textarea { min-height: 500px !important; width: 100%; padding: 20px; font-size: 16px; border: 1px solid #ccc; }
   </style>
 </head>
 <body>
 
   <main class="editor-container">
-    <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; margin-bottom: 30px;">Panel de Edición</h1>
+    <h1 style="margin-bottom: 30px;">Panel de Edición</h1>
 
     <form class="admin-form" id="post-editor-form">
       <div class="form-control" style="margin-bottom: 20px;">
         <label>Título de la entrada</label>
-        <input type="text" name="title" required style="width: 100%; padding: 12px;">
+        <input type="text" id="post-title" required style="width: 100%; padding: 12px;">
       </div>
       
       <div class="form-control" style="margin-bottom: 20px;">
-        <label>Imagen destacada (Alta resolución)</label>
-        <input type="file" name="image" accept="image/*" style="display: block;">
+        <label>URL de la imagen (Flickr/Tumblr)</label>
+        <input type="text" id="post-image-url" placeholder="Pega aquí el enlace de la imagen" style="width: 100%; padding: 12px;">
       </div>
 
       <div class="form-control" style="margin-bottom: 20px;">
         <label>Contenido del Manuscrito</label>
-        <textarea name="content" required placeholder="Escribe aquí tu entrada..."></textarea>
+        <textarea id="post-content" required placeholder="Escribe aquí tu entrada..."></textarea>
       </div>
 
-      <div style="display: flex; gap: 15px; margin-top: 20px;">
-        <button type="submit" class="btn-submit-post" style="flex: 2; padding: 15px;">Publicar entrada</button>
-        <a href="gestor.html" class="btn-submit-post" style="flex: 1; background: #b38f4e; text-align: center; padding: 15px;">Editar antiguas</a>
-      </div>
+      <button type="button" onclick="submitPost()" class="btn-submit-post" style="width: 100%; padding: 15px;">Publicar entrada</button>
     </form>
   </main>
 
-  <footer class="footer">
-    </footer>
-
-  <script src="navbar.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
