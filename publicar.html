@@ -2,38 +2,24 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor — El Manuscrito Zen</title>
+  <title>Editor Zen</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .editor-container { max-width: 800px; margin: 120px auto 60px auto; padding: 40px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    textarea { min-height: 500px !important; width: 100%; padding: 20px; font-size: 16px; border: 1px solid #ccc; }
-  </style>
 </head>
 <body>
-
-  <main class="editor-container">
-    <h1 style="margin-bottom: 30px;">Panel de Edición</h1>
-
-    <form class="admin-form" id="post-editor-form">
-      <div class="form-control" style="margin-bottom: 20px;">
-        <label>Título de la entrada</label>
-        <input type="text" id="post-title" required style="width: 100%; padding: 12px;">
-      </div>
-      
-      <div class="form-control" style="margin-bottom: 20px;">
-        <label>URL de la imagen (Flickr/Tumblr)</label>
-        <input type="text" id="post-image-url" placeholder="Pega aquí el enlace de la imagen" style="width: 100%; padding: 12px;">
-      </div>
-
-      <div class="form-control" style="margin-bottom: 20px;">
-        <label>Contenido del Manuscrito</label>
-        <textarea id="post-content" required placeholder="Escribe aquí tu entrada..."></textarea>
-      </div>
-
-      <button type="button" onclick="submitPost()" class="btn-submit-post" style="width: 100%; padding: 15px;">Publicar entrada</button>
-    </form>
-  </main>
+  <div style="max-width: 800px; margin: 100px auto; padding: 20px;">
+    <h1>Publicar nueva entrada</h1>
+    
+    <label>Título:</label>
+    <input type="text" id="post-title" style="width: 100%; margin-bottom: 20px; padding: 10px;">
+    
+    <label>URL de la imagen (Flickr/Tumblr):</label>
+    <input type="text" id="post-cover" placeholder="Pega aquí el enlace de tu foto" style="width: 100%; margin-bottom: 20px; padding: 10px;">
+    
+    <label>Contenido:</label>
+    <textarea id="post-content" style="width: 100%; height: 300px; padding: 10px;"></textarea>
+    
+    <button onclick="guardarPost()" style="width: 100%; padding: 15px; margin-top: 20px;">Publicar ahora</button>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
