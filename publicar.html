@@ -99,7 +99,8 @@
       try {
         const entry = await publishEntry({ title, content, imageFile });
         status.className = 'admin-status admin-status--ok';
-        status.textContent = `Publicado: «${entry.title}». GitHub Pages tardará un minuto en actualizarse.`;
+        status.textContent =
+          'Publicado en GitHub. Si estás en local: Terminal → git pull → F5 en Inicio y Archivo.';
         document.getElementById('publish-form').reset();
         document.getElementById('publish-preview').hidden = true;
       } catch (err) {

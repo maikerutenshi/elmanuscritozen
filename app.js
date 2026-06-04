@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadPosts() {
   try {
-    const response = await fetch(POSTS_URL);
+    const response = await fetch(`${POSTS_URL}?v=${Date.now()}`);
     if (!response.ok) throw new Error('No se encontró posts/posts.json');
     const data = await response.json();
     currentPosts = Array.isArray(data) ? data : [];
