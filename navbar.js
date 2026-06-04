@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
           <a href="archivo.html" class="nav-link">Archivo</a>
           <a href="dojo.html" class="nav-link">Dojo Virtual</a>
           <a href="sobre.html" class="nav-link">Sobre este lugar</a>
-                  </div>
+          <a href="admin.html" class="nav-link">Administración</a>
+        </div>
         <button class="nav-hamburger" id="nav-hamburger">
             <span></span>
             <span></span>
@@ -25,7 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <a href="archivo.html" class="nav-mobile-link">Archivo</a>
         <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
         <a href="sobre.html" class="nav-mobile-link">Sobre este lugar</a>
-            </div>`;
+        <a href="admin.html" class="nav-mobile-link">Administración</a>
+    </div>`;
     
     document.body.insertAdjacentHTML('afterbegin', navbarHTML);
 

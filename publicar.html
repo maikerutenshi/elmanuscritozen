@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escribir entrada — El Manuscrito Zen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <main class="admin-page-container">
+    <section class="admin-section admin-section--wide">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div>
+            <h3>Nueva entrada</h3>
+            <p class="admin-subtitle">Escribe tu reflexión y sube una imagen JPG. Se publicará en el repositorio.</p>
+          </div>
+          <button type="button" class="btn-logout" id="btn-logout">Salir</button>
+        </div>
+
+        <form class="admin-form" id="publish-form">
+          <div class="form-control">
+            <label for="post-title">Título</label>
+            <input type="text" id="post-title" required placeholder="Título de la entrada" />
+          </div>
+
+          <div class="form-control">
+            <label for="post-content">Texto</label>
+            <textarea id="post-content" rows="14" required placeholder="Escribe aquí. Separa párrafos con una línea en blanco."></textarea>
+          </div>
+
+          <div class="form-control">
+            <label for="post-cover">Imagen (JPG)</label>
+            <input type="file" id="post-cover" accept="image/jpeg,image/jpg" required />
+            <p class="admin-hint">Se optimizará automáticamente antes de subirla.</p>
+          </div>
+
+          <div class="publish-preview" id="publish-preview" hidden>
+            <img id="publish-preview-img" alt="Vista previa" />
+          </div>
+
+          <button type="submit" class="btn-submit-post" id="btn-publish">Publicar entrada</button>
+          <p class="admin-status" id="publish-status" hidden></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin-config.js"></script>
+  <script src="admin-auth.js"></script>
+  <script src="admin-publish.js"></script>
+  <script src="navbar.js"></script>
+  <script>
+    if (!requireAdmin()) {
+      throw new Error('Sesión no válida');
+    }
+
+    if (!hasGithubToken()) {
+      window.location.href = 'admin.html';
+    }
+
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      logoutAdmin();
+      window.location.href = 'admin.html';
+    });
+
+    document.getElementById('post-cover').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const preview = document.getElementById('publish-preview');
+      const img = document.getElementById('publish-preview-img');
+
+      if (!file) {
+        preview.hidden = true;
+        return;
+      }
+
+      img.src = URL.createObjectURL(file);
+      preview.hidden = false;
+    });
+
+    document.getElementById('publish-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const status = document.getElementById('publish-status');
+      const button = document.getElementById('btn-publish');
+      const title = document.getElementById('post-title').value.trim();
+      const content = document.getElementById('post-content').value.trim();
+      const imageFile = document.getElementById('post-cover').files[0];
+
+      status.hidden = false;
+      status.className = 'admin-status';
+      status.textContent = 'Publicando…';
+      button.disabled = true;
+
+      try {
+        const entry = await publishEntry({ title, content, imageFile });
+        status.className = 'admin-status admin-status--ok';
+        status.textContent = `Publicado: «${entry.title}». GitHub Pages tardará un minuto en actualizarse.`;
+        document.getElementById('publish-form').reset();
+        document.getElementById('publish-preview').hidden = true;
+      } catch (err) {
+        status.className = 'admin-status admin-status--error';
+        status.textContent = err.message || 'No se pudo publicar.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
