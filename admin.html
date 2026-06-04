@@ -27,14 +27,19 @@
             <input type="password" id="admin-pass" placeholder="Tu clave de administración" autocomplete="current-password" required />
           </div>
 
-          <div class="form-control">
+          <div class="form-control" id="token-field-wrap">
             <label for="github-token">Token de GitHub</label>
             <input type="password" id="github-token" placeholder="ghp_… (solo se guarda en este navegador)" autocomplete="off" />
-            <p class="admin-hint">
+            <p class="admin-hint" id="token-hint">
               Crea un token en GitHub con permiso de escritura en este repositorio.
               <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Configurar token</a>
             </p>
           </div>
+
+          <p class="admin-hint admin-hint--saved" id="token-saved-note" hidden>
+            Token guardado en este equipo. Solo necesitas la contraseña.
+            <button type="button" class="btn-link" id="btn-change-token">Cambiar token</button>
+          </p>
 
           <button type="submit" class="btn-submit-post">Entrar al editor</button>
           <p class="admin-status" id="admin-status" hidden></p>
@@ -51,11 +56,38 @@
       window.location.href = 'publicar.html';
     }
 
+    const tokenWrap = document.getElementById('token-field-wrap');
+    const tokenSavedNote = document.getElementById('token-saved-note');
+    const tokenInput = document.getElementById('github-token');
+
+    function showTokenField() {
+      tokenWrap.hidden = false;
+      tokenSavedNote.hidden = true;
+      tokenInput.required = !hasGithubToken();
+      tokenInput.focus();
+    }
+
+    function hideTokenFieldIfSaved() {
+      if (hasGithubToken()) {
+        tokenWrap.hidden = true;
+        tokenSavedNote.hidden = false;
+        tokenInput.required = false;
+      } else {
+        tokenInput.required = true;
+      }
+    }
+
+    hideTokenFieldIfSaved();
+
+    document.getElementById('btn-change-token').addEventListener('click', () => {
+      showTokenField();
+    });
+
     document.getElementById('admin-login-form').addEventListener('submit', (event) => {
       event.preventDefault();
       const status = document.getElementById('admin-status');
       const password = document.getElementById('admin-pass').value;
-      const token = document.getElementById('github-token').value;
+      const token = tokenInput.value;
 
       if (!loginAdmin(password)) {
         status.hidden = false;
@@ -71,8 +103,9 @@
       if (!hasGithubToken()) {
         status.hidden = false;
         status.className = 'admin-status admin-status--error';
-        status.textContent = 'Necesitas un token de GitHub para publicar entradas.';
+        status.textContent = 'Pega el token de GitHub la primera vez.';
         sessionStorage.removeItem('zen_admin_session');
+        showTokenField();
         return;
       }
 
