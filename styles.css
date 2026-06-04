@@ -465,9 +465,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   }
 }
 
-/* ===================================
-   ESTILOS DE LA PÁGINA DE ADMINISTRACIÓN
-   =================================== */
 .admin-page-container {
   padding-top: 140px !important; 
   min-height: 80vh; 
