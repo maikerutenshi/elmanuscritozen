@@ -829,20 +829,38 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     display: flex !important; 
   }
   .nav-mobile-menu {
-    display: none; 
+    display: none;
     position: fixed;
-    top: 72px; left: 0; right: 0;
-    background: rgba(245, 240, 232, 0.98); 
+    top: 72px;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background: rgba(245, 240, 232, 0.98);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding: 30px 20px;
     flex-direction: column;
     gap: 20px;
     text-align: center;
     border-bottom: 1px solid rgba(0,0,0,0.05);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    max-height: calc(100vh - 72px);
+    overflow-y: auto;
   }
   .nav-mobile-menu.open {
-    display: flex !important; 
+    display: flex !important;
+  }
+  body.nav-menu-open {
+    overflow: hidden;
+  }
+  .nav-hamburger.open span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .nav-hamburger.open span:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-hamburger.open span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
   }
   .nav-mobile-link {
     font-family: var(--font-ui);
