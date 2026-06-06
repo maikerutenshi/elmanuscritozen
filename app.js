@@ -123,6 +123,10 @@ async function openPostView(postId) {
         <time datetime="${escapeAttr(post.date)}">${formatDate(post.date)}</time>
       </header>
       ${html}`;
+
+    if (typeof mountCommentsForPost === 'function') {
+      mountCommentsForPost(postId);
+    }
   } catch {
     body.innerHTML = `<p class="posts-empty">No se pudo cargar la entrada.</p>`;
   }
@@ -155,6 +159,7 @@ function escapeAttr(text) {
 function loadMorePosts() {}
 
 function closePostView() {
+  if (typeof teardownComments === 'function') teardownComments();
   const overlay = document.getElementById('post-view-overlay');
   if (overlay) overlay.classList.remove('open', 'active');
 }
