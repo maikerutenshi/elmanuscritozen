@@ -1,5 +1,13 @@
 let commentsUnsubscribe = null;
 let commentsAuthUnsubscribe = null;
+let commentsCurrentPostId = null;
+let commentsCurrentUser = null;
+
+function isCommentsAdmin(user) {
+  if (!user?.email || !COMMENTS_FIREBASE.adminEmail) return false;
+  if (COMMENTS_FIREBASE.adminEmail.startsWith('TU_CORREO')) return false;
+  return user.email.toLowerCase() === COMMENTS_FIREBASE.adminEmail.toLowerCase();
+}
 
 function initCommentsFirebase() {
   if (typeof firebase === 'undefined') return false;
@@ -70,6 +78,9 @@ function buildCommentsSectionHtml() {
           <button type="button" id="comments-logout-btn" class="btn-link">Salir</button>
         </p>
         <form id="comments-submit-form" class="comments-form">
+          <p class="comments-admin-note" id="comments-admin-note" hidden>
+            Modo administrador: puedes eliminar comentarios de otros.
+          </p>
           <div class="form-control">
             <label for="comment-text">Tu comentario</label>
             <textarea id="comment-text" rows="3" maxlength="500" required placeholder="Escribe con calma y respeto…"></textarea>
@@ -84,6 +95,7 @@ function buildCommentsSectionHtml() {
 
 function mountCommentsForPost(postId) {
   teardownComments();
+  commentsCurrentPostId = postId;
 
   const body = document.getElementById('post-view-body');
   if (!body) return;
@@ -200,18 +212,33 @@ function bindCommentsUi(postId) {
 
   if (commentsAuthUnsubscribe) commentsAuthUnsubscribe();
   commentsAuthUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+    commentsCurrentUser = user;
     if (user) {
       guestPanel.hidden = true;
       userPanel.hidden = false;
       document.getElementById('comments-user-name').textContent =
         user.displayName || user.email.split('@')[0];
+      const adminNote = document.getElementById('comments-admin-note');
+      if (adminNote) adminNote.hidden = !isCommentsAdmin(user);
     } else {
       guestPanel.hidden = false;
       userPanel.hidden = true;
     }
+    refreshCommentsList(postId);
   });
 
+  refreshCommentsList(postId);
+}
+
+function refreshCommentsList(postId) {
   const listEl = document.getElementById('comments-list');
+  if (!listEl) return;
+
+  if (commentsUnsubscribe) {
+    commentsUnsubscribe();
+    commentsUnsubscribe = null;
+  }
+
   commentsUnsubscribe = firebase
     .firestore()
     .collection('comments')
@@ -224,7 +251,11 @@ function bindCommentsUi(postId) {
           listEl.innerHTML = '<p class="comments-empty">Sé el primero en comentar.</p>';
           return;
         }
-        listEl.innerHTML = snapshot.docs.map((doc) => renderComment(doc.data())).join('');
+        const admin = isCommentsAdmin(commentsCurrentUser);
+        listEl.innerHTML = snapshot.docs
+          .map((doc) => renderComment(doc.id, doc.data(), admin))
+          .join('');
+        bindCommentDeleteButtons(listEl, postId);
       },
       () => {
         listEl.innerHTML =
@@ -233,7 +264,33 @@ function bindCommentsUi(postId) {
     );
 }
 
-function renderComment(data) {
+function bindCommentDeleteButtons(listEl, postId) {
+  listEl.querySelectorAll('[data-delete-comment]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!isCommentsAdmin(commentsCurrentUser)) return;
+      const messageId = btn.getAttribute('data-delete-comment');
+      if (!messageId || !confirm('¿Eliminar este comentario?')) return;
+
+      const statusEl = document.getElementById('comments-status');
+      showCommentsStatus(statusEl, 'Eliminando…');
+      try {
+        await firebase
+          .firestore()
+          .collection('comments')
+          .doc(postId)
+          .collection('messages')
+          .doc(messageId)
+          .delete();
+        showCommentsStatus(statusEl, 'Comentario eliminado.', false);
+      } catch (err) {
+        console.error(err);
+        showCommentsStatus(statusEl, 'No se pudo eliminar. Revisa las reglas de Firestore.', false, true);
+      }
+    });
+  });
+}
+
+function renderComment(messageId, data, showDelete) {
   const name = escapeHtml(data.displayName || 'Lector');
   const text = escapeHtml(data.text || '');
   const date = data.createdAt?.toDate
@@ -246,11 +303,16 @@ function renderComment(data) {
       })
     : '';
 
+  const deleteBtn = showDelete
+    ? `<button type="button" class="btn-comment-delete" data-delete-comment="${escapeAttr(messageId)}">Eliminar</button>`
+    : '';
+
   return `
     <article class="comment-item">
       <header class="comment-header">
         <strong>${name}</strong>
         ${date ? `<time>${date}</time>` : ''}
+        ${deleteBtn}
       </header>
       <p>${text}</p>
     </article>`;
@@ -289,4 +351,8 @@ function escapeHtml(text) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function escapeAttr(text) {
+  return escapeHtml(text).replace(/'/g, '&#39;');
 }

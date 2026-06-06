@@ -542,6 +542,26 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-size: 12px;
 }
 
+.btn-comment-delete {
+  margin-left: auto;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: #8a3040;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.btn-comment-delete:hover {
+  text-decoration: underline;
+}
+
+.comments-admin-note {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
 .comment-item p {
   font-family: var(--font-body);
   font-size: 15px;

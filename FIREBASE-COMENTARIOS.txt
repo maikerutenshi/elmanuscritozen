@@ -22,11 +22,15 @@ PASO 3 — Firestore
 Build → Firestore Database → Crear base de datos
 Modo: producción → región europe-west (Europa)
 
-Reglas → pegar:
+Reglas → pegar (sustituye TU_CORREO@gmail.com por tu correo real):
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isCommentsAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'TU_CORREO@gmail.com';
+    }
     match /comments/{postId}/messages/{messageId} {
       allow read: if true;
       allow create: if request.auth != null
@@ -35,10 +39,19 @@ service cloud.firestore {
         && request.resource.data.text.size() > 0
         && request.resource.data.text.size() <= 500;
       allow update, delete: if request.auth != null
-        && resource.data.uid == request.auth.uid;
+        && (resource.data.uid == request.auth.uid || isCommentsAdmin());
     }
   }
 }
+
+MODERAR COMENTARIOS (borrar)
+---------------------------
+1. En comments-config.js pon tu correo en adminEmail (el mismo de Google/Firebase).
+2. En Firestore Reglas usa el mismo correo en isCommentsAdmin().
+3. En la web: abre una entrada → Comentarios → Continuar con Google (tu cuenta).
+4. Verás "Eliminar" en cada comentario.
+
+Alternativa sin código: Firebase → Firestore → Datos → comments → borrar a mano.
 
 PASO 4 — apiKey en la web
 -------------------------
