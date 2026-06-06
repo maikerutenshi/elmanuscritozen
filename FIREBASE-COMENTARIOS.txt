@@ -71,3 +71,45 @@ PASO 6 — Dominio autorizado (si hace falta)
 -------------------------------------------
 Authentication → Settings → Authorized domains
 Debe estar: elmanuscritozen.com y www.elmanuscritozen.com
+(Usa la misma URL que ves en el navegador — con o sin www.)
+
+PASO 7 — Si "Continuar con Google" falla
+-----------------------------------------
+Mensaje genérico "No se pudo completar" → casi siempre es configuración de Google OAuth.
+
+A) Pantalla de consentimiento OAuth (LO MÁS FRECUENTE)
+   1. Firebase → Project settings (engranaje) → "Your project" → enlace a Google Cloud
+   2. Menú → APIs y servicios → Pantalla de consentimiento de OAuth
+   3. Si el estado es "Prueba" / "Testing":
+      - Añade tu Gmail (mbardisa@gmail.com) en "Usuarios de prueba", O
+      - Pulsa "Publicar aplicación" (External) — para un blog personal suele bastar
+   4. Sin esto, Google bloquea el acceso aunque Firebase esté bien.
+
+B) Google habilitado en Firebase
+   Authentication → Sign-in method → Google → Activado + correo de asistencia guardado
+
+C) Dominios autorizados
+   Authentication → Settings → Authorized domains:
+   elmanuscritozen.com, www.elmanuscritozen.com, localhost
+
+D) Orígenes JavaScript (Google Cloud)
+   APIs y servicios → Credenciales → Cliente OAuth "Web client (auto created by Google Service)"
+   Orígenes autorizados deben incluir:
+   https://elmanuscritozen.com
+   https://www.elmanuscritozen.com
+   https://el-manuscrit-zen.firebaseapp.com
+
+D2) Restricciones de la apiKey (MUY FRECUENTE si sigue fallando)
+   APIs y servicios → Credenciales → "Browser key (auto created by Google Service)"
+   Si tiene "Referentes HTTP" restringidos, añade:
+   https://elmanuscritozen.com/*
+   https://www.elmanuscritozen.com/*
+   https://el-manuscrit-zen.firebaseapp.com/*
+   Si no estás seguro, pon "Ninguno" (sin restricción) temporalmente para probar.
+
+E) Depurar en el navegador
+   F12 → Consola → pulsa "Continuar con Google" → mira la línea "Google sign-in: auth/..."
+   (Tras subir la última versión de comments.js verás el código de error en rojo también.)
+
+F) Prueba alternativa
+   Registrarse con correo y contraseña. Si eso funciona pero Google no, confirma el paso A.

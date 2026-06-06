@@ -9,6 +9,17 @@ function isCommentsAdmin(user) {
   return user.email.toLowerCase() === COMMENTS_FIREBASE.adminEmail.toLowerCase();
 }
 
+function getFirebaseAppConfig() {
+  return {
+    apiKey: COMMENTS_FIREBASE.apiKey,
+    authDomain: COMMENTS_FIREBASE.authDomain,
+    projectId: COMMENTS_FIREBASE.projectId,
+    storageBucket: COMMENTS_FIREBASE.storageBucket,
+    messagingSenderId: COMMENTS_FIREBASE.messagingSenderId,
+    appId: COMMENTS_FIREBASE.appId,
+  };
+}
+
 function initCommentsFirebase() {
   if (typeof firebase === 'undefined') return false;
   if (!COMMENTS_FIREBASE.apiKey || COMMENTS_FIREBASE.apiKey === 'TU_API_KEY') {
@@ -16,10 +27,62 @@ function initCommentsFirebase() {
     return false;
   }
   if (!firebase.apps.length) {
-    firebase.initializeApp(COMMENTS_FIREBASE);
+    firebase.initializeApp(getFirebaseAppConfig());
   }
   return true;
 }
+
+const COMMENTS_REDIRECT_POST_KEY = 'commentsRedirectPostId';
+
+function waitForPostsReady() {
+  return new Promise((resolve) => {
+    if (typeof currentPosts !== 'undefined' && currentPosts.length) {
+      resolve();
+      return;
+    }
+    const started = Date.now();
+    const timer = setInterval(() => {
+      if ((typeof currentPosts !== 'undefined' && currentPosts.length) || Date.now() - started > 8000) {
+        clearInterval(timer);
+        resolve();
+      }
+    }, 100);
+  });
+}
+
+async function resumeCommentsAfterGoogleRedirect() {
+  if (!initCommentsFirebase()) return;
+
+  const savedPostId = sessionStorage.getItem(COMMENTS_REDIRECT_POST_KEY);
+  if (!savedPostId) return;
+
+  let redirectError = null;
+  let redirectUser = null;
+  try {
+    const result = await firebase.auth().getRedirectResult();
+    redirectUser = result.user || firebase.auth().currentUser;
+  } catch (err) {
+    redirectError = err;
+    console.error('Google redirect:', err.code, err.message);
+  }
+
+  sessionStorage.removeItem(COMMENTS_REDIRECT_POST_KEY);
+  await waitForPostsReady();
+
+  if (typeof openPostView !== 'function') return;
+  await openPostView(savedPostId);
+
+  const statusEl = document.getElementById('comments-status');
+  if (redirectError) {
+    showCommentsStatus(statusEl, mapAuthError(redirectError), false, true);
+  } else if (redirectUser) {
+    showCommentsStatus(statusEl, 'Sesión iniciada con Google.', false);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  resumeCommentsAfterGoogleRedirect();
+});
 
 function teardownComments() {
   if (commentsUnsubscribe) {
@@ -125,16 +188,15 @@ function bindCommentsUi(postId) {
   const logoutBtn = document.getElementById('comments-logout-btn');
 
   document.getElementById('comments-google-btn').addEventListener('click', async () => {
-    showCommentsStatus(statusEl, 'Conectando con Google…');
+    showCommentsStatus(statusEl, 'Redirigiendo a Google…');
     try {
+      sessionStorage.setItem(COMMENTS_REDIRECT_POST_KEY, postId);
       const provider = new firebase.auth.GoogleAuthProvider();
-      await firebase.auth().signInWithPopup(provider);
-      showCommentsStatus(statusEl, '', true);
+      provider.setCustomParameters({ prompt: 'select_account' });
+      await firebase.auth().signInWithRedirect(provider);
     } catch (err) {
-      if (err.code === 'auth/popup-closed-by-user') {
-        showCommentsStatus(statusEl, '', true);
-        return;
-      }
+      sessionStorage.removeItem(COMMENTS_REDIRECT_POST_KEY);
+      console.error('Google sign-in:', err.code, err.message);
       showCommentsStatus(statusEl, mapAuthError(err), false, true);
     }
   });
@@ -331,6 +393,7 @@ function showCommentsStatus(el, message, hide = false, isError = false) {
 }
 
 function mapAuthError(err) {
+  const code = err.code || '';
   const map = {
     'auth/email-already-in-use': 'Ese correo ya está registrado.',
     'auth/invalid-email': 'Correo no válido.',
@@ -338,11 +401,20 @@ function mapAuthError(err) {
     'auth/user-not-found': 'No hay cuenta con ese correo.',
     'auth/wrong-password': 'Contraseña incorrecta.',
     'auth/invalid-credential': 'Correo o contraseña incorrectos.',
-    'auth/popup-blocked': 'El navegador bloqueó la ventana. Permite ventanas emergentes.',
+    'auth/popup-blocked': 'El navegador bloqueó la ventana. Permite ventanas emergentes para este sitio.',
+    'auth/cancelled-popup-request': 'Espera un momento e inténtalo otra vez.',
+    'auth/unauthorized-domain': 'Dominio no autorizado en Firebase. Revisa Authentication → Configuración → Dominios.',
+    'auth/operation-not-allowed': 'Google no está habilitado en Firebase → Authentication → Método de acceso.',
     'auth/account-exists-with-different-credential':
       'Ya existe una cuenta con ese correo. Usa correo y contraseña.',
+    'auth/internal-error':
+      'Error de Google OAuth. En Google Cloud → Pantalla de consentimiento: añade tu Gmail como usuario de prueba o publica la app.',
+    'auth/network-request-failed': 'Sin conexión. Comprueba tu red e inténtalo otra vez.',
+    'auth/invalid-api-key': 'apiKey incorrecta en comments-config.js.',
   };
-  return map[err.code] || 'No se pudo completar. Inténtalo de nuevo.';
+  if (map[code]) return map[code];
+  if (code) return `Error (${code}). Revisa Firebase Authentication.`;
+  return 'No se pudo completar. Inténtalo de nuevo.';
 }
 
 function escapeHtml(text) {
