@@ -556,6 +556,31 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 16px;
 }
 
+.btn-google {
+  width: 100%;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  color: #0d0d0f;
+  transition: var(--transition);
+}
+
+.btn-google:hover {
+  background: #faf8f5;
+  border-color: var(--border-hover);
+}
+
+.comments-divider {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--muted);
+  margin: 18px 0 14px;
+}
+
 .comments-tabs {
   display: flex;
   gap: 8px;

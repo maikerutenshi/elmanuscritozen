@@ -1,0 +1,60 @@
+FIREBASE — comentarios (gratis, plan Spark)
+==========================================
+
+Solo se usa para: registro de lectores + comentarios.
+Las entradas del blog siguen en GitHub (como ahora).
+
+COSTE: 0 € para un blog pequeño (miles de lecturas/mes).
+
+PASO 1 — Crear o abrir proyecto
+--------------------------------
+https://console.firebase.google.com
+Proyecto: el-manuscrit-zen (o crea uno nuevo)
+
+PASO 2 — Authentication
+-------------------------
+Build → Authentication → Sign-in method
+Activa: Correo electrónico/Contraseña
+Activa también: Google (recomendado — un clic para comentar)
+
+PASO 3 — Firestore
+------------------
+Build → Firestore Database → Crear base de datos
+Modo: producción → región europe-west (Europa)
+
+Reglas → pegar:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /comments/{postId}/messages/{messageId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 500;
+      allow update, delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
+    }
+  }
+}
+
+PASO 4 — apiKey en la web
+-------------------------
+Project settings → General → Your apps → Web (</>)
+Copia apiKey → comments-config.js (sustituir TU_API_KEY)
+
+PASO 5 — Subir a GitHub
+-----------------------
+git add .
+git commit -m "Comentarios con Firebase"
+git push
+
+Espera 2 min y prueba en www.elmanuscritozen.com
+Abre una entrada → Comentarios → Registrarse
+
+PASO 6 — Dominio autorizado (si hace falta)
+-------------------------------------------
+Authentication → Settings → Authorized domains
+Debe estar: elmanuscritozen.com y www.elmanuscritozen.com

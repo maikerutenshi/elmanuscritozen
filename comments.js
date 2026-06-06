@@ -1,16 +1,85 @@
-function teardownComments() {
-  document.querySelectorAll('script[data-giscus]').forEach((script) => script.remove());
-  const frame = document.querySelector('.giscus-frame');
-  if (frame) frame.remove();
+let commentsUnsubscribe = null;
+let commentsAuthUnsubscribe = null;
+
+function initCommentsFirebase() {
+  if (typeof firebase === 'undefined') return false;
+  if (!COMMENTS_FIREBASE.apiKey || COMMENTS_FIREBASE.apiKey === 'TU_API_KEY') {
+    console.warn('Configura comments-config.js con tu apiKey de Firebase.');
+    return false;
+  }
+  if (!firebase.apps.length) {
+    firebase.initializeApp(COMMENTS_FIREBASE);
+  }
+  return true;
 }
 
-function isGiscusConfigured() {
-  return (
-    GISCUS_CONFIG.repoId &&
-    GISCUS_CONFIG.categoryId &&
-    !GISCUS_CONFIG.repoId.startsWith('TU_') &&
-    !GISCUS_CONFIG.categoryId.startsWith('TU_')
-  );
+function teardownComments() {
+  if (commentsUnsubscribe) {
+    commentsUnsubscribe();
+    commentsUnsubscribe = null;
+  }
+}
+
+function buildCommentsSectionHtml() {
+  return `
+    <section class="comments-section">
+      <h3 class="comments-title">Comentarios</h3>
+      <div id="comments-list" class="comments-list">
+        <p class="comments-empty">Cargando comentarios…</p>
+      </div>
+
+      <div id="comments-guest" class="comments-panel">
+        <p class="comments-note">Entra con Google (rápido) o con correo y contraseña.</p>
+        <button type="button" class="btn-google" id="comments-google-btn">Continuar con Google</button>
+        <p class="comments-divider">o con tu correo</p>
+        <div class="comments-tabs" role="tablist">
+          <button type="button" class="comments-tab active" data-tab="login">Entrar</button>
+          <button type="button" class="comments-tab" data-tab="register">Registrarse</button>
+        </div>
+        <form id="comments-login-form" class="comments-form">
+          <div class="form-control">
+            <label for="login-email">Correo</label>
+            <input type="email" id="login-email" required autocomplete="email" />
+          </div>
+          <div class="form-control">
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" required autocomplete="current-password" />
+          </div>
+          <button type="submit" class="btn-submit-post">Entrar</button>
+        </form>
+        <form id="comments-register-form" class="comments-form" hidden>
+          <div class="form-control">
+            <label for="register-name">Nombre (visible)</label>
+            <input type="text" id="register-name" required maxlength="40" autocomplete="name" />
+          </div>
+          <div class="form-control">
+            <label for="register-email">Correo</label>
+            <input type="email" id="register-email" required autocomplete="email" />
+          </div>
+          <div class="form-control">
+            <label for="register-password">Contraseña (mín. 6 caracteres)</label>
+            <input type="password" id="register-password" required minlength="6" autocomplete="new-password" />
+          </div>
+          <button type="submit" class="btn-submit-post">Crear cuenta</button>
+        </form>
+      </div>
+
+      <div id="comments-user" class="comments-panel" hidden>
+        <p class="comments-user-line">
+          Hola, <strong id="comments-user-name"></strong>.
+          <button type="button" id="comments-logout-btn" class="btn-link">Salir</button>
+        </p>
+        <form id="comments-submit-form" class="comments-form">
+          <div class="form-control">
+            <label for="comment-text">Tu comentario</label>
+            <textarea id="comment-text" rows="3" maxlength="500" required placeholder="Escribe con calma y respeto…"></textarea>
+          </div>
+          <button type="submit" class="btn-submit-post">Publicar comentario</button>
+        </form>
+      </div>
+
+      <p id="comments-status" class="admin-status" hidden></p>
+    </section>`;
 }
 
 function mountCommentsForPost(postId) {
@@ -19,43 +88,205 @@ function mountCommentsForPost(postId) {
   const body = document.getElementById('post-view-body');
   if (!body) return;
 
-  if (!isGiscusConfigured()) {
+  if (!initCommentsFirebase()) {
     body.insertAdjacentHTML(
       'beforeend',
       `<section class="comments-section comments-section--disabled">
         <h3 class="comments-title">Comentarios</h3>
-        <p class="comments-empty">Configura Giscus en <code>giscus-config.js</code> (ver GISCUS-SETUP.txt).</p>
+        <p class="comments-empty">Comentarios en configuración. Mientras tanto, gracias por leer.</p>
       </section>`
     );
     return;
   }
 
-  body.insertAdjacentHTML(
-    'beforeend',
-    `<section class="comments-section">
-      <h3 class="comments-title">Comentarios</h3>
-      <p class="comments-note">Inicia sesión con tu cuenta de GitHub para comentar.</p>
-      <div class="giscus-container" id="giscus-container"></div>
-    </section>`
-  );
+  body.insertAdjacentHTML('beforeend', buildCommentsSectionHtml());
+  bindCommentsUi(postId);
+}
 
-  const script = document.createElement('script');
-  script.src = 'https://giscus.app/client.js';
-  script.setAttribute('data-giscus', '1');
-  script.setAttribute('data-repo', GISCUS_CONFIG.repo);
-  script.setAttribute('data-repo-id', GISCUS_CONFIG.repoId);
-  script.setAttribute('data-category', GISCUS_CONFIG.category);
-  script.setAttribute('data-category-id', GISCUS_CONFIG.categoryId);
-  script.setAttribute('data-mapping', GISCUS_CONFIG.mapping);
-  script.setAttribute('data-term', postId);
-  script.setAttribute('data-strict', '0');
-  script.setAttribute('data-reactions-enabled', GISCUS_CONFIG.reactionsEnabled ? '1' : '0');
-  script.setAttribute('data-emit-metadata', '0');
-  script.setAttribute('data-input-position', GISCUS_CONFIG.inputPosition);
-  script.setAttribute('data-theme', GISCUS_CONFIG.theme);
-  script.setAttribute('data-lang', GISCUS_CONFIG.lang);
-  script.crossOrigin = 'anonymous';
-  script.async = true;
+function bindCommentsUi(postId) {
+  const guestPanel = document.getElementById('comments-guest');
+  const userPanel = document.getElementById('comments-user');
+  const statusEl = document.getElementById('comments-status');
+  const loginForm = document.getElementById('comments-login-form');
+  const registerForm = document.getElementById('comments-register-form');
+  const submitForm = document.getElementById('comments-submit-form');
+  const logoutBtn = document.getElementById('comments-logout-btn');
 
-  document.getElementById('giscus-container').appendChild(script);
+  document.getElementById('comments-google-btn').addEventListener('click', async () => {
+    showCommentsStatus(statusEl, 'Conectando con Google…');
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      await firebase.auth().signInWithPopup(provider);
+      showCommentsStatus(statusEl, '', true);
+    } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user') {
+        showCommentsStatus(statusEl, '', true);
+        return;
+      }
+      showCommentsStatus(statusEl, mapAuthError(err), false, true);
+    }
+  });
+
+  document.querySelectorAll('.comments-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.comments-tab').forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      const isLogin = tab.dataset.tab === 'login';
+      loginForm.hidden = !isLogin;
+      registerForm.hidden = isLogin;
+    });
+  });
+
+  loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    showCommentsStatus(statusEl, 'Entrando…');
+    try {
+      await firebase.auth().signInWithEmailAndPassword(
+        document.getElementById('login-email').value.trim(),
+        document.getElementById('login-password').value
+      );
+      showCommentsStatus(statusEl, '', true);
+    } catch (err) {
+      showCommentsStatus(statusEl, mapAuthError(err), false, true);
+    }
+  });
+
+  registerForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const name = document.getElementById('register-name').value.trim();
+    const email = document.getElementById('register-email').value.trim();
+    const password = document.getElementById('register-password').value;
+
+    showCommentsStatus(statusEl, 'Creando cuenta…');
+    try {
+      const cred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      await cred.user.updateProfile({ displayName: name });
+      showCommentsStatus(statusEl, 'Cuenta creada. Ya puedes comentar.', false);
+    } catch (err) {
+      showCommentsStatus(statusEl, mapAuthError(err), false, true);
+    }
+  });
+
+  submitForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+
+    const text = document.getElementById('comment-text').value.trim();
+    if (!text) return;
+
+    showCommentsStatus(statusEl, 'Publicando…');
+    try {
+      await firebase
+        .firestore()
+        .collection('comments')
+        .doc(postId)
+        .collection('messages')
+        .add({
+          uid: user.uid,
+          displayName: user.displayName || user.email.split('@')[0],
+          text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      document.getElementById('comment-text').value = '';
+      showCommentsStatus(statusEl, 'Comentario publicado.', false);
+    } catch (err) {
+      console.error(err);
+      showCommentsStatus(statusEl, 'No se pudo publicar. Revisa Firebase.', false, true);
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => firebase.auth().signOut());
+
+  if (commentsAuthUnsubscribe) commentsAuthUnsubscribe();
+  commentsAuthUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      guestPanel.hidden = true;
+      userPanel.hidden = false;
+      document.getElementById('comments-user-name').textContent =
+        user.displayName || user.email.split('@')[0];
+    } else {
+      guestPanel.hidden = false;
+      userPanel.hidden = true;
+    }
+  });
+
+  const listEl = document.getElementById('comments-list');
+  commentsUnsubscribe = firebase
+    .firestore()
+    .collection('comments')
+    .doc(postId)
+    .collection('messages')
+    .orderBy('createdAt', 'asc')
+    .onSnapshot(
+      (snapshot) => {
+        if (snapshot.empty) {
+          listEl.innerHTML = '<p class="comments-empty">Sé el primero en comentar.</p>';
+          return;
+        }
+        listEl.innerHTML = snapshot.docs.map((doc) => renderComment(doc.data())).join('');
+      },
+      () => {
+        listEl.innerHTML =
+          '<p class="comments-empty">No se pudieron cargar los comentarios.</p>';
+      }
+    );
+}
+
+function renderComment(data) {
+  const name = escapeHtml(data.displayName || 'Lector');
+  const text = escapeHtml(data.text || '');
+  const date = data.createdAt?.toDate
+    ? data.createdAt.toDate().toLocaleString('es-ES', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : '';
+
+  return `
+    <article class="comment-item">
+      <header class="comment-header">
+        <strong>${name}</strong>
+        ${date ? `<time>${date}</time>` : ''}
+      </header>
+      <p>${text}</p>
+    </article>`;
+}
+
+function showCommentsStatus(el, message, hide = false, isError = false) {
+  if (!el) return;
+  if (hide || !message) {
+    el.hidden = true;
+    el.textContent = '';
+    return;
+  }
+  el.hidden = false;
+  el.textContent = message;
+  el.className = 'admin-status' + (isError ? ' admin-status--error' : ' admin-status--ok');
+}
+
+function mapAuthError(err) {
+  const map = {
+    'auth/email-already-in-use': 'Ese correo ya está registrado.',
+    'auth/invalid-email': 'Correo no válido.',
+    'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres.',
+    'auth/user-not-found': 'No hay cuenta con ese correo.',
+    'auth/wrong-password': 'Contraseña incorrecta.',
+    'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+    'auth/popup-blocked': 'El navegador bloqueó la ventana. Permite ventanas emergentes.',
+    'auth/account-exists-with-different-credential':
+      'Ya existe una cuenta con ese correo. Usa correo y contraseña.',
+  };
+  return map[err.code] || 'No se pudo completar. Inténtalo de nuevo.';
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
