@@ -1,6 +1,6 @@
 // Firebase solo para comentarios (app: ManuscritoZenWeb)
 const COMMENTS_FIREBASE = {
-  apiKey: 'AIzaSyAzSR82Pqvl5oSxVrfRAws9DbqsvVE0gM0',
+  apiKey: 'AIzaSyAzSR82PqvI5oSxVrfRAws9DbqsvVEOgM0',
   authDomain: 'el-manuscrit-zen.firebaseapp.com',
   projectId: 'el-manuscrit-zen',
   storageBucket: 'el-manuscrit-zen.firebasestorage.app',
