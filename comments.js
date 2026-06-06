@@ -50,21 +50,53 @@ function waitForPostsReady() {
   });
 }
 
-async function resumeCommentsAfterGoogleRedirect() {
+document.addEventListener('DOMContentLoaded', () => {
+  handleGoogleAuthReturn();
+});
+
+function createGoogleProvider() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  return provider;
+}
+
+async function signInWithGoogle(statusEl, postId) {
+  showCommentsStatus(statusEl, 'Conectando con Google…');
+  try {
+    await firebase.auth().signInWithPopup(createGoogleProvider());
+    showCommentsStatus(statusEl, '', true);
+  } catch (err) {
+    if (err.code === 'auth/popup-closed-by-user') {
+      showCommentsStatus(statusEl, '', true);
+      return;
+    }
+    if (err.code === 'auth/popup-blocked') {
+      showCommentsStatus(statusEl, 'El navegador bloqueó la ventana. Redirigiendo…');
+      sessionStorage.setItem(COMMENTS_REDIRECT_POST_KEY, postId);
+      await firebase.auth().signInWithRedirect(createGoogleProvider());
+      return;
+    }
+    console.error('Google sign-in:', err.code, err.message);
+    showCommentsStatus(statusEl, mapAuthError(err), false, true);
+  }
+}
+
+async function handleGoogleAuthReturn() {
   if (!initCommentsFirebase()) return;
 
   const savedPostId = sessionStorage.getItem(COMMENTS_REDIRECT_POST_KEY);
-  if (!savedPostId) return;
-
   let redirectError = null;
   let redirectUser = null;
+
   try {
     const result = await firebase.auth().getRedirectResult();
-    redirectUser = result.user || firebase.auth().currentUser;
+    if (result?.user) redirectUser = result.user;
   } catch (err) {
     redirectError = err;
     console.error('Google redirect:', err.code, err.message);
   }
+
+  if (!savedPostId) return;
 
   sessionStorage.removeItem(COMMENTS_REDIRECT_POST_KEY);
   await waitForPostsReady();
@@ -79,10 +111,6 @@ async function resumeCommentsAfterGoogleRedirect() {
     showCommentsStatus(statusEl, 'Sesión iniciada con Google.', false);
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  resumeCommentsAfterGoogleRedirect();
-});
 
 function teardownComments() {
   if (commentsUnsubscribe) {
@@ -187,18 +215,8 @@ function bindCommentsUi(postId) {
   const submitForm = document.getElementById('comments-submit-form');
   const logoutBtn = document.getElementById('comments-logout-btn');
 
-  document.getElementById('comments-google-btn').addEventListener('click', async () => {
-    showCommentsStatus(statusEl, 'Redirigiendo a Google…');
-    try {
-      sessionStorage.setItem(COMMENTS_REDIRECT_POST_KEY, postId);
-      const provider = new firebase.auth.GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: 'select_account' });
-      await firebase.auth().signInWithRedirect(provider);
-    } catch (err) {
-      sessionStorage.removeItem(COMMENTS_REDIRECT_POST_KEY);
-      console.error('Google sign-in:', err.code, err.message);
-      showCommentsStatus(statusEl, mapAuthError(err), false, true);
-    }
+  document.getElementById('comments-google-btn').addEventListener('click', () => {
+    signInWithGoogle(statusEl, postId);
   });
 
   document.querySelectorAll('.comments-tab').forEach((tab) => {
