@@ -55,8 +55,20 @@ Alternativa sin código: Firebase → Firestore → Datos → comments → borra
 
 PASO 4 — apiKey en la web
 -------------------------
-Project settings → General → Your apps → Web (</>)
-Copia apiKey → comments-config.js (sustituir TU_API_KEY)
+Project settings → General → Your apps → Web (ManuscritoZenWeb)
+Copia TODO el bloque firebaseConfig → comments-config.js
+
+Si ves: auth/api-key-not-valid
+--------------------------------
+A) Vuelve a copiar la apiKey desde Firebase (no de un chat ni captura antigua).
+B) Google Cloud → APIs y servicios → Credenciales → "Browser key (auto created by Google Service)"
+   - Restricciones de aplicación: "Ninguno" (para probar) O referentes HTTP:
+     https://elmanuscritozen.com/*
+     https://www.elmanuscritozen.com/*
+     https://el-manuscrit-zen.firebaseapp.com/*
+   - Restricciones de API: "No restringir clave" O incluir "Identity Toolkit API"
+C) Google Cloud → APIs y servicios → Biblioteca → busca "Identity Toolkit API" → debe estar HABILITADA
+D) Guarda, espera 2 min, Ctrl+F5 en la web
 
 PASO 5 — Subir a GitHub
 -----------------------

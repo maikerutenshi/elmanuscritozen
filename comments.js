@@ -411,6 +411,8 @@ function mapAuthError(err) {
       'Error de Google OAuth. En Google Cloud → Pantalla de consentimiento: añade tu Gmail como usuario de prueba o publica la app.',
     'auth/network-request-failed': 'Sin conexión. Comprueba tu red e inténtalo otra vez.',
     'auth/invalid-api-key': 'apiKey incorrecta en comments-config.js.',
+    'auth/api-key-not-valid.-please-pass-a-valid-api-key.':
+      'apiKey bloqueada o incorrecta. Firebase → Configuración → copia de nuevo la apiKey. Google Cloud → Credenciales → Browser key → quita restricciones o añade tu dominio.',
   };
   if (map[code]) return map[code];
   if (code) return `Error (${code}). Revisa Firebase Authentication.`;
