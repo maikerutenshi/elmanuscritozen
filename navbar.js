@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburger.classList.toggle('open', isOpen);
         hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         hamburger.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
-        document.body.classList.toggle('nav-menu-open', isOpen);
     });
 
     document.addEventListener('click', (event) => {
@@ -61,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburger.classList.remove('open');
         hamburger.setAttribute('aria-expanded', 'false');
         hamburger.setAttribute('aria-label', 'Abrir menú');
-        document.body.classList.remove('nav-menu-open');
     });
 
     // Cerrar menú al hacer clic en un enlace
@@ -71,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
             hamburger.classList.remove('open');
             hamburger.setAttribute('aria-expanded', 'false');
             hamburger.setAttribute('aria-label', 'Abrir menú');
-            document.body.classList.remove('nav-menu-open');
         });
     });
 });
