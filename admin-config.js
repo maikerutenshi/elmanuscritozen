@@ -1,6 +1,6 @@
 // Cambia la contraseña antes de publicar el sitio.
 const ZEN_ADMIN = {
-  password: '966331339.Gemma',
+  password: 'Quaketres2733#',
   githubRepo: 'maikerutenshi/elmanuscritozen',
   postsIndexPath: 'posts/posts.json',
   defaultCover: 'zen_hero.png',
