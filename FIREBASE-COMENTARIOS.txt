@@ -29,7 +29,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function isCommentsAdmin() {
       return request.auth != null
-        && request.auth.token.email == 'TU_CORREO@gmail.com';
+        && request.auth.token.email == 'mbardisa@gmail.com';
     }
     match /comments/{postId}/messages/{messageId} {
       allow read: if true;
@@ -41,8 +41,22 @@ service cloud.firestore {
       allow update, delete: if request.auth != null
         && (resource.data.uid == request.auth.uid || isCommentsAdmin());
     }
+    match /dojo_subscribers/{subscriberId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 5
+        && request.resource.data.email.size() <= 254;
+      allow read, update, delete: if isCommentsAdmin();
+    }
   }
 }
+
+SUSCRIPTORES DOJO (ver correos)
+-------------------------------
+Firebase → Firestore → colección dojo_subscribers
+Ahí aparecen nombre, email y fecha de cada suscripción.
 
 MODERAR COMENTARIOS (borrar)
 ---------------------------
