@@ -17,7 +17,7 @@
         <div class="admin-card-header">
           <div>
             <h3>Nueva entrada</h3>
-            <p class="admin-subtitle">Escribe tu reflexión y sube una imagen JPG. Se publicará en el repositorio.</p>
+            <p class="admin-subtitle">Escribe tu reflexión. La imagen JPG es opcional.</p>
           </div>
           <button type="button" class="btn-logout" id="btn-logout">Salir</button>
         </div>
@@ -34,9 +34,9 @@
           </div>
 
           <div class="form-control">
-            <label for="post-cover">Imagen (JPG)</label>
-            <input type="file" id="post-cover" accept="image/jpeg,image/jpg" required />
-            <p class="admin-hint">Se optimizará automáticamente antes de subirla.</p>
+            <label for="post-cover">Imagen (JPG, opcional)</label>
+            <input type="file" id="post-cover" accept="image/jpeg,image/jpg" />
+            <p class="admin-hint">Si no subes imagen, se usará la imagen zen por defecto.</p>
           </div>
 
           <div class="publish-preview" id="publish-preview" hidden>
@@ -50,9 +50,9 @@
     </section>
   </main>
 
-  <script src="admin-config.js"></script>
-  <script src="admin-auth.js"></script>
-  <script src="admin-publish.js"></script>
+  <script src="admin-config.js?v=2"></script>
+  <script src="admin-auth.js?v=2"></script>
+  <script src="admin-publish.js?v=2"></script>
   <script src="navbar.js"></script>
   <script>
     if (!requireAdmin()) {
@@ -89,7 +89,7 @@
       const button = document.getElementById('btn-publish');
       const title = document.getElementById('post-title').value.trim();
       const content = document.getElementById('post-content').value.trim();
-      const imageFile = document.getElementById('post-cover').files[0];
+      const imageFile = document.getElementById('post-cover').files[0] || null;
 
       status.hidden = false;
       status.className = 'admin-status';

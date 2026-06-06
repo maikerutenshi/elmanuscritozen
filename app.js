@@ -69,6 +69,9 @@ function renderArchivePage() {
   });
 
   bindPostClicks(container);
+
+  const hint = document.getElementById('archive-hint');
+  if (hint) hint.hidden = false;
 }
 
 function buildFeaturedCard(post) {

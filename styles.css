@@ -596,8 +596,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   opacity: 0.85;
 }
 
+.archive-hint {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
 .giscus-container {
-  min-height: 120px;
+  min-height: 200px;
 }
 
 .admin-section--wide {

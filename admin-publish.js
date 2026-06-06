@@ -96,7 +96,11 @@ async function ghApi(path, options = {}) {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const message = data.message || `Error ${response.status} al hablar con GitHub.`;
+    let message = data.message || `Error ${response.status} al hablar con GitHub.`;
+    if (/bad credentials/i.test(message)) {
+      message =
+        'Token de GitHub inválido o caducado. Ve a Administración → Cambiar token y pega uno nuevo (Contents: Read and write).';
+    }
     throw new Error(message);
   }
 
@@ -148,15 +152,19 @@ async function publishEntry({ title, content, imageFile }) {
 
   postId = await ensureUniquePostId(postId, posts);
 
-  const jpegBlob = await resizeImageToJpeg(imageFile);
-  const imageBase64 = await blobToBase64(jpegBlob);
   const htmlContent = textToHtml(content);
   const htmlBase64 = toBase64Utf8(htmlContent);
-
-  const coverPath = `posts/${postId}/cover.jpg`;
   const contentPath = `posts/${postId}/content.html`;
 
-  await writeRepoFile(coverPath, imageBase64, `Nueva entrada: ${title}`);
+  let coverPath = ZEN_ADMIN.defaultCover || 'zen_hero.png';
+
+  if (imageFile) {
+    const jpegBlob = await resizeImageToJpeg(imageFile);
+    const imageBase64 = await blobToBase64(jpegBlob);
+    coverPath = `posts/${postId}/cover.jpg`;
+    await writeRepoFile(coverPath, imageBase64, `Imagen: ${title}`);
+  }
+
   await writeRepoFile(contentPath, htmlBase64, `Contenido: ${title}`);
 
   const excerpt = content.trim().slice(0, 140) + (content.trim().length > 140 ? '…' : '');
