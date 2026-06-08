@@ -11,6 +11,7 @@
   <!-- End Google Tag Manager -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#f5f0e8" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Escribir entrada — El Manuscrito Zen</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -60,23 +61,23 @@
     </section>
   </main>
 
-  <script src="admin-config.js?v=2"></script>
-  <script src="admin-auth.js?v=2"></script>
-  <script src="admin-publish.js?v=2"></script>
-  <script src="navbar.js"></script>
+  <script src="admin-config.js?v=3"></script>
+  <script src="admin-auth.js?v=3"></script>
+  <script src="admin-publish.js?v=3"></script>
   <script>
-    if (!requireAdmin()) {
-      throw new Error('Sesión no válida');
-    }
+    (async () => {
+      if (!requireAdmin()) return;
 
-    if (!hasGithubToken()) {
-      window.location.href = 'admin.html';
-    }
+      const valid = await verifyStoredToken();
+      if (!valid) {
+        window.location.href = 'admin.html';
+        return;
+      }
 
-    document.getElementById('btn-logout').addEventListener('click', () => {
-      logoutAdmin();
-      window.location.href = 'admin.html';
-    });
+      document.getElementById('btn-logout').addEventListener('click', () => {
+        logoutAdmin();
+        window.location.href = 'admin.html';
+      });
 
     document.getElementById('post-cover').addEventListener('change', (event) => {
       const file = event.target.files[0];
@@ -120,6 +121,7 @@
         button.disabled = false;
       }
     });
+    })();
   </script>
 </body>
 </html>

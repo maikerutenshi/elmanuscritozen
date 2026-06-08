@@ -11,6 +11,7 @@
   <!-- End Google Tag Manager -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#f5f0e8" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Administración — El Manuscrito Zen</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,53 +28,53 @@
         <div class="admin-card-header">
           <div>
             <h3>Administración</h3>
-            <p class="admin-subtitle">Acceso reservado para publicar entradas en la web.</p>
+            <p class="admin-subtitle">Acceso con token de GitHub (solo en tu navegador).</p>
           </div>
         </div>
 
         <form class="admin-form" id="admin-login-form">
-          <div class="form-control">
-            <label for="admin-pass">Contraseña</label>
-            <input type="password" id="admin-pass" placeholder="Tu clave de administración" autocomplete="current-password" required />
-          </div>
-
           <div class="form-control" id="token-field-wrap">
             <label for="github-token">Token de GitHub</label>
-            <input type="password" id="github-token" placeholder="ghp_… (solo se guarda en este navegador)" autocomplete="off" />
+            <input type="password" id="github-token" placeholder="ghp_… o github_pat_…" autocomplete="off" required />
             <p class="admin-hint" id="token-hint">
-              Crea un token en GitHub con permiso de escritura en este repositorio.
-              <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Configurar token</a>
+              Token con permiso de escritura en el repositorio del sitio.
+              <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Crear token en GitHub</a>
             </p>
           </div>
 
           <p class="admin-hint admin-hint--saved" id="token-saved-note" hidden>
-            Token guardado en este equipo. Solo necesitas la contraseña.
+            Token guardado en este equipo.
             <button type="button" class="btn-link" id="btn-change-token">Cambiar token</button>
           </p>
 
-          <button type="submit" class="btn-submit-post">Entrar al editor</button>
+          <button type="submit" class="btn-submit-post" id="btn-enter">Entrar al editor</button>
           <p class="admin-status" id="admin-status" hidden></p>
         </form>
       </div>
     </section>
   </main>
 
-  <script src="admin-config.js"></script>
-  <script src="admin-auth.js"></script>
-  <script src="navbar.js"></script>
+  <script src="admin-config.js?v=3"></script>
+  <script src="admin-auth.js?v=3"></script>
   <script>
-    if (isAdminSession()) {
-      window.location.href = 'publicar.html';
-    }
-
     const tokenWrap = document.getElementById('token-field-wrap');
     const tokenSavedNote = document.getElementById('token-saved-note');
     const tokenInput = document.getElementById('github-token');
+    const status = document.getElementById('admin-status');
+    const form = document.getElementById('admin-login-form');
+    const submitBtn = document.getElementById('btn-enter');
+
+    function showStatus(message, isError) {
+      status.hidden = false;
+      status.className = 'admin-status' + (isError ? ' admin-status--error' : ' admin-status--ok');
+      status.textContent = message;
+    }
 
     function showTokenField() {
       tokenWrap.hidden = false;
       tokenSavedNote.hidden = true;
-      tokenInput.required = !hasGithubToken();
+      tokenInput.required = true;
+      tokenInput.value = '';
       tokenInput.focus();
     }
 
@@ -82,45 +83,51 @@
         tokenWrap.hidden = true;
         tokenSavedNote.hidden = false;
         tokenInput.required = false;
-      } else {
-        tokenInput.required = true;
       }
     }
 
-    hideTokenFieldIfSaved();
-
     document.getElementById('btn-change-token').addEventListener('click', () => {
+      clearGithubToken();
       showTokenField();
     });
 
-    document.getElementById('admin-login-form').addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const status = document.getElementById('admin-status');
-      const password = document.getElementById('admin-pass').value;
-      const token = tokenInput.value;
+      submitBtn.disabled = true;
 
-      if (!loginAdmin(password)) {
-        status.hidden = false;
-        status.className = 'admin-status admin-status--error';
-        status.textContent = 'Contraseña incorrecta.';
-        return;
+      try {
+        const token = hasGithubToken() && tokenWrap.hidden
+          ? getGithubToken()
+          : tokenInput.value;
+
+        showStatus('Comprobando token…', false);
+        const result = await verifyGithubToken(token);
+
+        if (!result.ok) {
+          showStatus(result.error, true);
+          showTokenField();
+          return;
+        }
+
+        window.location.href = 'publicar.html';
+      } catch (err) {
+        showStatus('No se pudo conectar con GitHub.', true);
+      } finally {
+        submitBtn.disabled = false;
       }
-
-      if (token.trim()) {
-        saveGithubToken(token);
-      }
-
-      if (!hasGithubToken()) {
-        status.hidden = false;
-        status.className = 'admin-status admin-status--error';
-        status.textContent = 'Pega el token de GitHub la primera vez.';
-        sessionStorage.removeItem('zen_admin_session');
-        showTokenField();
-        return;
-      }
-
-      window.location.href = 'publicar.html';
     });
+
+    (async () => {
+      if (!hasGithubToken()) return;
+      hideTokenFieldIfSaved();
+      showStatus('Comprobando sesión…', false);
+      if (await verifyStoredToken()) {
+        window.location.href = 'publicar.html';
+      } else {
+        showStatus('El token guardado ya no es válido. Pega uno nuevo.', true);
+        showTokenField();
+      }
+    })();
   </script>
 </body>
 </html>
