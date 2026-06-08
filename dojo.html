@@ -96,7 +96,7 @@
           email,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
-        alert('¡Gracias por unirte al Dojo! Recibirás las nuevas entradas en tu correo.');
+        alert('¡Gracias por unirte al Dojo! Revisa tu correo en unos minutos (también la carpeta spam).');
         form.reset();
       } catch (error) {
         console.error('Dojo subscribe:', error);

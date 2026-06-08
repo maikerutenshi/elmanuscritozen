@@ -1,0 +1,93 @@
+MAKE — Email de confirmación al suscribirse al Dojo
+====================================================
+
+El sitio YA guarda suscriptores en Firestore (dojo.html).
+Make solo envía el email cuando aparece un documento nuevo.
+
+Colección: dojo_subscribers
+Campos: name, email, createdAt
+Proyecto Firebase: el-manuscrit-zen
+
+Enlace suscriptores:
+https://console.firebase.google.com/project/el-manuscrit-zen/firestore/databases/-default-/data/~2Fdojo_subscribers
+
+---
+PASO 1 — Cuenta Make (gratis)
+------------------------------
+1. https://www.make.com → registrarse / entrar (mbardisa@gmail.com)
+2. Plan gratuito: 1.000 operaciones/mes, 2 escenarios activos (suficiente)
+
+---
+PASO 2 — Crear escenario
+-------------------------
+1. Make → Scenarios → Create a new scenario
+2. Nombre: Dojo — email confirmación
+
+---
+PASO 3 — Módulo 1: Firestore (disparador)
+-----------------------------------------
+1. Clic en el + → buscar: Google Cloud Firestore
+2. Elegir: Watch New Documents
+3. Conexión → Create a connection → Sign in with Google
+   (Cuenta: mbardisa@gmail.com — la del proyecto Firebase)
+4. Si pide proyecto:
+   - Project ID: el-manuscrit-zen
+   - Database: (default)
+   - Collection path / Collection ID: dojo_subscribers
+5. Limit: 1 (cada documento nuevo)
+6. OK → Run once (probar módulo)
+
+Si falla la conexión Google:
+- Google Cloud Console → APIs → activar "Cloud Firestore API"
+- Firebase Console → proyecto el-manuscrit-zen (misma cuenta Google)
+
+---
+PASO 4 — Módulo 2: Gmail (enviar email)
+---------------------------------------
+1. Clic en + a la derecha del módulo Firestore
+2. Buscar: Gmail → Send an Email
+3. Conexión → Sign in with Google (mbardisa@gmail.com)
+4. Rellenar:
+   - To: clic en el campo → elegir email del módulo Firestore
+     (suele ser: Document → email, o Fields → email)
+   - Subject: Has entrado al Dojo — El Manuscrito Zen
+   - Content type: HTML o Plain text
+   - Content (cuerpo):
+
+Hola {{name}},
+
+Gracias por unirte al Dojo Virtual de El Manuscrito Zen.
+Recibirás un aviso cuando publiquemos una nueva entrada.
+
+Con presencia,
+El Manuscrito Zen
+https://elmanuscritozen.com
+
+   (En Make, {{name}} se elige mapeando el campo name del paso 1)
+
+5. OK
+
+---
+PASO 5 — Activar y probar
+-------------------------
+1. Abajo izquierda: Scheduling → Every 15 minutes (plan gratis; puede tardar un poco)
+2. Arriba derecha: ON (activar escenario)
+3. Abre https://elmanuscritozen.com/dojo.html
+4. Suscríbete con un email de prueba (puede ser otro tuyo)
+5. Comprueba:
+   - Firestore: nuevo documento en dojo_subscribers
+   - Make: History → ejecución verde
+   - Bandeja de entrada (y spam) del email de prueba
+
+---
+NOTAS
+-----
+- Make NO sustituye Firestore: la lista de suscriptores sigue en Firebase.
+- El email puede tardar hasta 15 min en plan gratis (polling).
+- Si no llega: Make → History (error rojo?) → Gmail spam → permisos Google.
+- Más adelante: email desde elmanuscritozen.com (SMTP) en lugar de Gmail personal.
+
+---
+PLANTILLA ASUNTO
+----------------
+Has entrado al Dojo — El Manuscrito Zen
