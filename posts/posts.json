@@ -1,18 +1,1 @@
-[
-  {
-    "id": "2026-06-06-prueba-dos",
-    "title": "prueba dos",
-    "excerpt": "es la prueba dos",
-    "date": "2026-06-06T13:40:13.669Z",
-    "cover": "zen_hero.png",
-    "contentPath": "posts/2026-06-06-prueba-dos/content.html"
-  },
-  {
-    "id": "2026-06-06-prueba",
-    "title": "prueba",
-    "excerpt": "prueba",
-    "date": "2026-06-06T12:26:10.564Z",
-    "cover": "posts/2026-06-06-prueba/cover.jpg",
-    "contentPath": "posts/2026-06-06-prueba/content.html"
-  }
-]
+[]
