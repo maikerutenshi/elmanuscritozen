@@ -64,6 +64,7 @@
   <script src="navbar.js"></script>
   <script>
     const DOJO_MAKE_WEBHOOK = 'https://hook.eu1.make.com/0wvxlr955g74hugigubcbvff5le1xq32';
+    const DOJO_MAKE_WEBHOOK_TOKEN = 'emz-dojo-wh-7f3k9m2p4x8q1n6';
 
     function initDojoFirebase() {
       if (!firebase.apps.length) {
@@ -101,7 +102,7 @@
         fetch(DOJO_MAKE_WEBHOOK, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email }),
+          body: JSON.stringify({ name, email, token: DOJO_MAKE_WEBHOOK_TOKEN }),
         }).catch((err) => console.warn('Dojo email webhook:', err));
         alert('¡Gracias por unirte al Dojo! Revisa tu correo en unos minutos (también la carpeta spam).');
         form.reset();
