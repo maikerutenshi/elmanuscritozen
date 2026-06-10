@@ -23,6 +23,9 @@
   --bg-dark:        #f5f0e8; 
   --bg-card:        #ffffff; 
   --bg-card-hover:  #faf8f5; 
+  --parchment-base: #e8d9bc;
+  --parchment-ink:  #3d2e1f;
+  --parchment-muted:#5c4a38;
   --surface:        #ffffff;
   --border:         rgba(184, 159, 119, 0.25);
   --border-hover:   rgba(184, 159, 119, 0.45);
@@ -363,13 +366,26 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   gap: 28px;
 }
 
+/* Textura pergamino: añade pergamino.jpg en la raíz para usar tu imagen */
+.featured-card,
+.post-card,
+.post-view-modal {
+  background-color: var(--parchment-base);
+  background-image:
+    url('pergamino.jpg'),
+    radial-gradient(ellipse at 15% 8%, rgba(255, 248, 230, 0.55) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 92%, rgba(92, 68, 40, 0.14) 0%, transparent 50%),
+    linear-gradient(168deg, #f2e8d0 0%, #e8d9bc 42%, #dcc9a0 78%, #d4bf8a 100%);
+  background-size: cover;
+  background-position: center;
+}
+
 .featured-card,
 .post-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border: none;
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: var(--shadow-card);
+  box-shadow: none;
   transition: var(--transition);
 }
 
@@ -383,8 +399,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .post-clickable:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+  filter: brightness(1.02);
 }
 
 .featured-card {
@@ -425,7 +441,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: 400;
-  color: #0d0d0f;
+  color: var(--parchment-ink);
   margin-bottom: 12px;
 }
 
@@ -436,7 +452,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .post-card p,
 .featured-content p {
-  color: var(--muted);
+  color: var(--parchment-muted);
   font-size: 0.95rem;
   padding-bottom: 24px;
 }
@@ -458,12 +474,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .post-view-modal {
-  background: var(--pure-white);
   width: min(760px, 100%);
   max-height: 85vh;
   overflow: auto;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
+  border-radius: 0;
+  box-shadow: 0 12px 40px rgba(61, 46, 31, 0.2);
 }
 
 .post-view-header {
@@ -486,7 +501,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-family: var(--font-body);
   font-size: 2rem;
   font-weight: 400;
-  color: #0d0d0f;
+  color: var(--parchment-ink);
   margin-bottom: 8px;
 }
 
@@ -500,7 +515,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .post-body p {
   margin-bottom: 1.2em;
-  color: #2c2c35;
+  color: var(--parchment-muted);
 }
 
 .comments-section {
