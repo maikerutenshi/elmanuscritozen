@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
   <header class="hero" id="hero">
@@ -28,17 +28,21 @@
     <div class="hero-content">
       <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 0.5rem;">Ingresar al Dojo</h1>
       <p style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1rem; margin-bottom: 2rem; opacity: 0.9;">
-        Ingresa al Dojo para recibir nuevas entradas en tu correo electrónico.
+        Un mismo registro: recibes nuevas entradas por correo y puedes comentar en el blog.
       </p>
 
       <form class="admin-form" id="dojo-enroll-form" style="width: 100%; max-width: 350px; margin: 0 auto;">
         <div class="form-control">
-          <label>Tu nombre</label>
-          <input type="text" name="name" required>
+          <label for="dojo-name">Tu nombre</label>
+          <input type="text" id="dojo-name" name="name" required maxlength="80" autocomplete="name">
         </div>
         <div class="form-control">
-          <label>Correo electrónico</label>
-          <input type="email" name="email" required>
+          <label for="dojo-email">Correo electrónico</label>
+          <input type="email" id="dojo-email" name="email" required autocomplete="email">
+        </div>
+        <div class="form-control">
+          <label for="dojo-password">Contraseña (para comentar)</label>
+          <input type="password" id="dojo-password" name="password" required minlength="6" autocomplete="new-password">
         </div>
         <button type="submit" class="btn-submit-post">Unirse a la práctica</button>
       </form>
@@ -57,6 +61,7 @@
   </footer>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="comments-config.js"></script>
   <script src="navbar.js"></script>
@@ -77,6 +82,33 @@
       }
     }
 
+    function mapDojoAuthError(code) {
+      const map = {
+        'auth/email-already-in-use': 'Ese correo ya tiene cuenta. Usa la misma contraseña para volver a unirte.',
+        'auth/invalid-email': 'Correo no válido.',
+        'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres.',
+        'auth/wrong-password': 'Contraseña incorrecta para ese correo.',
+        'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+        'auth/network-request-failed': 'Sin conexión. Inténtalo otra vez.',
+      };
+      return map[code] || 'No se pudo completar el registro. Inténtalo más tarde.';
+    }
+
+    async function ensureDojoAuthUser(name, email, password) {
+      try {
+        const cred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        await cred.user.updateProfile({ displayName: name });
+        return cred.user;
+      } catch (err) {
+        if (err.code !== 'auth/email-already-in-use') throw err;
+        const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+        if (name && cred.user.displayName !== name) {
+          await cred.user.updateProfile({ displayName: name });
+        }
+        return cred.user;
+      }
+    }
+
     const form = document.getElementById('dojo-enroll-form');
     const submitBtn = form.querySelector('button[type="submit"]');
 
@@ -85,13 +117,15 @@
 
       const name = form.name.value.trim();
       const email = form.email.value.trim().toLowerCase();
-      if (!name || !email) return;
+      const password = form.password.value;
+      if (!name || !email || !password) return;
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando…';
 
       try {
         initDojoFirebase();
+        await ensureDojoAuthUser(name, email, password);
         await firebase.firestore().collection('dojo_subscribers').add({
           name,
           email,
@@ -102,11 +136,11 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, token: DOJO_MAKE_WEBHOOK_TOKEN }),
         }).catch((err) => console.warn('Dojo email webhook:', err));
-        alert('¡Gracias por unirte al Dojo! Revisa tu correo en unos minutos (también la carpeta spam).');
+        alert('¡Bienvenido al Dojo! Revisa tu correo en unos minutos. Ya puedes comentar en las entradas con el mismo correo y contraseña.');
         form.reset();
       } catch (error) {
-        console.error('Dojo subscribe:', error);
-        alert('No se pudo completar la suscripción. Inténtalo más tarde.');
+        console.error('Dojo subscribe:', error.code || error);
+        alert(mapDojoAuthError(error.code));
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Unirse a la práctica';

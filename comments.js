@@ -129,8 +129,8 @@ function buildCommentsSectionHtml() {
 
       <div id="comments-guest" class="comments-panel">
         <p class="comments-note">
-          Entra con tu correo y contraseña para comentar.
-          ¿Aún no tienes cuenta? <a href="dojo.html">Regístrate en el Dojo Virtual</a>.
+          Usa el mismo correo y contraseña con los que te registraste en el
+          <a href="dojo.html">Dojo Virtual</a>.
         </p>
         <form id="comments-login-form" class="comments-form">
           <div class="form-control">
