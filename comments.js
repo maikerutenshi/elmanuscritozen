@@ -128,13 +128,10 @@ function buildCommentsSectionHtml() {
       </div>
 
       <div id="comments-guest" class="comments-panel">
-        <p class="comments-note">Entra con Google (rápido) o con correo y contraseña.</p>
-        <button type="button" class="btn-google" id="comments-google-btn">Continuar con Google</button>
-        <p class="comments-divider">o con tu correo</p>
-        <div class="comments-tabs" role="tablist">
-          <button type="button" class="comments-tab active" data-tab="login">Entrar</button>
-          <button type="button" class="comments-tab" data-tab="register">Registrarse</button>
-        </div>
+        <p class="comments-note">
+          Entra con tu correo y contraseña para comentar.
+          ¿Aún no tienes cuenta? <a href="dojo.html">Regístrate en el Dojo Virtual</a>.
+        </p>
         <form id="comments-login-form" class="comments-form">
           <div class="form-control">
             <label for="login-email">Correo</label>
@@ -145,21 +142,6 @@ function buildCommentsSectionHtml() {
             <input type="password" id="login-password" required autocomplete="current-password" />
           </div>
           <button type="submit" class="btn-submit-post">Entrar</button>
-        </form>
-        <form id="comments-register-form" class="comments-form" hidden>
-          <div class="form-control">
-            <label for="register-name">Nombre (visible)</label>
-            <input type="text" id="register-name" required maxlength="40" autocomplete="name" />
-          </div>
-          <div class="form-control">
-            <label for="register-email">Correo</label>
-            <input type="email" id="register-email" required autocomplete="email" />
-          </div>
-          <div class="form-control">
-            <label for="register-password">Contraseña (mín. 6 caracteres)</label>
-            <input type="password" id="register-password" required minlength="6" autocomplete="new-password" />
-          </div>
-          <button type="submit" class="btn-submit-post">Crear cuenta</button>
         </form>
       </div>
 
@@ -211,23 +193,8 @@ function bindCommentsUi(postId) {
   const userPanel = document.getElementById('comments-user');
   const statusEl = document.getElementById('comments-status');
   const loginForm = document.getElementById('comments-login-form');
-  const registerForm = document.getElementById('comments-register-form');
   const submitForm = document.getElementById('comments-submit-form');
   const logoutBtn = document.getElementById('comments-logout-btn');
-
-  document.getElementById('comments-google-btn').addEventListener('click', () => {
-    signInWithGoogle(statusEl, postId);
-  });
-
-  document.querySelectorAll('.comments-tab').forEach((tab) => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.comments-tab').forEach((t) => t.classList.remove('active'));
-      tab.classList.add('active');
-      const isLogin = tab.dataset.tab === 'login';
-      loginForm.hidden = !isLogin;
-      registerForm.hidden = isLogin;
-    });
-  });
 
   loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -238,22 +205,6 @@ function bindCommentsUi(postId) {
         document.getElementById('login-password').value
       );
       showCommentsStatus(statusEl, '', true);
-    } catch (err) {
-      showCommentsStatus(statusEl, mapAuthError(err), false, true);
-    }
-  });
-
-  registerForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const name = document.getElementById('register-name').value.trim();
-    const email = document.getElementById('register-email').value.trim();
-    const password = document.getElementById('register-password').value;
-
-    showCommentsStatus(statusEl, 'Creando cuenta…');
-    try {
-      const cred = await firebase.auth().createUserWithEmailAndPassword(email, password);
-      await cred.user.updateProfile({ displayName: name });
-      showCommentsStatus(statusEl, 'Cuenta creada. Ya puedes comentar.', false);
     } catch (err) {
       showCommentsStatus(statusEl, mapAuthError(err), false, true);
     }

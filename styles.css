@@ -610,6 +610,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 16px;
 }
 
+.comments-note a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .btn-google {
   width: 100%;
   font-family: var(--font-ui);
