@@ -89,8 +89,10 @@ function buildPostCard(post) {
   return `
     <article class="post-card post-clickable" data-post-id="${escapeAttr(post.id)}" tabindex="0" role="button">
       <img src="${escapeAttr(post.cover)}" alt="" class="post-card-img" onerror="this.src='zen_hero.png'" />
-      <h4>${escapeHtml(post.title)}</h4>
-      <p>${escapeHtml(post.excerpt || '')}</p>
+      <div class="post-card-body">
+        <h4>${escapeHtml(post.title)}</h4>
+        <p>${escapeHtml(post.excerpt || '')}</p>
+      </div>
     </article>`;
 }
 
