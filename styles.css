@@ -371,13 +371,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .post-card,
 .post-view-modal {
   background-color: var(--parchment-base);
-  background-image:
-    url('pergamino.jpg'),
-    radial-gradient(ellipse at 15% 8%, rgba(255, 248, 230, 0.55) 0%, transparent 45%),
-    radial-gradient(ellipse at 85% 92%, rgba(92, 68, 40, 0.14) 0%, transparent 50%),
-    linear-gradient(168deg, #f2e8d0 0%, #e8d9bc 42%, #dcc9a0 78%, #d4bf8a 100%);
+  background-image: url('pergamino.png');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 .featured-card,
