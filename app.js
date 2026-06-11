@@ -23,6 +23,14 @@ async function loadPosts() {
 
   if (document.getElementById('posts-grid')) renderHomePage();
   if (document.getElementById('archive-container')) renderArchivePage();
+  openPostFromUrl();
+}
+
+function openPostFromUrl() {
+  const postId = new URLSearchParams(window.location.search).get('entrada');
+  if (postId && currentPosts.some((post) => post.id === postId)) {
+    openPostView(postId);
+  }
 }
 
 function renderHomePage() {

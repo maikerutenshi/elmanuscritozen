@@ -1,0 +1,94 @@
+MAKE — Aviso de nueva entrada a suscriptores del Dojo
+======================================================
+
+Cuando publicas desde Administración, la web llama a un webhook de Make
+con título, extracto y enlace directo a la entrada.
+
+Enlace directo (ejemplo):
+https://elmanuscritozen.com/?entrada=2026-06-10-titulo-de-la-entrada
+
+---
+PASO 1 — Crear escenario en Make
+--------------------------------
+1. https://eu1.make.com → Scenarios → Create a new scenario
+2. Nombre: Nueva entrada — aviso Dojo
+
+---
+PASO 2 — Módulo 1: Webhook
+----------------------------
+1. + → Webhooks → Custom webhook
+2. Create a webhook → nombre: Post publicado
+3. Copia la URL (https://hook.eu1.make.com/...)
+4. Pégala en admin-config.js → postNotifyWebhook
+5. Pon un token secreto en postNotifyToken (como en el Dojo)
+
+La web envía JSON:
+{
+  "token": "tu-token",
+  "title": "Título de la entrada",
+  "excerpt": "Primeras palabras…",
+  "postId": "2026-06-10-slug",
+  "url": "https://elmanuscritozen.com/?entrada=2026-06-10-slug"
+}
+
+---
+PASO 3 — Filtro (seguridad)
+----------------------------
+Entre Webhook y el resto:
+- token Equals tu postNotifyToken
+
+---
+PASO 4 — Módulo 2: Firestore — listar suscriptores
+--------------------------------------------------
+1. + → Google Cloud Firestore → Search documents
+   (o List documents / Watch — según tu plan)
+2. Project: el-manuscrit-zen
+3. Collection: dojo_subscribers
+4. Limit: 100 (ajusta si crece la lista)
+
+---
+PASO 5 — Módulo 3: Iterator
+---------------------------
++ → Flow Control → Iterator
+Array: documentos del paso Firestore
+
+---
+PASO 6 — Módulo 4: Gmail — Send an email
+----------------------------------------
+Dentro del Iterator:
+- To: email de cada documento
+- Subject: Nueva entrada — {{title}} · El Manuscrito Zen
+- Content (HTML):
+
+Hola {{name}},
+
+Hay una nueva reflexión en El Manuscrito Zen:
+
+<strong>{{title}}</strong>
+
+{{excerpt}}
+
+<a href="{{url}}">Leer la entrada completa</a>
+
+Con presencia,
+El Manuscrito Zen
+
+(Mapea name, title, excerpt, url desde webhook + iterator)
+
+Conexión Gmail: morpheoia2@gmail.com (como el Dojo)
+
+---
+PASO 7 — Activar
+----------------
+1. Scheduling: Immediately (webhook es instantáneo)
+2. ON → Publicar escenario
+3. Sube admin-config.js con webhook + token
+4. Publica una entrada de prueba
+
+---
+NOTAS
+-----
+- Plan gratis Make: ~1 operación por suscriptor por entrada.
+  10 suscriptores ≈ 12–15 operaciones por publicación.
+- Si no configuras postNotifyWebhook, la web publica igual (sin emails).
+- El enlace ?entrada= abre la entrada al instante en la web.

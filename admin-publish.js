@@ -186,5 +186,38 @@ async function publishEntry({ title, content, imageFile }) {
     indexFile?.sha
   );
 
+  await notifyPostPublished(entry);
+
   return entry;
+}
+
+function postPublicUrl(postId) {
+  const base = (ZEN_ADMIN.siteBaseUrl || 'https://elmanuscritozen.com').replace(/\/$/, '');
+  return `${base}/?entrada=${encodeURIComponent(postId)}`;
+}
+
+async function notifyPostPublished(entry) {
+  const webhook = ZEN_ADMIN.postNotifyWebhook;
+  if (!webhook) return;
+
+  const payload = {
+    token: ZEN_ADMIN.postNotifyToken || '',
+    title: entry.title,
+    excerpt: entry.excerpt || '',
+    postId: entry.id,
+    url: postPublicUrl(entry.id),
+  };
+
+  try {
+    const response = await fetch(webhook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      console.warn('Aviso Dojo (Make): respuesta', response.status);
+    }
+  } catch (err) {
+    console.warn('Aviso Dojo (Make):', err);
+  }
 }
