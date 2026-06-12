@@ -496,6 +496,21 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   padding: 16px 16px 0;
 }
 
+.post-view-header .editor-close {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--parchment-ink);
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.post-view-header .editor-close:hover {
+  color: var(--gold);
+  background: rgba(61, 46, 31, 0.1);
+}
+
 .editor-close {
   font-size: 1.25rem;
   color: #666;
