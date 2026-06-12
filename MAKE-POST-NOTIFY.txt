@@ -53,6 +53,16 @@ PASO 5 — Módulo 3: Iterator
 Array: documentos del paso Firestore
 
 ---
+PASO 5b — Filtro: solo suscriptores activos
+-------------------------------------------
+Entre Iterator y Gmail, clic en la línea → Set up a filter:
+- Campo: active (del Iterator)
+- Operador: Not equal to
+- Valor: false
+
+(Suscriptores antiguos sin campo active siguen recibiendo aviso.)
+
+---
 PASO 6 — Módulo 4: Gmail — Send an email
 ----------------------------------------
 Dentro del Iterator:
@@ -72,6 +82,10 @@ Hay una nueva reflexión en El Manuscrito Zen:
 
 Con presencia,
 El Manuscrito Zen
+
+<p style="font-size:12px;color:#888;margin-top:24px;">
+  <a href="https://elmanuscritozen.com/baja-dojo.html">Darte de baja de los avisos</a>
+</p>
 
 (Mapea name, title, excerpt, url desde webhook + iterator)
 

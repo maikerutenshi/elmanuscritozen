@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) - GA4 ManuscritoZenWeb -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X3J9MSSP4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6X3J9MSSP4');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f0e8">
+  <title>Baja del Dojo — El Manuscrito Zen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=12" />
+</head>
+<body>
+  <header class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="Fondo_inicio.png" alt="Jardín zen al amanecer" class="hero-img">
+      <div class="hero-overlay"></div>
+    </div>
+
+    <div class="hero-content">
+      <h1 style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 0.5rem;">Baja de avisos</h1>
+      <p style="font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 1rem; margin-bottom: 2rem; opacity: 0.9; max-width: 420px; margin-left: auto; margin-right: auto;">
+        Dejarás de recibir correos cuando publiquemos una entrada. Tu cuenta para comentar no se borra.
+      </p>
+
+      <form class="admin-form" id="dojo-unsubscribe-form" style="width: 100%; max-width: 350px; margin: 0 auto;">
+        <div class="form-control">
+          <label for="unsub-email">Correo del Dojo</label>
+          <input type="email" id="unsub-email" name="email" required autocomplete="email">
+        </div>
+        <div class="form-control">
+          <label for="unsub-password">Contraseña</label>
+          <input type="password" id="unsub-password" name="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-submit-post">Darme de baja de los avisos</button>
+      </form>
+
+      <p class="dojo-footer-link" style="margin-top: 1.5rem;">
+        <a href="dojo.html">Volver al Dojo</a>
+      </p>
+    </div>
+  </header>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-symbol"><img src="enso.png" alt="Ensō" class="enso-img" /></span>
+        <span class="footer-name">El Manuscrito Zen</span>
+      </div>
+      <p class="footer-phrase">"Respira. Estás aquí."</p>
+      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="comments-config.js"></script>
+  <script src="navbar.js"></script>
+  <script>
+    function initDojoFirebase() {
+      if (!firebase.apps.length) {
+        firebase.initializeApp({
+          apiKey: COMMENTS_FIREBASE.apiKey,
+          authDomain: COMMENTS_FIREBASE.authDomain,
+          projectId: COMMENTS_FIREBASE.projectId,
+          storageBucket: COMMENTS_FIREBASE.storageBucket,
+          messagingSenderId: COMMENTS_FIREBASE.messagingSenderId,
+          appId: COMMENTS_FIREBASE.appId,
+        });
+      }
+    }
+
+    function mapUnsubAuthError(code) {
+      const map = {
+        'auth/invalid-email': 'Correo no válido.',
+        'auth/wrong-password': 'Contraseña incorrecta.',
+        'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+        'auth/user-not-found': 'No hay cuenta con ese correo.',
+        'auth/network-request-failed': 'Sin conexión. Inténtalo otra vez.',
+      };
+      return map[code] || 'No se pudo completar la baja. Inténtalo más tarde.';
+    }
+
+    const form = document.getElementById('dojo-unsubscribe-form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = form.email.value.trim().toLowerCase();
+      const password = form.password.value;
+      if (!email || !password) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Procesando…';
+
+      try {
+        initDojoFirebase();
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+
+        const snapshot = await firebase
+          .firestore()
+          .collection('dojo_subscribers')
+          .where('email', '==', email)
+          .get();
+
+        if (snapshot.empty) {
+          await firebase.auth().signOut();
+          alert('No encontramos avisos por correo asociados a esta cuenta.');
+          return;
+        }
+
+        const batch = firebase.firestore().batch();
+        let hadActive = false;
+
+        snapshot.docs.forEach((doc) => {
+          if (doc.data().active !== false) hadActive = true;
+          batch.update(doc.ref, {
+            active: false,
+            unsubscribedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+        });
+
+        await batch.commit();
+        await firebase.auth().signOut();
+
+        if (hadActive) {
+          alert('Listo. Ya no recibirás avisos por correo. Puedes seguir comentando con la misma cuenta.');
+        } else {
+          alert('Ya estabas dado de baja de los avisos por correo.');
+        }
+
+        form.reset();
+      } catch (error) {
+        console.error('Dojo unsubscribe:', error.code || error);
+        alert(mapUnsubAuthError(error.code));
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Darme de baja de los avisos';
+      }
+    });
+  </script>
+</body>
+</html>

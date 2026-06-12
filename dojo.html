@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=12" />
 </head>
 <body>
   <header class="hero" id="hero">
@@ -46,6 +46,9 @@
         </div>
         <button type="submit" class="btn-submit-post">Unirse a la práctica</button>
       </form>
+      <p class="dojo-footer-link">
+        <a href="baja-dojo.html">Darte de baja de los avisos por correo</a>
+      </p>
     </div>
   </header>
 
@@ -129,6 +132,7 @@
         await firebase.firestore().collection('dojo_subscribers').add({
           name,
           email,
+          active: true,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         fetch(DOJO_MAKE_WEBHOOK, {

@@ -699,6 +699,21 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   text-underline-offset: 2px;
 }
 
+.dojo-footer-link {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+}
+
+.dojo-footer-link a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dojo-footer-link a:hover {
+  color: #fff;
+}
+
 .btn-google {
   width: 100%;
   font-family: var(--font-ui);

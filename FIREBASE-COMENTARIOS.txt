@@ -48,7 +48,14 @@ service cloud.firestore {
         && request.resource.data.email is string
         && request.resource.data.email.size() > 5
         && request.resource.data.email.size() <= 254;
-      allow read, update, delete: if isCommentsAdmin();
+      allow read: if isCommentsAdmin()
+        || (request.auth != null && resource.data.email == request.auth.token.email);
+      allow update: if isCommentsAdmin()
+        || (request.auth != null
+          && resource.data.email == request.auth.token.email
+          && request.resource.data.active == false
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['active', 'unsubscribedAt']));
+      allow delete: if isCommentsAdmin();
     }
   }
 }
@@ -56,7 +63,20 @@ service cloud.firestore {
 SUSCRIPTORES DOJO (ver correos)
 -------------------------------
 Firebase → Firestore → colección dojo_subscribers
-Ahí aparecen nombre, email y fecha de cada suscripción.
+Ahí aparecen nombre, email, active, createdAt y unsubscribedAt.
+
+BAJA DE AVISOS (unsubscribe)
+----------------------------
+Página: https://elmanuscritozen.com/baja-dojo.html
+El suscriptor entra con correo + contraseña del Dojo → active pasa a false.
+Sigue pudiendo comentar; solo deja de recibir emails de Make.
+
+IMPORTANTE: actualiza las Reglas de Firestore (bloque dojo_subscribers arriba).
+En Make (aviso nueva entrada): filtro en Iterator → active distinto de false
+(o deja pasar si active está vacío — suscriptores antiguos sin el campo).
+
+Enlace en emails Make (pie del HTML):
+<a href="https://elmanuscritozen.com/baja-dojo.html">Darte de baja de los avisos</a>
 
 MODERAR COMENTARIOS (borrar)
 ---------------------------
