@@ -399,3 +399,26 @@ function escapeHtml(text) {
 function escapeAttr(text) {
   return escapeHtml(text).replace(/'/g, '&#39;');
 }
+
+async function fetchCommentCountsForPosts(postIds) {
+  const counts = Object.fromEntries(postIds.map((id) => [id, 0]));
+  if (!postIds.length || !initCommentsFirebase()) return counts;
+
+  await Promise.all(
+    postIds.map(async (postId) => {
+      try {
+        const snapshot = await firebase
+          .firestore()
+          .collection('comments')
+          .doc(postId)
+          .collection('messages')
+          .get();
+        counts[postId] = snapshot.size;
+      } catch (err) {
+        console.warn('Conteo comentarios:', postId, err);
+      }
+    })
+  );
+
+  return counts;
+}

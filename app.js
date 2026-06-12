@@ -60,26 +60,80 @@ function renderHomePage() {
 }
 
 function renderArchivePage() {
+  renderArchivePageAsync();
+}
+
+async function renderArchivePageAsync() {
   const container = document.getElementById('archive-container');
   if (!container) return;
 
   const posts = [...currentPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
-  container.innerHTML = '';
+  container.innerHTML = '<p class="posts-empty">Cargando archivo…</p>';
 
   if (posts.length === 0) {
-    container.innerHTML =
-      '<p class="posts-empty">El archivo está vacío por ahora.</p>';
+    container.innerHTML = '<p class="posts-empty">El archivo está vacío por ahora.</p>';
     return;
   }
 
+  let commentCounts = {};
+  if (typeof fetchCommentCountsForPosts === 'function') {
+    commentCounts = await fetchCommentCountsForPosts(posts.map((post) => post.id));
+  }
+
+  container.innerHTML = '';
   posts.forEach((post) => {
-    container.insertAdjacentHTML('beforeend', buildPostCard(post));
+    container.insertAdjacentHTML(
+      'beforeend',
+      buildArchiveItem(post, commentCounts[post.id] ?? 0)
+    );
   });
 
-  bindPostClicks(container);
+  bindArchiveTitleClicks(container);
 
   const hint = document.getElementById('archive-hint');
   if (hint) hint.hidden = false;
+}
+
+function buildArchiveItem(post, commentCount) {
+  return `
+    <article class="archive-item">
+      <img src="${escapeAttr(post.cover)}" alt="" class="archive-item-img" onerror="this.src='zen_hero.png'" />
+      <div class="archive-item-body">
+        <button type="button" class="archive-item-title" data-post-id="${escapeAttr(post.id)}">
+          ${escapeHtml(post.title)}
+        </button>
+        <div class="archive-item-meta">
+          <time datetime="${escapeAttr(post.date)}">${formatArchiveDate(post.date)}</time>
+          <span class="archive-item-comments">${formatCommentCount(commentCount)}</span>
+        </div>
+      </div>
+    </article>`;
+}
+
+function bindArchiveTitleClicks(container) {
+  if (!container) return;
+  container.querySelectorAll('.archive-item-title').forEach((el) => {
+    el.addEventListener('click', () => openPostView(el.dataset.postId));
+  });
+}
+
+function formatArchiveDate(iso) {
+  try {
+    return new Date(iso).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  } catch {
+    return '';
+  }
+}
+
+function formatCommentCount(count) {
+  const n = Number(count) || 0;
+  if (n === 0) return '0 comentarios';
+  if (n === 1) return '1 comentario';
+  return `${n} comentarios`;
 }
 
 function buildFeaturedCard(post) {
