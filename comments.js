@@ -152,7 +152,7 @@ function buildCommentsSectionHtml() {
         </p>
         <form id="comments-submit-form" class="comments-form">
           <p class="comments-admin-note" id="comments-admin-note" hidden>
-            Modo administrador: puedes eliminar comentarios de otros.
+            Modo administrador: puedes responder y eliminar comentarios.
           </p>
           <div class="form-control">
             <label for="comment-text">Tu comentario</label>
@@ -278,21 +278,92 @@ function refreshCommentsList(postId) {
     .orderBy('createdAt', 'asc')
     .onSnapshot(
       (snapshot) => {
-        if (snapshot.empty) {
+        const topLevel = snapshot.docs.filter((doc) => !doc.data().parentId);
+        if (topLevel.length === 0) {
           listEl.innerHTML = '<p class="comments-empty">Sé el primero en comentar.</p>';
           return;
         }
+
+        const repliesByParent = groupRepliesByParent(snapshot.docs);
         const admin = isCommentsAdmin(commentsCurrentUser);
-        listEl.innerHTML = snapshot.docs
-          .map((doc) => renderComment(doc.id, doc.data(), admin))
+
+        listEl.innerHTML = topLevel
+          .map((doc) => renderCommentThread(doc.id, doc.data(), repliesByParent[doc.id] || [], admin))
           .join('');
+
         bindCommentDeleteButtons(listEl, postId);
+        bindCommentReplyButtons(listEl, postId);
       },
       () => {
         listEl.innerHTML =
           '<p class="comments-empty">No se pudieron cargar los comentarios.</p>';
       }
     );
+}
+
+function groupRepliesByParent(docs) {
+  const grouped = {};
+  docs.forEach((doc) => {
+    const parentId = doc.data().parentId;
+    if (!parentId) return;
+    if (!grouped[parentId]) grouped[parentId] = [];
+    grouped[parentId].push({ id: doc.id, data: doc.data() });
+  });
+  return grouped;
+}
+
+function bindCommentReplyButtons(listEl, postId) {
+  listEl.querySelectorAll('[data-reply-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const parentId = btn.getAttribute('data-reply-toggle');
+      const form = listEl.querySelector(`[data-reply-form="${parentId}"]`);
+      if (!form) return;
+      const isHidden = form.hidden;
+      listEl.querySelectorAll('.comment-reply-form').forEach((el) => {
+        el.hidden = true;
+      });
+      form.hidden = !isHidden;
+      if (!form.hidden) {
+        form.querySelector('textarea')?.focus();
+      }
+    });
+  });
+
+  listEl.querySelectorAll('.comment-reply-form').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const user = firebase.auth().currentUser;
+      if (!user || !isCommentsAdmin(user)) return;
+
+      const parentId = form.getAttribute('data-reply-form');
+      const textarea = form.querySelector('textarea');
+      const text = textarea?.value.trim();
+      if (!parentId || !text) return;
+
+      const statusEl = document.getElementById('comments-status');
+      showCommentsStatus(statusEl, 'Publicando respuesta…');
+      try {
+        await firebase
+          .firestore()
+          .collection('comments')
+          .doc(postId)
+          .collection('messages')
+          .add({
+            uid: user.uid,
+            displayName: user.displayName || 'El Manuscrito Zen',
+            text,
+            parentId,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+        textarea.value = '';
+        form.hidden = true;
+        showCommentsStatus(statusEl, 'Respuesta publicada.', false);
+      } catch (err) {
+        console.error(err);
+        showCommentsStatus(statusEl, 'No se pudo publicar la respuesta.', false, true);
+      }
+    });
+  });
 }
 
 function bindCommentDeleteButtons(listEl, postId) {
@@ -321,32 +392,58 @@ function bindCommentDeleteButtons(listEl, postId) {
   });
 }
 
-function renderComment(messageId, data, showDelete) {
+function renderCommentThread(messageId, data, replies, showAdminActions) {
+  return `
+    <article class="comment-item">
+      ${renderCommentBody(messageId, data, showAdminActions, false)}
+      ${replies.map((reply) => renderCommentBody(reply.id, reply.data, showAdminActions, true)).join('')}
+      ${showAdminActions ? renderReplyForm(messageId) : ''}
+    </article>`;
+}
+
+function renderReplyForm(parentId) {
+  return `
+    <div class="comment-reply-actions">
+      <button type="button" class="btn-comment-reply" data-reply-toggle="${escapeAttr(parentId)}">
+        Responder
+      </button>
+      <form class="comment-reply-form" data-reply-form="${escapeAttr(parentId)}" hidden>
+        <textarea rows="2" maxlength="500" required placeholder="Escribe tu respuesta…"></textarea>
+        <button type="submit" class="btn-submit-post btn-submit-reply">Publicar respuesta</button>
+      </form>
+    </div>`;
+}
+
+function renderCommentBody(messageId, data, showDelete, isReply) {
   const name = escapeHtml(data.displayName || 'Lector');
   const text = escapeHtml(data.text || '');
-  const date = data.createdAt?.toDate
-    ? data.createdAt.toDate().toLocaleString('es-ES', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    : '';
+  const date = formatCommentDate(data.createdAt);
+  const itemClass = isReply ? 'comment-reply' : '';
 
   const deleteBtn = showDelete
     ? `<button type="button" class="btn-comment-delete" data-delete-comment="${escapeAttr(messageId)}">Eliminar</button>`
     : '';
 
   return `
-    <article class="comment-item">
+    <div class="${itemClass}">
       <header class="comment-header">
         <strong>${name}</strong>
         ${date ? `<time>${date}</time>` : ''}
         ${deleteBtn}
       </header>
       <p>${text}</p>
-    </article>`;
+    </div>`;
+}
+
+function formatCommentDate(createdAt) {
+  if (!createdAt?.toDate) return '';
+  return createdAt.toDate().toLocaleString('es-ES', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 function showCommentsStatus(el, message, hide = false, isError = false) {
@@ -413,7 +510,7 @@ async function fetchCommentCountsForPosts(postIds) {
           .doc(postId)
           .collection('messages')
           .get();
-        counts[postId] = snapshot.size;
+        counts[postId] = snapshot.docs.filter((doc) => !doc.data().parentId).length;
       } catch (err) {
         console.warn('Conteo comentarios:', postId, err);
       }
