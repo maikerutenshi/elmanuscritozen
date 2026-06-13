@@ -129,9 +129,11 @@ function buildCommentsSectionHtml() {
 
       <div id="comments-guest" class="comments-panel">
         <p class="comments-note">
-          Usa el mismo correo y contraseña con los que te registraste en el
+          Entra con Google o con el mismo correo y contraseña del
           <a href="dojo.html">Dojo Virtual</a>.
         </p>
+        <button type="button" id="comments-google-btn" class="btn-google">Continuar con Google</button>
+        <p class="comments-divider">o</p>
         <form id="comments-login-form" class="comments-form">
           <div class="form-control">
             <label for="login-email">Correo</label>
@@ -195,6 +197,9 @@ function bindCommentsUi(postId) {
   const loginForm = document.getElementById('comments-login-form');
   const submitForm = document.getElementById('comments-submit-form');
   const logoutBtn = document.getElementById('comments-logout-btn');
+  const googleBtn = document.getElementById('comments-google-btn');
+
+  googleBtn?.addEventListener('click', () => signInWithGoogle(statusEl, postId));
 
   loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
