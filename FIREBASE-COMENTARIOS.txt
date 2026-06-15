@@ -32,12 +32,18 @@ service cloud.firestore {
         && request.auth.token.email == 'mbardisa@gmail.com';
     }
     match /comments/{postId}/messages/{messageId} {
+      function isReply() {
+        return 'parentId' in request.resource.data
+          && request.resource.data.parentId is string
+          && request.resource.data.parentId.size() > 0;
+      }
       allow read: if true;
       allow create: if request.auth != null
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.text is string
         && request.resource.data.text.size() > 0
-        && request.resource.data.text.size() <= 500;
+        && request.resource.data.text.size() <= 500
+        && (!isReply() || isCommentsAdmin());
       allow update, delete: if request.auth != null
         && (resource.data.uid == request.auth.uid || isCommentsAdmin());
     }
@@ -47,7 +53,8 @@ service cloud.firestore {
         && request.resource.data.name.size() <= 80
         && request.resource.data.email is string
         && request.resource.data.email.size() > 5
-        && request.resource.data.email.size() <= 254;
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.marketingConsent == true;
       allow read: if isCommentsAdmin()
         || (request.auth != null && resource.data.email == request.auth.token.email);
       allow update: if isCommentsAdmin()
@@ -82,8 +89,13 @@ MODERAR COMENTARIOS (borrar)
 ---------------------------
 1. En comments-config.js pon tu correo en adminEmail (el mismo de Google/Firebase).
 2. En Firestore Reglas usa el mismo correo en isCommentsAdmin().
-3. En la web: abre una entrada → Comentarios → Continuar con Google (tu cuenta).
-4. Verás "Eliminar" en cada comentario.
+3. En la web: abre una entrada → Comentarios → entra con tu cuenta (mbardisa@gmail.com).
+4. Verás "Eliminar" y "Responder" en cada comentario.
+
+RESPONDER COMENTARIOS (solo admin)
+----------------------------------
+Entra con tu correo admin → "Responder" debajo del comentario → escribe y publica.
+La respuesta aparece indentada justo debajo. Actualiza Reglas (bloque isReply arriba).
 
 Alternativa sin código: Firebase → Firestore → Datos → comments → borrar a mano.
 

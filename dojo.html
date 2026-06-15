@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=12" />
+  <link rel="stylesheet" href="styles.css?v=14" />
 </head>
 <body>
   <header class="hero" id="hero">
@@ -43,6 +43,15 @@
         <div class="form-control">
           <label for="dojo-password">Contraseña (para comentar)</label>
           <input type="password" id="dojo-password" name="password" required minlength="6" autocomplete="new-password">
+        </div>
+        <div class="form-control dojo-consent-control">
+          <label class="dojo-consent-label">
+            <input type="checkbox" id="dojo-marketing-consent" name="marketingConsent" required>
+            <span class="dojo-consent-text">
+              Acepto que mi correo se utilice con fines comerciales y de comunicación, conforme al
+              <a href="aviso-correo-dojo.html" target="_blank" rel="noopener">aviso sobre el uso del correo</a>.
+            </span>
+          </label>
         </div>
         <button type="submit" class="btn-submit-post">Unirse a la práctica</button>
       </form>
@@ -121,7 +130,8 @@
       const name = form.name.value.trim();
       const email = form.email.value.trim().toLowerCase();
       const password = form.password.value;
-      if (!name || !email || !password) return;
+      const marketingConsent = document.getElementById('dojo-marketing-consent').checked;
+      if (!name || !email || !password || !marketingConsent) return;
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando…';
@@ -133,6 +143,8 @@
           name,
           email,
           active: true,
+          marketingConsent: true,
+          consentAt: firebase.firestore.FieldValue.serverTimestamp(),
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         fetch(DOJO_MAKE_WEBHOOK, {
