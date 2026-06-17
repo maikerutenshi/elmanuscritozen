@@ -8,4 +8,6 @@ const COMMENTS_FIREBASE = {
   appId: '1:876463343177:web:72f6d7e17da36b72736198',
   // Correo con el que TÚ entras (Google o correo) para moderar comentarios:
   adminEmail: 'mbardisa@gmail.com',
+  // Nombre visible cuando respondes a comentarios (no tu nombre personal de Google):
+  adminReplyName: 'El Manuscrito Zen',
 };

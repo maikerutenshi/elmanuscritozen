@@ -9,6 +9,15 @@ function isCommentsAdmin(user) {
   return user.email.toLowerCase() === COMMENTS_FIREBASE.adminEmail.toLowerCase();
 }
 
+function getAdminReplyName() {
+  return COMMENTS_FIREBASE.adminReplyName || 'El Manuscrito Zen';
+}
+
+function getCommentAuthorName(data) {
+  if (data.authorReply) return getAdminReplyName();
+  return data.displayName || 'Lector';
+}
+
 function getFirebaseAppConfig() {
   return {
     apiKey: COMMENTS_FIREBASE.apiKey,
@@ -355,7 +364,8 @@ function bindCommentReplyButtons(listEl, postId) {
           .collection('messages')
           .add({
             uid: user.uid,
-            displayName: user.displayName || 'El Manuscrito Zen',
+            displayName: getAdminReplyName(),
+            authorReply: true,
             text,
             parentId,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -420,7 +430,7 @@ function renderReplyForm(parentId) {
 }
 
 function renderCommentBody(messageId, data, showDelete, isReply) {
-  const name = escapeHtml(data.displayName || 'Lector');
+  const name = escapeHtml(getCommentAuthorName(data));
   const text = escapeHtml(data.text || '');
   const date = formatCommentDate(data.createdAt);
   const itemClass = isReply ? 'comment-reply' : '';
