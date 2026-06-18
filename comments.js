@@ -451,11 +451,18 @@ function bindCommentReplyButtons(listEl, postId) {
         if (notifyResult.skipped && notifyResult.reason === 'no-email') {
           showCommentsStatus(
             statusEl,
-            'Respuesta publicada. Ese comentario no tiene correo guardado (es antiguo); no se pudo avisar.',
+            'Respuesta publicada. Ese comentario no tiene correo guardado (coméntalo de nuevo con otra cuenta).',
             false
           );
         } else if (notifyResult.skipped && notifyResult.reason === 'no-emailjs') {
           showCommentsStatus(statusEl, 'Respuesta publicada.', false);
+        } else if (notifyResult.skipped && notifyResult.reason === 'emailjs-error') {
+          showCommentsStatus(
+            statusEl,
+            `Respuesta publicada. Email no enviado: ${notifyResult.detail || 'revisa EmailJS'}.`,
+            false,
+            true
+          );
         } else if (notifyResult.skipped) {
           showCommentsStatus(statusEl, 'Respuesta publicada. No se pudo enviar el aviso por correo.', false);
         } else {
