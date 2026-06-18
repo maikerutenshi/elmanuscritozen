@@ -1,0 +1,112 @@
+EMAILJS — Aviso al lector cuando respondes a un comentario
+===========================================================
+
+Envía desde: seguidores@elmanuscritozen.com (El Manuscrito Zen)
+SMTP Piensa Solutions — ya probado ✓
+
+No usa Make. No cuenta como tercer escenario.
+
+---
+PASO 1 — Cuenta EmailJS
+-----------------------
+1. https://www.emailjs.com → Sign Up (plan gratis: ~200 emails/mes)
+2. Verifica tu correo
+
+---
+PASO 2 — Servicio SMTP (Piensa)
+-------------------------------
+Email Services → Add New Service → Custom SMTP
+
+| Campo | Valor |
+|-------|--------|
+| Host | smtp.buzondecorreo.com |
+| Port | 465 |
+| Encryption | SSL / TLS |
+| User | seguidores@elmanuscritozen.com |
+| Password | (contraseña del buzón) |
+| From email | seguidores@elmanuscritozen.com |
+| From name | El Manuscrito Zen |
+
+→ Create Service → Test (debe llegar a mbardisa@gmail.com)
+→ Copia el Service ID (service_xxxxx)
+
+---
+PASO 3 — Plantilla
+------------------
+Email Templates → Create New Template
+
+Settings (engranaje de la plantilla):
+- To email: {{to_email}}
+- From name: El Manuscrito Zen (o heredado del servicio)
+- Reply-To (opcional): mbardisa@gmail.com
+
+Subject:
+Te han respondido en «{{post_title}}» · El Manuscrito Zen
+
+Content (HTML):
+
+Hola {{to_name}},
+
+El Manuscrito Zen ha respondido a tu comentario en la entrada
+<strong>{{post_title}}</strong>:
+
+<blockquote style="border-left:3px solid #c4a882;padding-left:12px;margin:16px 0;color:#555;">
+{{reply_text}}
+</blockquote>
+
+Tu comentario era:
+<em>{{original_comment}}</em>
+
+<p><a href="{{post_url}}">Ver la entrada y la conversación</a></p>
+
+Con presencia,<br>
+El Manuscrito Zen
+
+<p style="font-size:12px;color:#888;margin-top:24px;">
+  Recibes este correo porque comentaste en el blog. No es publicidad.
+</p>
+
+→ Save → copia Template ID (template_xxxxx)
+
+Variables que manda la web (no las cambies):
+  to_email, to_name, post_title, reply_text, post_url, original_comment
+
+---
+PASO 4 — Public Key y dominio
+-----------------------------
+Account → API Keys → Public Key (user_xxxxx o similar)
+
+Account → Security → Allowed Origins → añade:
+  https://elmanuscritozen.com
+  https://www.elmanuscritozen.com
+
+---
+PASO 5 — comments-config.js
+---------------------------
+Rellena:
+
+  emailjsPublicKey: 'user_xxxxx',
+  emailjsServiceId: 'service_xxxxx',
+  emailjsTemplateId: 'template_xxxxx',
+
+git add comments-config.js comments.js index.html archivo.html
+git commit -m "Comentarios: aviso respuesta vía EmailJS"
+git push
+
+Espera 2 min → Ctrl+F5 en una entrada.
+
+---
+PASO 6 — Probar
+---------------
+1. Comenta con un correo que NO sea mbardisa@gmail.com (casilla nueva)
+2. Entra como admin → Responder → publica
+3. Debe decir: «Se ha avisado al lector por correo»
+4. El lector recibe email desde seguidores@elmanuscritozen.com
+
+Comentarios antiguos sin authorEmail: respuesta OK, sin email.
+
+---
+NOTAS
+-----
+- Make sigue igual para Dojo y nuevas entradas (2 escenarios).
+- Más adelante puedes usar el mismo SMTP en Make si quieres unificar remitente.

@@ -43,14 +43,21 @@ function isEmailjsReplyNotifyConfigured() {
   );
 }
 
+function initEmailjs() {
+  if (typeof emailjs === 'undefined' || !COMMENTS_FIREBASE.emailjsPublicKey) return false;
+  emailjs.init({ publicKey: COMMENTS_FIREBASE.emailjsPublicKey });
+  return true;
+}
+
 async function notifyCommentReply(postId, parentId, replyText) {
   if (!isEmailjsReplyNotifyConfigured()) {
     return { skipped: true, reason: 'no-emailjs' };
   }
   if (typeof emailjs === 'undefined') {
     console.warn('Reply notify: EmailJS no cargado');
-    return { skipped: true, reason: 'emailjs-error' };
+    return { skipped: true, reason: 'emailjs-error', detail: 'script no cargado' };
   }
+  initEmailjs();
 
   const parent = await fetchCommentMessage(postId, parentId);
   const toEmail = parent?.authorEmail?.trim().toLowerCase();
@@ -64,7 +71,7 @@ async function notifyCommentReply(postId, parentId, replyText) {
   const postUrl = `${baseUrl}/?entrada=${encodeURIComponent(postId)}`;
 
   try {
-    await emailjs.send(
+    const response = await emailjs.send(
       COMMENTS_FIREBASE.emailjsServiceId,
       COMMENTS_FIREBASE.emailjsTemplateId,
       {
@@ -74,13 +81,14 @@ async function notifyCommentReply(postId, parentId, replyText) {
         reply_text: replyText,
         post_url: postUrl,
         original_comment: String(parent.text || '').slice(0, 200),
-      },
-      { publicKey: COMMENTS_FIREBASE.emailjsPublicKey }
+      }
     );
+    console.info('Reply notify emailjs OK:', response.status, toEmail);
     return { skipped: false };
   } catch (err) {
-    console.warn('Reply notify emailjs:', err);
-    return { skipped: true, reason: 'emailjs-error' };
+    const detail = err?.text || err?.message || String(err);
+    console.warn('Reply notify emailjs:', detail, err);
+    return { skipped: true, reason: 'emailjs-error', detail };
   }
 }
 
