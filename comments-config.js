@@ -10,4 +10,10 @@ const COMMENTS_FIREBASE = {
   adminEmail: 'mbardisa@gmail.com',
   // Nombre visible cuando respondes a comentarios (no tu nombre personal de Google):
   adminReplyName: 'El Manuscrito Zen',
+  siteBaseUrl: 'https://elmanuscritozen.com',
+  // EmailJS → aviso al lector cuando respondes (seguidores@elmanuscritozen.com vía SMTP Piensa)
+  // Guía: EMAILJS-COMMENT-REPLY.txt
+  emailjsPublicKey: 'M_QSLAl0Hlse7l8tx',
+  emailjsServiceId: 'service_epqw9hg',
+  emailjsTemplateId: 'template_dqc30c4',
 };
