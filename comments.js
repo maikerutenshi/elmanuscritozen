@@ -18,6 +18,72 @@ function getCommentAuthorName(data) {
   return data.displayName || 'Lector';
 }
 
+function getPostTitleForComments(postId) {
+  if (typeof currentPosts === 'undefined') return '';
+  const post = currentPosts.find((item) => item.id === postId);
+  return post?.title || '';
+}
+
+async function fetchCommentMessage(postId, messageId) {
+  const doc = await firebase
+    .firestore()
+    .collection('comments')
+    .doc(postId)
+    .collection('messages')
+    .doc(messageId)
+    .get();
+  return doc.exists ? { id: doc.id, ...doc.data() } : null;
+}
+
+function isEmailjsReplyNotifyConfigured() {
+  return Boolean(
+    COMMENTS_FIREBASE.emailjsPublicKey &&
+      COMMENTS_FIREBASE.emailjsServiceId &&
+      COMMENTS_FIREBASE.emailjsTemplateId
+  );
+}
+
+async function notifyCommentReply(postId, parentId, replyText) {
+  if (!isEmailjsReplyNotifyConfigured()) {
+    return { skipped: true, reason: 'no-emailjs' };
+  }
+  if (typeof emailjs === 'undefined') {
+    console.warn('Reply notify: EmailJS no cargado');
+    return { skipped: true, reason: 'emailjs-error' };
+  }
+
+  const parent = await fetchCommentMessage(postId, parentId);
+  const toEmail = parent?.authorEmail?.trim().toLowerCase();
+  if (!toEmail) return { skipped: true, reason: 'no-email' };
+
+  const adminEmail = COMMENTS_FIREBASE.adminEmail?.trim().toLowerCase();
+  if (adminEmail && toEmail === adminEmail) return { skipped: true, reason: 'self' };
+
+  const postTitle = getPostTitleForComments(postId) || 'Una entrada del blog';
+  const baseUrl = COMMENTS_FIREBASE.siteBaseUrl || 'https://elmanuscritozen.com';
+  const postUrl = `${baseUrl}/?entrada=${encodeURIComponent(postId)}`;
+
+  try {
+    await emailjs.send(
+      COMMENTS_FIREBASE.emailjsServiceId,
+      COMMENTS_FIREBASE.emailjsTemplateId,
+      {
+        to_email: toEmail,
+        to_name: parent.displayName || toEmail.split('@')[0],
+        post_title: postTitle,
+        reply_text: replyText,
+        post_url: postUrl,
+        original_comment: String(parent.text || '').slice(0, 200),
+      },
+      { publicKey: COMMENTS_FIREBASE.emailjsPublicKey }
+    );
+    return { skipped: false };
+  } catch (err) {
+    console.warn('Reply notify emailjs:', err);
+    return { skipped: true, reason: 'emailjs-error' };
+  }
+}
+
 function getFirebaseAppConfig() {
   return {
     apiKey: COMMENTS_FIREBASE.apiKey,
@@ -242,6 +308,7 @@ function bindCommentsUi(postId) {
         .add({
           uid: user.uid,
           displayName: user.displayName || user.email.split('@')[0],
+          authorEmail: user.email || '',
           text,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
@@ -372,7 +439,20 @@ function bindCommentReplyButtons(listEl, postId) {
           });
         textarea.value = '';
         form.hidden = true;
-        showCommentsStatus(statusEl, 'Respuesta publicada.', false);
+        const notifyResult = await notifyCommentReply(postId, parentId, text);
+        if (notifyResult.skipped && notifyResult.reason === 'no-email') {
+          showCommentsStatus(
+            statusEl,
+            'Respuesta publicada. Ese comentario no tiene correo guardado (es antiguo); no se pudo avisar.',
+            false
+          );
+        } else if (notifyResult.skipped && notifyResult.reason === 'no-emailjs') {
+          showCommentsStatus(statusEl, 'Respuesta publicada.', false);
+        } else if (notifyResult.skipped) {
+          showCommentsStatus(statusEl, 'Respuesta publicada. No se pudo enviar el aviso por correo.', false);
+        } else {
+          showCommentsStatus(statusEl, 'Respuesta publicada. Se ha avisado al lector por correo.', false);
+        }
       } catch (err) {
         console.error(err);
         showCommentsStatus(statusEl, 'No se pudo publicar la respuesta.', false, true);
