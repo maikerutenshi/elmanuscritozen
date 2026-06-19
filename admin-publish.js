@@ -186,6 +186,20 @@ async function publishEntry({ title, content, imageFile }) {
     indexFile?.sha
   );
 
+  if (typeof ZEN_SEO !== 'undefined') {
+    const entryPageHtml = ZEN_SEO.buildEntryPageHtml(entry, htmlContent);
+    await writeRepoFile(
+      `entrada/${postId}/index.html`,
+      toBase64Utf8(entryPageHtml),
+      `Página SEO: ${title}`
+    );
+    await writeRepoFile(
+      'sitemap.xml',
+      toBase64Utf8(ZEN_SEO.buildSitemapXml(posts)),
+      'Actualizar sitemap'
+    );
+  }
+
   await notifyPostPublished(entry);
 
   return entry;
@@ -193,7 +207,7 @@ async function publishEntry({ title, content, imageFile }) {
 
 function postPublicUrl(postId) {
   const base = (ZEN_ADMIN.siteBaseUrl || 'https://elmanuscritozen.com').replace(/\/$/, '');
-  return `${base}/?entrada=${encodeURIComponent(postId)}`;
+  return `${base}/entrada/${postId}/`;
 }
 
 async function notifyPostPublished(entry) {

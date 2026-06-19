@@ -13,6 +13,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#f5f0e8">
   <title>El Dojo — El Manuscrito Zen</title>
+  <meta name="description" content="Regístrate en el Dojo de El Manuscrito Zen: recibe nuevas entradas por correo y participa en los comentarios del blog." />
+  <link rel="canonical" href="https://elmanuscritozen.com/dojo.html" />
+  <meta property="og:title" content="El Dojo — El Manuscrito Zen" />
+  <meta property="og:description" content="Recibe nuevas reflexiones sobre budismo y mindfulness y comenta en el blog." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://elmanuscritozen.com/dojo.html" />
+  <meta property="og:image" content="https://elmanuscritozen.com/zen_hero.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
@@ -94,16 +102,27 @@
       }
     }
 
-    function mapDojoAuthError(code) {
+    function mapDojoError(error) {
+      const code = error?.code || '';
       const map = {
         'auth/email-already-in-use': 'Ese correo ya tiene cuenta. Usa la misma contraseña para volver a unirte.',
         'auth/invalid-email': 'Correo no válido.',
         'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres.',
         'auth/wrong-password': 'Contraseña incorrecta para ese correo.',
-        'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+        'auth/invalid-credential': 'Correo o contraseña incorrectos. Si te registraste con Google, usa Google en Comentarios.',
+        'auth/invalid-login-credentials':
+          'Ese correo ya tiene cuenta pero la contraseña no coincide. Usa la contraseña correcta, entra con Google en Comentarios, o prueba con otro correo.',
         'auth/network-request-failed': 'Sin conexión. Inténtalo otra vez.',
+        'auth/operation-not-allowed': 'Registro con correo desactivado en Firebase. Avisa al administrador.',
+        'auth/too-many-requests': 'Demasiados intentos. Espera unos minutos e inténtalo otra vez.',
+        'auth/account-exists-with-different-credential':
+          'Ese correo ya está registrado con Google. Entra con Google en Comentarios o usa otro correo.',
+        'permission-denied':
+          'No se pudo guardar la suscripción. Marca la casilla de consentimiento y vuelve a intentarlo. Si sigue fallando, avisa al administrador.',
       };
-      return map[code] || 'No se pudo completar el registro. Inténtalo más tarde.';
+      if (map[code]) return map[code];
+      if (code) return `No se pudo completar (${code}). Inténtalo más tarde o avisa al administrador.`;
+      return 'No se pudo completar el registro. Inténtalo más tarde.';
     }
 
     async function ensureDojoAuthUser(name, email, password) {
@@ -113,11 +132,26 @@
         return cred.user;
       } catch (err) {
         if (err.code !== 'auth/email-already-in-use') throw err;
-        const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
-        if (name && cred.user.displayName !== name) {
-          await cred.user.updateProfile({ displayName: name });
+        try {
+          const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+          if (name && cred.user.displayName !== name) {
+            await cred.user.updateProfile({ displayName: name });
+          }
+          return cred.user;
+        } catch (signInErr) {
+          if (
+            signInErr.code === 'auth/invalid-credential' ||
+            signInErr.code === 'auth/invalid-login-credentials' ||
+            signInErr.code === 'auth/wrong-password'
+          ) {
+            const conflict = new Error(
+              'Ese correo ya tiene cuenta (quizá con Google). Usa la contraseña correcta o entra con Google en Comentarios.'
+            );
+            conflict.code = 'auth/account-exists-with-different-credential';
+            throw conflict;
+          }
+          throw signInErr;
         }
-        return cred.user;
       }
     }
 
@@ -131,7 +165,11 @@
       const email = form.email.value.trim().toLowerCase();
       const password = form.password.value;
       const marketingConsent = document.getElementById('dojo-marketing-consent').checked;
-      if (!name || !email || !password || !marketingConsent) return;
+      if (!name || !email || !password) return;
+      if (!marketingConsent) {
+        alert('Debes marcar la casilla de consentimiento sobre el uso de tu correo.');
+        return;
+      }
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando…';
@@ -155,8 +193,8 @@
         alert('¡Bienvenido al Dojo! Revisa tu correo en unos minutos. Ya puedes comentar en las entradas con el mismo correo y contraseña.');
         form.reset();
       } catch (error) {
-        console.error('Dojo subscribe:', error.code || error);
-        alert(mapDojoAuthError(error.code));
+        console.error('Dojo subscribe:', error.code || error.message || error);
+        alert(mapDojoError(error));
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Unirse a la práctica';

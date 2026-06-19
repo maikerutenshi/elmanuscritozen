@@ -3,15 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const navbarHTML = `
     <nav class="navbar" id="navbar">
       <div class="nav-inner">
-        <a href="index.html" class="nav-logo">
-          <div class="nav-logo-symbol"><img src="enso.png" alt="Enso" class="enso-img"></div>
+        <a href="/index.html" class="nav-logo">
+          <div class="nav-logo-symbol"><img src="/enso.png" alt="Enso" class="enso-img"></div>
           <span class="nav-logo-text">El Manuscrito Zen</span>
         </a>
         <div class="nav-links">
-          <a href="index.html" class="nav-link">Inicio</a>
-          <a href="archivo.html" class="nav-link">Archivo</a>
-          <a href="dojo.html" class="nav-link">Dojo Virtual</a>
-          <a href="sobre.html" class="nav-link">Sobre este lugar</a>
+          <a href="/index.html" class="nav-link">Inicio</a>
+          <a href="/archivo.html" class="nav-link">Archivo</a>
+          <a href="/dojo.html" class="nav-link">Dojo Virtual</a>
+          <a href="/sobre.html" class="nav-link">Sobre este lugar</a>
         </div>
         <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-mobile-menu">
             <span></span>
@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </nav>
     <div class="nav-mobile-menu" id="nav-mobile-menu">
-        <a href="index.html" class="nav-mobile-link">Inicio</a>
-        <a href="archivo.html" class="nav-mobile-link">Archivo</a>
-        <a href="dojo.html" class="nav-mobile-link">Dojo Virtual</a>
-        <a href="sobre.html" class="nav-mobile-link">Sobre este lugar</a>
+        <a href="/index.html" class="nav-mobile-link">Inicio</a>
+        <a href="/archivo.html" class="nav-mobile-link">Archivo</a>
+        <a href="/dojo.html" class="nav-mobile-link">Dojo Virtual</a>
+        <a href="/sobre.html" class="nav-mobile-link">Sobre este lugar</a>
     </div>`;
     
     document.body.insertAdjacentHTML('afterbegin', navbarHTML);
