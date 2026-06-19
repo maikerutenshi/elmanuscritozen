@@ -603,15 +603,43 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 8px;
 }
 
+.post-page.main-content {
+  padding: 96px 20px 60px;
+}
+
 .post-page-article {
-  width: min(760px, calc(100% - 40px));
-  margin: 40px auto 60px;
+  width: min(760px, 100%);
+  margin: 0 auto;
   background-color: var(--parchment-base);
-  background-image: url('/pergamino.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  box-shadow: 0 12px 40px rgba(61, 46, 31, 0.12);
+  background-image: none;
+  border: 1px solid rgba(184, 159, 119, 0.22);
+  box-shadow: 0 12px 40px rgba(61, 46, 31, 0.1);
+}
+
+.post-page-article .post-view-body {
+  padding: 48px 40px 56px;
+}
+
+body:has(.post-page) .navbar {
+  background: rgba(245, 240, 232, 0.97);
+  backdrop-filter: blur(20px);
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
+}
+
+.post-page-article .comments-title {
+  color: var(--parchment-ink);
+}
+
+.post-page-article .comments-note,
+.post-page-article .comments-empty,
+.post-page-article .comment-author,
+.post-page-article .comment-text {
+  color: var(--parchment-muted);
+}
+
+.post-page-article .comment-item {
+  border-color: rgba(184, 159, 119, 0.35);
 }
 
 .post-view-meta time {
