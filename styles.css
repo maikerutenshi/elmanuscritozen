@@ -613,8 +613,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   background-color: #e8dcc4;
   background-image:
     linear-gradient(
-      rgba(252, 246, 235, 0.78),
-      rgba(252, 246, 235, 0.78)
+      rgba(252, 246, 235, 0.32),
+      rgba(252, 246, 235, 0.32)
     ),
     url('/papiro.png');
   background-size: cover;
