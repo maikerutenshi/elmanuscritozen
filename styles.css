@@ -608,19 +608,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .post-page-article {
-  width: min(760px, 100%);
+  width: min(760px, calc(100% - 40px));
   margin: 0 auto;
-  background-color: #c4a882;
-  background-image: url('/papiro.png');
-  background-size: 100% auto;
-  background-position: top center;
-  background-repeat: no-repeat;
-  border: none;
+  box-sizing: border-box;
+  border: 58px solid transparent;
+  border-image: url('/papiro.png') 22% 13% 22% 13% fill / 58px / 0 stretch;
+  background: transparent;
   box-shadow: 0 16px 48px rgba(61, 46, 31, 0.18);
 }
 
 .post-page-article .post-view-body {
-  padding: 48px 40px 56px;
+  padding: 20px 12px 28px;
 }
 
 .post-page-figure {
@@ -1206,6 +1204,13 @@ body:has(.post-page) .navbar {
   }
   .main-content {
     padding: 60px 20px;
+  }
+  .post-page-article {
+    border-width: 36px;
+    border-image: url('/papiro.png') 22% 13% 22% 13% fill / 36px / 0 stretch;
+  }
+  .post-page-article .post-view-body {
+    padding: 12px 4px 20px;
   }
 }
 
