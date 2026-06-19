@@ -620,6 +620,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   padding: 48px 40px 56px;
 }
 
+.post-page-figure {
+  margin: 0 0 28px;
+}
+
+.post-page-cover {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
 body:has(.post-page) .navbar {
   background: rgba(245, 240, 232, 0.97);
   backdrop-filter: blur(20px);

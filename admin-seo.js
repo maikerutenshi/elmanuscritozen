@@ -59,6 +59,18 @@ function buildArticleJsonLd(entry) {
   });
 }
 
+function buildCoverFigureHtml(entry) {
+  const cover = entry.cover || '';
+  if (!cover || cover === 'zen_hero.png' || cover.endsWith('/zen_hero.png')) {
+    return '';
+  }
+  const src = seoEscapeHtml(`../../${String(cover).replace(/^\//, '')}`);
+  const alt = seoEscapeHtml(entry.title);
+  return `<figure class="post-page-figure">
+          <img src="${src}" alt="${alt}" class="post-page-cover" />
+        </figure>`;
+}
+
 function buildEntryPageHtml(entry, contentHtml) {
   const title = seoEscapeHtml(entry.title);
   const description = seoPlainText(entry.excerpt || entry.title);
@@ -99,7 +111,7 @@ function buildEntryPageHtml(entry, contentHtml) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../styles.css?v=17" />
+  <link rel="stylesheet" href="../../styles.css?v=18" />
 </head>
 <body>
   <main class="main-content post-page">
@@ -109,6 +121,7 @@ function buildEntryPageHtml(entry, contentHtml) {
           <h1>${title}</h1>
           <time datetime="${dateAttr}">${dateLabel}</time>
         </header>
+        ${buildCoverFigureHtml(entry)}
         ${contentHtml}
       </div>
     </article>
