@@ -611,9 +611,21 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   width: min(760px, 100%);
   margin: 0 auto;
   background-color: var(--parchment-base);
-  background-image: none;
-  border: 1px solid rgba(184, 159, 119, 0.22);
-  box-shadow: 0 12px 40px rgba(61, 46, 31, 0.1);
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(245, 236, 218, 0.92) 0%,
+      rgba(236, 224, 200, 0.86) 40%,
+      rgba(232, 217, 188, 0.8) 100%
+    ),
+    url('/pergamino.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(184, 159, 119, 0.28);
+  box-shadow:
+    0 12px 40px rgba(61, 46, 31, 0.12),
+    inset 0 0 80px rgba(255, 248, 235, 0.35);
 }
 
 .post-page-article .post-view-body {
