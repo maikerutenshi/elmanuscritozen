@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loadMoreWrap) loadMoreWrap.style.display = 'none';
 });
 
+function postPageUrl(postId) {
+  return `/entrada/${encodeURIComponent(postId)}/`;
+}
+
 async function loadPosts() {
   try {
     const response = await fetch(`${POSTS_URL}?v=${Date.now()}`);
@@ -23,14 +27,13 @@ async function loadPosts() {
 
   if (document.getElementById('posts-grid')) renderHomePage();
   if (document.getElementById('archive-container')) renderArchivePage();
-  openPostFromUrl();
+  redirectLegacyPostUrl();
 }
 
-function openPostFromUrl() {
+function redirectLegacyPostUrl() {
   const postId = new URLSearchParams(window.location.search).get('entrada');
-  if (postId && currentPosts.some((post) => post.id === postId)) {
-    openPostView(postId);
-  }
+  if (!postId || !currentPosts.some((post) => post.id === postId)) return;
+  window.location.replace(postPageUrl(postId));
 }
 
 function renderHomePage() {
@@ -54,9 +57,6 @@ function renderHomePage() {
   posts.slice(1).forEach((post) => {
     gridContainer.insertAdjacentHTML('beforeend', buildPostCard(post));
   });
-
-  bindPostClicks(featuredContainer);
-  bindPostClicks(gridContainer);
 }
 
 function renderArchivePage() {
@@ -88,33 +88,25 @@ async function renderArchivePageAsync() {
     );
   });
 
-  bindArchiveTitleClicks(container);
-
   const hint = document.getElementById('archive-hint');
   if (hint) hint.hidden = false;
 }
 
 function buildArchiveItem(post, commentCount) {
+  const alt = escapeAttr(post.title || 'Entrada del blog');
   return `
     <article class="archive-item">
-      <img src="${escapeAttr(post.cover)}" alt="" class="archive-item-img" onerror="this.src='zen_hero.png'" />
+      <img src="${escapeAttr(post.cover)}" alt="${alt}" class="archive-item-img" onerror="this.src='zen_hero.png'" />
       <div class="archive-item-body">
-        <button type="button" class="archive-item-title" data-post-id="${escapeAttr(post.id)}">
+        <a href="${escapeAttr(postPageUrl(post.id))}" class="archive-item-title">
           ${escapeHtml(post.title)}
-        </button>
+        </a>
         <div class="archive-item-meta">
           <time datetime="${escapeAttr(post.date)}">${formatArchiveDate(post.date)}</time>
           <span class="archive-item-comments">${formatCommentCount(commentCount)}</span>
         </div>
       </div>
     </article>`;
-}
-
-function bindArchiveTitleClicks(container) {
-  if (!container) return;
-  container.querySelectorAll('.archive-item-title').forEach((el) => {
-    el.addEventListener('click', () => openPostView(el.dataset.postId));
-  });
 }
 
 function formatArchiveDate(iso) {
@@ -137,78 +129,29 @@ function formatCommentCount(count) {
 }
 
 function buildFeaturedCard(post) {
+  const alt = escapeAttr(post.title || 'Entrada del blog');
+  const href = escapeAttr(postPageUrl(post.id));
   return `
-    <article class="featured-card post-clickable" data-post-id="${escapeAttr(post.id)}" tabindex="0" role="button">
-      <img src="${escapeAttr(post.cover)}" alt="" class="featured-img" onerror="this.src='zen_hero.png'" />
+    <a href="${href}" class="featured-card post-card-link">
+      <img src="${escapeAttr(post.cover)}" alt="${alt}" class="featured-img" onerror="this.src='zen_hero.png'" />
       <div class="featured-content">
         <h3>${escapeHtml(post.title)}</h3>
         <p>${escapeHtml(post.excerpt || '')}</p>
       </div>
-    </article>`;
+    </a>`;
 }
 
 function buildPostCard(post) {
+  const alt = escapeAttr(post.title || 'Entrada del blog');
+  const href = escapeAttr(postPageUrl(post.id));
   return `
-    <article class="post-card post-clickable" data-post-id="${escapeAttr(post.id)}" tabindex="0" role="button">
-      <img src="${escapeAttr(post.cover)}" alt="" class="post-card-img" onerror="this.src='zen_hero.png'" />
+    <a href="${href}" class="post-card post-card-link">
+      <img src="${escapeAttr(post.cover)}" alt="${alt}" class="post-card-img" onerror="this.src='zen_hero.png'" />
       <div class="post-card-body">
         <h4>${escapeHtml(post.title)}</h4>
         <p>${escapeHtml(post.excerpt || '')}</p>
       </div>
-    </article>`;
-}
-
-function bindPostClicks(container) {
-  if (!container) return;
-  container.querySelectorAll('.post-clickable').forEach((el) => {
-    el.addEventListener('click', () => openPostView(el.dataset.postId));
-    el.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        openPostView(el.dataset.postId);
-      }
-    });
-  });
-}
-
-async function openPostView(postId) {
-  const post = currentPosts.find((item) => item.id === postId);
-  const overlay = document.getElementById('post-view-overlay');
-  const body = document.getElementById('post-view-body');
-  if (!post || !overlay || !body) return;
-
-  body.innerHTML = `<p class="posts-empty">Cargando…</p>`;
-  overlay.classList.add('active');
-
-  try {
-    const path = post.contentPath || `posts/${post.id}/content.html`;
-    const response = await fetch(path);
-    const html = response.ok ? await response.text() : `<div class="post-body"><p>${escapeHtml(post.excerpt || '')}</p></div>`;
-    body.innerHTML = `
-      <header class="post-view-meta">
-        <h2>${escapeHtml(post.title)}</h2>
-        <time datetime="${escapeAttr(post.date)}">${formatDate(post.date)}</time>
-      </header>
-      ${html}`;
-
-    if (typeof mountCommentsForPost === 'function') {
-      mountCommentsForPost(postId);
-    }
-  } catch {
-    body.innerHTML = `<p class="posts-empty">No se pudo cargar la entrada.</p>`;
-  }
-}
-
-function formatDate(iso) {
-  try {
-    return new Date(iso).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  } catch {
-    return '';
-  }
+    </a>`;
 }
 
 function escapeHtml(text) {
@@ -224,13 +167,3 @@ function escapeAttr(text) {
 }
 
 function loadMorePosts() {}
-
-function closePostView() {
-  if (typeof teardownComments === 'function') teardownComments();
-  const overlay = document.getElementById('post-view-overlay');
-  if (overlay) overlay.classList.remove('open', 'active');
-}
-
-function closePostViewOnOverlay(event) {
-  if (event.target.id === 'post-view-overlay') closePostView();
-}

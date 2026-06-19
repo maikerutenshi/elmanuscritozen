@@ -68,7 +68,7 @@ async function notifyCommentReply(postId, parentId, replyText) {
 
   const postTitle = getPostTitleForComments(postId) || 'Una entrada del blog';
   const baseUrl = COMMENTS_FIREBASE.siteBaseUrl || 'https://elmanuscritozen.com';
-  const postUrl = `${baseUrl}/?entrada=${encodeURIComponent(postId)}`;
+  const postUrl = `${baseUrl}/entrada/${encodeURIComponent(postId)}/`;
 
   try {
     const response = await emailjs.send(
@@ -182,17 +182,8 @@ async function handleGoogleAuthReturn() {
   if (!savedPostId) return;
 
   sessionStorage.removeItem(COMMENTS_REDIRECT_POST_KEY);
-  await waitForPostsReady();
-
-  if (typeof openPostView !== 'function') return;
-  await openPostView(savedPostId);
-
-  const statusEl = document.getElementById('comments-status');
-  if (redirectError) {
-    showCommentsStatus(statusEl, mapAuthError(redirectError), false, true);
-  } else if (redirectUser) {
-    showCommentsStatus(statusEl, 'Sesión iniciada con Google.', false);
-  }
+  window.location.replace(`/entrada/${encodeURIComponent(savedPostId)}/`);
+  return;
 }
 
 function teardownComments() {

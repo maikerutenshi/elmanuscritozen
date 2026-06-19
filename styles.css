@@ -407,6 +407,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: var(--parchment-ink);
   text-align: left;
   cursor: pointer;
+  text-decoration: none;
   transition: color 0.2s ease;
 }
 
@@ -449,11 +450,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   flex-direction: column;
 }
 
-.post-clickable {
+.post-card-link {
+  text-decoration: none;
+  color: inherit;
   cursor: pointer;
 }
 
-.post-clickable:hover {
+.post-card-link:hover {
   transform: translateY(-3px);
   filter: brightness(1.02);
 }
@@ -591,12 +594,24 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   padding: 8px 32px 32px;
 }
 
+.post-view-meta h1,
 .post-view-meta h2 {
   font-family: var(--font-body);
   font-size: 2rem;
   font-weight: 400;
   color: var(--parchment-ink);
   margin-bottom: 8px;
+}
+
+.post-page-article {
+  width: min(760px, calc(100% - 40px));
+  margin: 40px auto 60px;
+  background-color: var(--parchment-base);
+  background-image: url('/pergamino.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 12px 40px rgba(61, 46, 31, 0.12);
 }
 
 .post-view-meta time {

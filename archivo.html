@@ -14,14 +14,21 @@
   <meta name="theme-color" content="#f5f0e8" />
   <title>Archivo — El Manuscrito Zen</title>
   <meta name="description" content="Histórico de reflexiones sobre budismo y mindfulness en El Manuscrito Zen." />
-  
+  <link rel="canonical" href="https://elmanuscritozen.com/archivo.html" />
+  <meta property="og:title" content="Archivo — El Manuscrito Zen" />
+  <meta property="og:description" content="Histórico de reflexiones sobre budismo y mindfulness en El Manuscrito Zen." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://elmanuscritozen.com/archivo.html" />
+  <meta property="og:image" content="https://elmanuscritozen.com/zen_hero.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   
   <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="stylesheet" href="styles.css?v=16" />
 </head>
 <body>
   <!-- El Navbar se inyecta vía navbar.js -->
@@ -66,22 +73,13 @@
     </div>
   </footer>
 
-  <div class="modal-overlay" id="post-view-overlay" onclick="closePostViewOnOverlay(event)">
-    <div class="post-view-modal" id="post-view-modal">
-      <div class="post-view-header">
-        <button class="editor-close" id="post-view-close-btn" onclick="closePostView()">✕</button>
-      </div>
-      <div class="post-view-body" id="post-view-body"></div>
-    </div>
-  </div>
-
   <script src="navbar.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="comments-config.js"></script>
-  <script src="comments.js?v=7"></script>
-  <script src="app.js"></script>
+  <script src="comments.js?v=9"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
