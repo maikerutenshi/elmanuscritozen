@@ -1,41 +1,68 @@
 (function () {
-  const STORAGE_KEY = 'zen-welcome-sound-played';
-  const SOUND_SRC = 'sounds/bienvenida.mp3';
-  const VOLUME = 0.35;
+  const STORAGE_KEY = 'zen-welcome-sound-v2';
 
-  if (sessionStorage.getItem(STORAGE_KEY)) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function initWelcomeSound() {
+    if (sessionStorage.getItem(STORAGE_KEY)) return;
 
-  const audio = new Audio(SOUND_SRC);
-  audio.volume = VOLUME;
-  audio.preload = 'auto';
+    const audio = document.getElementById('welcome-sound');
+    if (!audio) return;
 
-  let played = false;
+    audio.volume = 0.45;
 
-  function markPlayed() {
-    played = true;
-    sessionStorage.setItem(STORAGE_KEY, '1');
-  }
+    let played = false;
+    let listenersActive = false;
 
-  function tryPlay() {
-    if (played) return;
-    audio.play().then(markPlayed).catch(() => {});
-  }
+    function stopListening() {
+      if (!listenersActive) return;
+      listenersActive = false;
+      window.removeEventListener('pointerdown', onInteract, true);
+      window.removeEventListener('keydown', onInteract, true);
+      window.removeEventListener('scroll', onInteract, true);
+    }
 
-  function playOnFirstInteraction() {
-    const once = () => {
+    function markPlayed() {
+      if (played) return;
+      played = true;
+      sessionStorage.setItem(STORAGE_KEY, '1');
+      stopListening();
+    }
+
+    function tryPlay() {
+      if (played) return;
+      audio.play().then(markPlayed).catch(() => {});
+    }
+
+    function onInteract() {
       tryPlay();
-      document.removeEventListener('click', once);
-      document.removeEventListener('touchstart', once);
-      document.removeEventListener('keydown', once);
-    };
-    document.addEventListener('click', once, { once: true, passive: true });
-    document.addEventListener('touchstart', once, { once: true, passive: true });
-    document.addEventListener('keydown', once, { once: true });
+    }
+
+    function startListening() {
+      if (listenersActive) return;
+      listenersActive = true;
+      window.addEventListener('pointerdown', onInteract, { capture: true, passive: true });
+      window.addEventListener('keydown', onInteract, { capture: true });
+      window.addEventListener('scroll', onInteract, { capture: true, passive: true });
+    }
+
+    audio.addEventListener(
+      'canplaythrough',
+      () => {
+        tryPlay();
+      },
+      { once: true }
+    );
+
+    audio.addEventListener('error', () => {
+      console.warn('No se pudo cargar sounds/bienvenida.mp3');
+    });
+
+    startListening();
+    tryPlay();
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    tryPlay();
-    playOnFirstInteraction();
-  });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWelcomeSound);
+  } else {
+    initWelcomeSound();
+  }
 })();
