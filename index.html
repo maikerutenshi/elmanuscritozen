@@ -39,7 +39,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=16" />
+  <link rel="stylesheet" href="styles.css?v=27" />
 </head>
 <body>
   <header class="hero" id="hero">
@@ -58,10 +58,10 @@
       <p class="hero-quote" id="daily-quote">"El momento presente siempre será."</p>
       <p class="hero-quote-author">— Eckhart Tolle</p>
     </div>
-    <div class="hero-scroll">
+    <button type="button" class="hero-scroll" id="hero-enter" aria-label="Entrar y descender al contenido">
       <span>Descender</span>
       <div class="scroll-line"></div>
-    </div>
+    </button>
   </header>
 
   <main class="main-content" id="main-content">
@@ -103,7 +103,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <audio id="welcome-sound" src="sounds/bienvenida.mp3" preload="auto"></audio>
+  <audio id="welcome-sound" src="sounds/bienvenida.mp3" preload="auto" playsinline></audio>
 
   <script src="navbar.js"></script>
   <script>

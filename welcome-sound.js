@@ -1,63 +1,48 @@
 (function () {
-  const STORAGE_KEY = 'zen-welcome-sound-v2';
+  const STORAGE_KEY = 'zen-welcome-sound-v3';
 
   function initWelcomeSound() {
-    if (sessionStorage.getItem(STORAGE_KEY)) return;
-
     const audio = document.getElementById('welcome-sound');
+    const enterBtn = document.getElementById('hero-enter');
     if (!audio) return;
 
-    audio.volume = 0.45;
+    audio.volume = 0.5;
+    audio.playsInline = true;
+    audio.setAttribute('playsinline', '');
+    audio.setAttribute('webkit-playsinline', '');
 
-    let played = false;
-    let listenersActive = false;
-
-    function stopListening() {
-      if (!listenersActive) return;
-      listenersActive = false;
-      window.removeEventListener('pointerdown', onInteract, true);
-      window.removeEventListener('keydown', onInteract, true);
-      window.removeEventListener('scroll', onInteract, true);
+    function playSound() {
+      audio.currentTime = 0;
+      return audio.play();
     }
 
-    function markPlayed() {
-      if (played) return;
-      played = true;
-      sessionStorage.setItem(STORAGE_KEY, '1');
-      stopListening();
+    function enterSite() {
+      if (sessionStorage.getItem(STORAGE_KEY)) return;
+
+      playSound()
+        .then(() => {
+          sessionStorage.setItem(STORAGE_KEY, '1');
+        })
+        .catch(() => {});
     }
 
-    function tryPlay() {
-      if (played) return;
-      audio.play().then(markPlayed).catch(() => {});
+    if (enterBtn) {
+      enterBtn.addEventListener('click', () => {
+        enterSite();
+        const main = document.getElementById('main-content');
+        if (main) {
+          main.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
     }
 
-    function onInteract() {
-      tryPlay();
+    if (!sessionStorage.getItem(STORAGE_KEY)) {
+      playSound()
+        .then(() => {
+          sessionStorage.setItem(STORAGE_KEY, '1');
+        })
+        .catch(() => {});
     }
-
-    function startListening() {
-      if (listenersActive) return;
-      listenersActive = true;
-      window.addEventListener('pointerdown', onInteract, { capture: true, passive: true });
-      window.addEventListener('keydown', onInteract, { capture: true });
-      window.addEventListener('scroll', onInteract, { capture: true, passive: true });
-    }
-
-    audio.addEventListener(
-      'canplaythrough',
-      () => {
-        tryPlay();
-      },
-      { once: true }
-    );
-
-    audio.addEventListener('error', () => {
-      console.warn('No se pudo cargar sounds/bienvenida.mp3');
-    });
-
-    startListening();
-    tryPlay();
   }
 
   if (document.readyState === 'loading') {
