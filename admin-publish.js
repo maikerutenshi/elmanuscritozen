@@ -135,6 +135,11 @@ async function writeRepoFile(path, contentBase64, message, sha) {
   });
 }
 
+async function writeOrUpdateRepoFile(path, contentBase64, message) {
+  const existing = await readRepoFile(path);
+  return writeRepoFile(path, contentBase64, message, existing?.sha);
+}
+
 async function ensureUniquePostId(baseId, posts) {
   if (!posts.some((post) => post.id === baseId)) {
     return baseId;
@@ -188,12 +193,13 @@ async function publishEntry({ title, content, imageFile }) {
 
   if (typeof ZEN_SEO !== 'undefined') {
     const entryPageHtml = ZEN_SEO.buildEntryPageHtml(entry, htmlContent);
-    await writeRepoFile(
-      `entrada/${postId}/index.html`,
+    const entryPagePath = `entrada/${postId}/index.html`;
+    await writeOrUpdateRepoFile(
+      entryPagePath,
       toBase64Utf8(entryPageHtml),
       `Página SEO: ${title}`
     );
-    await writeRepoFile(
+    await writeOrUpdateRepoFile(
       'sitemap.xml',
       toBase64Utf8(ZEN_SEO.buildSitemapXml(posts)),
       'Actualizar sitemap'
