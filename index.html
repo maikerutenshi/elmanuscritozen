@@ -58,10 +58,10 @@
       <p class="hero-quote" id="daily-quote">"El momento presente siempre será."</p>
       <p class="hero-quote-author">— Eckhart Tolle</p>
     </div>
-    <button type="button" class="hero-scroll" id="hero-enter" aria-label="Entrar y descender al contenido">
+    <div class="hero-scroll">
       <span>Descender</span>
       <div class="scroll-line"></div>
-    </button>
+    </div>
   </header>
 
   <main class="main-content" id="main-content">
@@ -103,8 +103,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <audio id="welcome-sound" src="sounds/bienvenida.mp3" preload="auto" playsinline></audio>
-
   <script src="navbar.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -131,7 +129,6 @@
       }, 1200);
     });
   </script>
-  <script src="welcome-sound.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>

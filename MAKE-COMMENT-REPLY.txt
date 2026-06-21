@@ -1,0 +1,93 @@
+MAKE — Aviso por correo cuando respondes a un comentario
+==========================================================
+
+Cuando publicas una respuesta como admin, la web llama a un webhook de Make
+con el correo del lector que comentó, el título de la entrada y tu respuesta.
+
+Requisito: comentarios nuevos guardan authorEmail (desde jun 2026).
+Comentarios antiguos sin ese campo no pueden recibir aviso automático.
+
+---
+PASO 1 — Crear escenario en Make
+--------------------------------
+1. https://eu1.make.com → Scenarios → Create a new scenario
+2. Nombre: Comentario — respuesta admin
+
+(Plan gratis: 2 escenarios activos. Si ya tienes Dojo + Nueva entrada,
+   desactiva temporalmente uno para probar, o pasa a plan de pago.)
+
+---
+PASO 2 — Módulo 1: Webhook
+--------------------------
+1. + → Webhooks → Custom webhook
+2. Create a webhook → nombre: Comentario respondido
+3. Copia la URL (https://hook.eu1.make.com/...)
+4. Pégala en comments-config.js → replyNotifyWebhook
+5. El token ya está en replyNotifyToken (emz-reply-wh-3k8m2p9x4q1n7)
+
+La web envía JSON:
+{
+  "token": "emz-reply-wh-3k8m2p9x4q1n7",
+  "toEmail": "lector@ejemplo.com",
+  "toName": "María",
+  "postTitle": "Título de la entrada",
+  "postId": "2026-06-10-slug",
+  "url": "https://elmanuscritozen.com/?entrada=2026-06-10-slug",
+  "replyText": "Tu respuesta…",
+  "originalComment": "Primeras palabras del comentario del lector…"
+}
+
+---
+PASO 3 — Filtro (seguridad)
+---------------------------
+Entre Webhook y Gmail:
+- token Equals emz-reply-wh-3k8m2p9x4q1n7
+
+---
+PASO 4 — Módulo 2: Gmail — Send an email
+-----------------------------------------
+- To: toEmail (del webhook)
+- Subject: Te han respondido en «{{postTitle}}» · El Manuscrito Zen
+- Content (HTML):
+
+Hola {{toName}},
+
+El Manuscrito Zen ha respondido a tu comentario en la entrada
+<strong>{{postTitle}}</strong>:
+
+<blockquote style="border-left:3px solid #c4a882;padding-left:12px;margin:16px 0;color:#555;">
+{{replyText}}
+</blockquote>
+
+Tu comentario era:
+<em>{{originalComment}}</em>
+
+<a href="{{url}}">Ver la entrada y la conversación</a>
+
+Con presencia,
+El Manuscrito Zen
+
+<p style="font-size:12px;color:#888;margin-top:24px;">
+  Recibes este correo porque comentaste en el blog. No es publicidad.
+</p>
+
+Conexión Gmail: morpheoia2@gmail.com (como el Dojo)
+
+---
+PASO 5 — Activar y probar
+-------------------------
+1. Scheduling: Immediately (webhook instantáneo)
+2. ON → Publicar escenario
+3. Sube comments-config.js con replyNotifyWebhook relleno
+4. git push → espera 2 min → Ctrl+F5 en la web
+5. Pide a alguien que comente (o comenta tú con otro correo del Dojo)
+6. Responde como admin → el lector debe recibir el email
+
+---
+NOTAS
+-----
+- 1 respuesta = 1 email = ~2 operaciones Make (webhook + Gmail).
+- Si el comentario es antiguo (sin authorEmail), la web avisa:
+  «Ese comentario no tiene correo guardado».
+- No se envía aviso si respondes a tu propio comentario (admin).
+- Si replyNotifyWebhook está vacío, la respuesta se publica igual (sin email).

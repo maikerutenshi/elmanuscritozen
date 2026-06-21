@@ -43,6 +43,10 @@ service cloud.firestore {
         && request.resource.data.text is string
         && request.resource.data.text.size() > 0
         && request.resource.data.text.size() <= 500
+        && (!('authorEmail' in request.resource.data)
+          || (request.resource.data.authorEmail is string
+            && request.resource.data.authorEmail.size() <= 254
+            && request.resource.data.authorEmail == request.auth.token.email))
         && (!isReply() || isCommentsAdmin());
       allow update, delete: if request.auth != null
         && (resource.data.uid == request.auth.uid || isCommentsAdmin());
@@ -54,6 +58,7 @@ service cloud.firestore {
         && request.resource.data.email is string
         && request.resource.data.email.size() > 5
         && request.resource.data.email.size() <= 254
+        && request.resource.data.marketingConsent is bool
         && request.resource.data.marketingConsent == true;
       allow read: if isCommentsAdmin()
         || (request.auth != null && resource.data.email == request.auth.token.email);
@@ -96,6 +101,14 @@ RESPONDER COMENTARIOS (solo admin)
 ----------------------------------
 Entra con tu correo admin → "Responder" debajo del comentario → escribe y publica.
 La respuesta aparece indentada justo debajo. Actualiza Reglas (bloque isReply arriba).
+
+AVISO POR CORREO AL RESPONDER
+-----------------------------
+Guía: MAKE-COMMENT-REPLY.txt
+1. Crea escenario Make (webhook → filtro token → Gmail).
+2. Pega la URL del webhook en comments-config.js → replyNotifyWebhook.
+3. Sube la web (git push). Comentarios nuevos guardan authorEmail para el aviso.
+4. Comentarios antiguos sin authorEmail: respuesta OK, pero sin email al lector.
 
 Alternativa sin código: Firebase → Firestore → Datos → comments → borrar a mano.
 

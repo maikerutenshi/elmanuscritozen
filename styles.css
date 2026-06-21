@@ -308,16 +308,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   letter-spacing: 3px;
   text-transform: uppercase;
   color: #555565;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 12px 20px;
-  transition: color 0.2s ease, opacity 0.2s ease;
-}
-
-.hero-scroll:hover {
-  color: #2c2c35;
-  opacity: 0.85;
 }
 .scroll-line {
   width: 1px;
