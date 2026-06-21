@@ -69,4 +69,21 @@ document.addEventListener('DOMContentLoaded', function() {
             hamburger.setAttribute('aria-label', 'Abrir menú');
         });
     });
+
+    // Sonido al pulsar cualquier enlace del menú (gesto del usuario → permitido en móvil/Chrome)
+    const NAV_SOUND_KEY = 'zen-nav-sound-v1';
+    const navSoundSrc = '/sounds/bienvenida.mp3';
+
+    document.addEventListener('pointerdown', (event) => {
+        const navTarget = event.target.closest('.nav-link, .nav-mobile-link, .nav-logo');
+        if (!navTarget) return;
+        if (sessionStorage.getItem(NAV_SOUND_KEY)) return;
+
+        const audio = new Audio(navSoundSrc);
+        audio.volume = 0.5;
+        audio.playsInline = true;
+        audio.play()
+            .then(() => sessionStorage.setItem(NAV_SOUND_KEY, '1'))
+            .catch(() => {});
+    }, true);
 });
