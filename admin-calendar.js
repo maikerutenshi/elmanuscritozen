@@ -52,7 +52,7 @@ async function loadCalendarData() {
 }
 
 function renderPublishCalendar(container, state, handlers) {
-  const { viewYear, viewMonth, scheduledByDay, selectedKey, onSelectDay } = state;
+  const { viewYear, viewMonth, scheduledByDay, publishedByDay, selectedKey, onSelectDay } = state;
   const firstDay = new Date(viewYear, viewMonth, 1);
   const startOffset = (firstDay.getDay() + 6) % 7;
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
@@ -66,15 +66,22 @@ function renderPublishCalendar(container, state, handlers) {
   for (let day = 1; day <= daysInMonth; day += 1) {
     const date = new Date(viewYear, viewMonth, day);
     const key = calendarDateKey(date);
-    const items = scheduledByDay[key] || [];
+    const scheduledItems = scheduledByDay[key] || [];
+    const publishedItems = publishedByDay[key] || [];
     const classes = ['cal-cell'];
-    if (items.length) classes.push('cal-cell--scheduled');
+    if (publishedItems.length) classes.push('cal-cell--published');
+    if (scheduledItems.length) classes.push('cal-cell--scheduled');
     if (key === todayKey) classes.push('cal-cell--today');
     if (key === selectedKey) classes.push('cal-cell--selected');
 
-    const times = items
-      .map((item) => `<span class="cal-time">${formatCalendarTime(item.publishAt)}</span>`)
-      .join('');
+    const times = [
+      ...publishedItems.map(
+        (item) => `<span class="cal-time cal-time--published">${formatCalendarTime(item.date)}</span>`
+      ),
+      ...scheduledItems.map(
+        (item) => `<span class="cal-time cal-time--scheduled">${formatCalendarTime(item.publishAt)}</span>`
+      ),
+    ].join('');
 
     cells += `
       <button type="button" class="${classes.join(' ')}" data-date="${key}">
@@ -93,7 +100,10 @@ function renderPublishCalendar(container, state, handlers) {
       ${CALENDAR_WEEKDAYS.map((name) => `<span>${name}</span>`).join('')}
     </div>
     <div class="cal-grid">${cells}</div>
-    <p class="cal-legend"><span class="cal-legend-dot"></span> Día con entrada programada</p>
+    <div class="cal-legend">
+      <p><span class="cal-legend-dot cal-legend-dot--published"></span> Publicado</p>
+      <p><span class="cal-legend-dot cal-legend-dot--scheduled"></span> Programado</p>
+    </div>
   `;
 
   container.querySelectorAll('.cal-cell[data-date]').forEach((button) => {
@@ -117,6 +127,7 @@ function initPublishCalendar({ containerId, datetimeInputId }) {
   const state = {
     viewDate: new Date(),
     scheduled: [],
+    published: [],
     selectedKey: null,
   };
 
@@ -141,10 +152,12 @@ function initPublishCalendar({ containerId, datetimeInputId }) {
 
   function render() {
     const scheduledByDay = groupByDay(state.scheduled, 'publishAt');
+    const publishedByDay = groupByDay(state.published, 'date');
     renderPublishCalendar(container, {
       viewYear: state.viewDate.getFullYear(),
       viewMonth: state.viewDate.getMonth(),
       scheduledByDay,
+      publishedByDay,
       selectedKey: state.selectedKey,
       onSelectDay: (key) => applySelectedDate(key, true),
     }, {
@@ -162,6 +175,7 @@ function initPublishCalendar({ containerId, datetimeInputId }) {
   async function refresh() {
     const data = await loadCalendarData();
     state.scheduled = data.scheduled;
+    state.published = data.published;
     render();
   }
 

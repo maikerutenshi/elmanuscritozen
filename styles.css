@@ -987,28 +987,33 @@ body:has(.post-page) .navbar {
 
 .admin-publish-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 24px;
-  max-width: 1100px;
+  grid-template-columns: minmax(560px, 1fr) 460px;
+  gap: 48px;
+  max-width: 1480px;
   margin: 0 auto;
   align-items: start;
 }
 
+.admin-publish-layout > .admin-card {
+  padding: 44px 48px;
+}
+
 .admin-calendar-card {
-  padding: 24px;
+  padding: 32px 30px;
   position: sticky;
   top: 100px;
 }
 
 .admin-calendar-card h3 {
   font-family: var(--font-body);
-  font-size: 20px;
-  margin-bottom: 4px;
+  font-size: 24px;
+  margin-bottom: 6px;
   color: #0d0d0f;
 }
 
 .admin-calendar-card .admin-subtitle {
-  margin-bottom: 18px;
+  margin-bottom: 22px;
+  font-size: 15px;
 }
 
 .admin-form-actions {
@@ -1033,25 +1038,25 @@ body:has(.post-page) .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .cal-title {
   font-family: var(--font-ui);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 500;
   color: #0d0d0f;
   margin: 0;
 }
 
 .cal-nav {
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: #faf8f5;
   color: #0d0d0f;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -1067,13 +1072,13 @@ body:has(.post-page) .navbar {
 .cal-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 6px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .cal-weekdays span {
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
   color: var(--muted);
   text-transform: uppercase;
@@ -1083,20 +1088,20 @@ body:has(.post-page) .navbar {
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 6px;
 }
 
 .cal-cell {
-  min-height: 52px;
+  min-height: 76px;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #faf8f5;
-  padding: 4px 2px;
+  padding: 6px 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 2px;
+  gap: 4px;
   transition: var(--transition);
 }
 
@@ -1126,17 +1131,28 @@ body:has(.post-page) .navbar {
 }
 
 .cal-cell--scheduled {
+  background: linear-gradient(180deg, #dce8f8 0%, #c8daf4 100%);
+  border-color: rgba(58, 98, 158, 0.5);
+}
+
+.cal-cell--scheduled.cal-cell--selected {
+  background: linear-gradient(180deg, #c8daf4 0%, #b4ccee 100%);
+}
+
+.cal-cell--published {
   background: linear-gradient(180deg, #e8f0fb 0%, #dce8f8 100%);
   border-color: rgba(74, 111, 165, 0.45);
 }
 
-.cal-cell--scheduled.cal-cell--selected {
+.cal-cell--published.cal-cell--selected,
+.cal-cell--published.cal-cell--scheduled {
   background: linear-gradient(180deg, #d9e6f8 0%, #c8daf4 100%);
+  border-color: rgba(58, 98, 158, 0.55);
 }
 
 .cal-day {
   font-family: var(--font-ui);
-  font-size: 13px;
+  font-size: 15px;
   color: #0d0d0f;
   line-height: 1.2;
 }
@@ -1150,17 +1166,28 @@ body:has(.post-page) .navbar {
 
 .cal-time {
   font-family: var(--font-ui);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 500;
   color: #2f5580;
-  line-height: 1.1;
+  line-height: 1.15;
   text-align: center;
 }
 
+.cal-time--scheduled {
+  color: #244a78;
+}
+
 .cal-legend {
-  margin-top: 14px;
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+}
+
+.cal-legend p {
+  margin: 0;
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   display: flex;
   align-items: center;
@@ -1168,12 +1195,20 @@ body:has(.post-page) .navbar {
 }
 
 .cal-legend-dot {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.cal-legend-dot--published {
   background: linear-gradient(180deg, #e8f0fb 0%, #dce8f8 100%);
   border: 1px solid rgba(74, 111, 165, 0.45);
-  flex-shrink: 0;
+}
+
+.cal-legend-dot--scheduled {
+  background: linear-gradient(180deg, #dce8f8 0%, #c8daf4 100%);
+  border: 1px solid rgba(58, 98, 158, 0.5);
 }
 
 @media (max-width: 960px) {

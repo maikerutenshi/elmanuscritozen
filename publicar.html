@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=27" />
+  <link rel="stylesheet" href="styles.css?v=28" />
 </head>
 <body>
   <main class="admin-page-container">
@@ -40,7 +40,7 @@
 
             <div class="form-control">
               <label for="post-content">Texto</label>
-              <textarea id="post-content" rows="14" required placeholder="Escribe aquí. Separa párrafos con una línea en blanco."></textarea>
+              <textarea id="post-content" rows="18" required placeholder="Escribe aquí. Separa párrafos con una línea en blanco."></textarea>
             </div>
 
             <div class="form-control">
@@ -69,7 +69,7 @@
 
         <aside class="admin-card admin-calendar-card">
           <h3>Calendario</h3>
-          <p class="admin-subtitle">Días programados en azul, con la hora en cada casilla.</p>
+          <p class="admin-subtitle">Azul claro: publicado. Azul más intenso: programado. La hora aparece en cada día.</p>
           <div class="publish-calendar" id="publish-calendar"></div>
         </aside>
       </div>
@@ -80,7 +80,7 @@
   <script src="admin-seo.js?v=1"></script>
   <script src="admin-auth.js?v=3"></script>
   <script src="admin-publish.js?v=6"></script>
-  <script src="admin-calendar.js?v=1"></script>
+  <script src="admin-calendar.js?v=2"></script>
   <script>
     (async () => {
       if (!requireAdmin()) return;
