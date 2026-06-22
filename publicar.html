@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=30" />
+  <link rel="stylesheet" href="styles.css?v=31" />
 </head>
 <body>
   <main class="admin-page-container">
@@ -66,6 +66,7 @@
             </div>
 
             <div class="admin-form-actions">
+              <button type="button" class="btn-admin-action btn-preview" id="btn-preview">Vista previa</button>
               <button type="submit" class="btn-submit-post" id="btn-publish">Publicar ahora</button>
               <button type="button" class="btn-admin-action btn-schedule" id="btn-schedule">Programar</button>
             </div>
@@ -75,7 +76,7 @@
 
         <aside class="admin-card admin-calendar-card">
           <h3>Calendario</h3>
-          <p class="admin-subtitle">Verde: publicado. Azul: programado. La hora aparece en cada día.</p>
+          <p class="admin-subtitle">Verde: publicado. Azul: programado. Clic en la hora azul para vista previa.</p>
           <div class="publish-calendar" id="publish-calendar"></div>
         </aside>
       </div>
@@ -83,10 +84,11 @@
   </main>
 
   <script src="admin-config.js?v=4"></script>
-  <script src="admin-seo.js?v=1"></script>
+  <script src="admin-seo.js?v=2"></script>
   <script src="admin-auth.js?v=3"></script>
   <script src="admin-publish.js?v=6"></script>
-  <script src="admin-calendar.js?v=3"></script>
+  <script src="admin-preview.js?v=2"></script>
+  <script src="admin-calendar.js?v=4"></script>
   <script src="admin-post-list.js?v=1"></script>
   <script>
     (async () => {
@@ -106,6 +108,19 @@
       const calendar = initPublishCalendar({
         containerId: 'publish-calendar',
         datetimeInputId: 'publish-datetime',
+        onPreviewScheduled: async (postId) => {
+          const status = document.getElementById('publish-status');
+          try {
+            status.hidden = false;
+            status.className = 'admin-status';
+            status.textContent = 'Cargando vista previa…';
+            await openScheduledPostPreview(postId);
+            status.hidden = true;
+          } catch (err) {
+            status.className = 'admin-status admin-status--error';
+            status.textContent = err.message || 'No se pudo abrir la vista previa.';
+          }
+        },
       });
 
       const postList = initPublishedPostList({
@@ -144,6 +159,20 @@
         }
         if (postList) postList.refresh();
       }
+
+      document.getElementById('btn-preview').addEventListener('click', () => {
+        const status = document.getElementById('publish-status');
+        const { title, content, imageFile, publishAt } = readForm();
+
+        try {
+          openPostPreview({ title, content, imageFile, publishAt });
+          status.hidden = true;
+        } catch (err) {
+          status.hidden = false;
+          status.className = 'admin-status admin-status--error';
+          status.textContent = err.message || 'No se pudo abrir la vista previa.';
+        }
+      });
 
       document.getElementById('publish-form').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -205,8 +234,9 @@
             timeStyle: 'short',
           });
           status.className = 'admin-status admin-status--ok';
-          status.textContent = `Programado para ${when}. Se publicará sola en GitHub a esa hora.`;
-          resetForm();
+          status.textContent = `Programado para ${when}. Se publicará sola en GitHub a esa hora. Puedes usar Vista previa o clic en la hora azul del calendario.`;
+          if (calendar) calendar.refresh();
+          if (postList) postList.refresh();
         } catch (err) {
           status.className = 'admin-status admin-status--error';
           status.textContent = err.message || 'No se pudo programar.';

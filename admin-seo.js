@@ -164,6 +164,74 @@ function buildEntryPageHtml(entry, contentHtml) {
 `;
 }
 
+function buildPreviewPageHtml(entry, contentHtml, options = {}) {
+  const title = seoEscapeHtml(entry.title);
+  const dateLabel = seoFormatDateEs(entry.date);
+  const dateAttr = seoEscapeHtml(entry.date);
+  const coverSrc = options.coverSrc || '';
+  const showCover = Boolean(coverSrc);
+  const scheduledLabel = seoEscapeHtml(options.scheduledLabel || dateLabel);
+  const bannerText = options.scheduled
+    ? `Vista previa — programada para ${scheduledLabel}`
+    : 'Vista previa — así se verá al publicar';
+
+  const coverHtml = showCover
+    ? `<figure class="post-page-figure">
+          <img src="${seoEscapeHtml(coverSrc)}" alt="${title}" class="post-page-cover" />
+        </figure>`
+    : '';
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f0e8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>${title} (vista previa) — El Manuscrito Zen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=30" />
+</head>
+<body>
+  <main class="main-content post-page">
+    <article class="post-page-article">
+      <div class="post-view-body" id="post-view-body">
+        <p class="preview-banner">${bannerText}</p>
+        <header class="post-view-meta">
+          <h1>${title}</h1>
+          <time datetime="${dateAttr}">${dateLabel}</time>
+        </header>
+        ${coverHtml}
+        ${contentHtml}
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-symbol"><img src="/enso.png" alt="Ensō" class="enso-img" /></span>
+        <span class="footer-name">El Manuscrito Zen</span>
+      </div>
+      <p class="footer-phrase">"Respira. Estás aquí."</p>
+      <p class="footer-copy">© 2026 El Manuscrito Zen · Hecho con presencia</p>
+    </div>
+  </footer>
+
+  <script src="/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navbar = document.getElementById('navbar');
+      if (navbar) navbar.classList.add('scrolled');
+    });
+  </script>
+</body>
+</html>
+`;
+}
+
 function buildSitemapXml(posts) {
   const today = new Date().toISOString().slice(0, 10);
   const staticPages = [
@@ -206,12 +274,14 @@ if (typeof module !== 'undefined' && module.exports) {
     postPublicPath,
     postPublicUrl,
     buildEntryPageHtml,
+    buildPreviewPageHtml,
     buildSitemapXml,
   };
 } else if (typeof window !== 'undefined') {
   window.ZEN_SEO = {
     SEO_SITE_BASE,
     buildEntryPageHtml,
+    buildPreviewPageHtml,
     buildSitemapXml,
   };
 }

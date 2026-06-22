@@ -79,7 +79,7 @@ function renderPublishCalendar(container, state, handlers) {
         (item) => `<span class="cal-time cal-time--published">${formatCalendarTime(item.date)}</span>`
       ),
       ...scheduledItems.map(
-        (item) => `<span class="cal-time cal-time--scheduled">${formatCalendarTime(item.publishAt)}</span>`
+        (item) => `<button type="button" class="cal-time cal-time--scheduled" data-scheduled-id="${item.id}" title="Vista previa">${formatCalendarTime(item.publishAt)}</button>`
       ),
     ].join('');
 
@@ -102,13 +102,22 @@ function renderPublishCalendar(container, state, handlers) {
     <div class="cal-grid">${cells}</div>
     <div class="cal-legend">
       <p><span class="cal-legend-dot cal-legend-dot--published"></span> Publicado</p>
-      <p><span class="cal-legend-dot cal-legend-dot--scheduled"></span> Programado</p>
+      <p><span class="cal-legend-dot cal-legend-dot--scheduled"></span> Programado (clic en la hora → vista previa)</p>
     </div>
   `;
 
   container.querySelectorAll('.cal-cell[data-date]').forEach((button) => {
     button.addEventListener('click', () => {
       onSelectDay(button.dataset.date);
+    });
+  });
+
+  container.querySelectorAll('[data-scheduled-id]').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (handlers.onPreviewScheduled) {
+        handlers.onPreviewScheduled(button.dataset.scheduledId);
+      }
     });
   });
 
@@ -119,7 +128,7 @@ function renderPublishCalendar(container, state, handlers) {
   });
 }
 
-function initPublishCalendar({ containerId, datetimeInputId }) {
+function initPublishCalendar({ containerId, datetimeInputId, onPreviewScheduled }) {
   const container = document.getElementById(containerId);
   const datetimeInput = document.getElementById(datetimeInputId);
   if (!container || !datetimeInput) return null;
@@ -169,6 +178,7 @@ function initPublishCalendar({ containerId, datetimeInputId }) {
         );
         render();
       },
+      onPreviewScheduled,
     });
   }
 

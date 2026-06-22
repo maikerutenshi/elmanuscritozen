@@ -1121,6 +1121,28 @@ body:has(.post-page) .navbar {
   background: #3d5f8f;
 }
 
+.btn-preview {
+  background: #faf8f5;
+  color: #0d0d0f;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.btn-preview:hover {
+  background: #eef3fa;
+  color: #0d0d0f;
+}
+
+.preview-banner {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  text-align: center;
+  padding: 12px 16px;
+  margin: 0 0 24px;
+  background: #eef3fa;
+  color: #3d5f8f;
+  border-radius: var(--radius-sm);
+}
+
 .publish-calendar {
   user-select: none;
 }
@@ -1274,6 +1296,15 @@ body:has(.post-page) .navbar {
 
 .cal-time--scheduled {
   color: #244a78;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+}
+
+.cal-time--scheduled:hover {
+  text-decoration: underline;
 }
 
 .cal-legend {
