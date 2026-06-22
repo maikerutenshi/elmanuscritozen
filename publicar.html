@@ -17,52 +17,70 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=27" />
 </head>
 <body>
   <main class="admin-page-container">
     <section class="admin-section admin-section--wide">
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <div>
-            <h3>Nueva entrada</h3>
-            <p class="admin-subtitle">Escribe tu reflexión. La imagen JPG es opcional.</p>
+      <div class="admin-publish-layout">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h3>Nueva entrada</h3>
+              <p class="admin-subtitle">Escribe tu reflexión. La imagen JPG es opcional.</p>
+            </div>
+            <button type="button" class="btn-logout" id="btn-logout">Salir</button>
           </div>
-          <button type="button" class="btn-logout" id="btn-logout">Salir</button>
+
+          <form class="admin-form" id="publish-form">
+            <div class="form-control">
+              <label for="post-title">Título</label>
+              <input type="text" id="post-title" required placeholder="Título de la entrada" />
+            </div>
+
+            <div class="form-control">
+              <label for="post-content">Texto</label>
+              <textarea id="post-content" rows="14" required placeholder="Escribe aquí. Separa párrafos con una línea en blanco."></textarea>
+            </div>
+
+            <div class="form-control">
+              <label for="post-cover">Imagen (JPG, opcional)</label>
+              <input type="file" id="post-cover" accept="image/jpeg,image/jpg" />
+              <p class="admin-hint">Si no subes imagen, se usará la imagen zen por defecto.</p>
+            </div>
+
+            <div class="publish-preview" id="publish-preview" hidden>
+              <img id="publish-preview-img" alt="Vista previa" />
+            </div>
+
+            <div class="form-control">
+              <label for="publish-datetime">Fecha y hora de publicación</label>
+              <input type="datetime-local" id="publish-datetime" />
+              <p class="admin-hint">También puedes elegir el día en el calendario de la derecha.</p>
+            </div>
+
+            <div class="admin-form-actions">
+              <button type="submit" class="btn-submit-post" id="btn-publish">Publicar ahora</button>
+              <button type="button" class="btn-admin-action btn-schedule" id="btn-schedule">Programar</button>
+            </div>
+            <p class="admin-status" id="publish-status" hidden></p>
+          </form>
         </div>
 
-        <form class="admin-form" id="publish-form">
-          <div class="form-control">
-            <label for="post-title">Título</label>
-            <input type="text" id="post-title" required placeholder="Título de la entrada" />
-          </div>
-
-          <div class="form-control">
-            <label for="post-content">Texto</label>
-            <textarea id="post-content" rows="14" required placeholder="Escribe aquí. Separa párrafos con una línea en blanco."></textarea>
-          </div>
-
-          <div class="form-control">
-            <label for="post-cover">Imagen (JPG, opcional)</label>
-            <input type="file" id="post-cover" accept="image/jpeg,image/jpg" />
-            <p class="admin-hint">Si no subes imagen, se usará la imagen zen por defecto.</p>
-          </div>
-
-          <div class="publish-preview" id="publish-preview" hidden>
-            <img id="publish-preview-img" alt="Vista previa" />
-          </div>
-
-          <button type="submit" class="btn-submit-post" id="btn-publish">Publicar entrada</button>
-          <p class="admin-status" id="publish-status" hidden></p>
-        </form>
+        <aside class="admin-card admin-calendar-card">
+          <h3>Calendario</h3>
+          <p class="admin-subtitle">Días programados en azul, con la hora en cada casilla.</p>
+          <div class="publish-calendar" id="publish-calendar"></div>
+        </aside>
       </div>
     </section>
   </main>
 
-  <script src="admin-config.js?v=3"></script>
+  <script src="admin-config.js?v=4"></script>
   <script src="admin-seo.js?v=1"></script>
   <script src="admin-auth.js?v=3"></script>
-  <script src="admin-publish.js?v=5"></script>
+  <script src="admin-publish.js?v=6"></script>
+  <script src="admin-calendar.js?v=1"></script>
   <script>
     (async () => {
       if (!requireAdmin()) return;
@@ -78,48 +96,113 @@
         window.location.href = 'admin.html';
       });
 
-    document.getElementById('post-cover').addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      const preview = document.getElementById('publish-preview');
-      const img = document.getElementById('publish-preview-img');
+      const calendar = initPublishCalendar({
+        containerId: 'publish-calendar',
+        datetimeInputId: 'publish-datetime',
+      });
 
-      if (!file) {
-        preview.hidden = true;
-        return;
+      document.getElementById('post-cover').addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const preview = document.getElementById('publish-preview');
+        const img = document.getElementById('publish-preview-img');
+
+        if (!file) {
+          preview.hidden = true;
+          return;
+        }
+
+        img.src = URL.createObjectURL(file);
+        preview.hidden = false;
+      });
+
+      function readForm() {
+        return {
+          title: document.getElementById('post-title').value.trim(),
+          content: document.getElementById('post-content').value.trim(),
+          imageFile: document.getElementById('post-cover').files[0] || null,
+          publishAt: document.getElementById('publish-datetime').value,
+        };
       }
 
-      img.src = URL.createObjectURL(file);
-      preview.hidden = false;
-    });
-
-    document.getElementById('publish-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const status = document.getElementById('publish-status');
-      const button = document.getElementById('btn-publish');
-      const title = document.getElementById('post-title').value.trim();
-      const content = document.getElementById('post-content').value.trim();
-      const imageFile = document.getElementById('post-cover').files[0] || null;
-
-      status.hidden = false;
-      status.className = 'admin-status';
-      status.textContent = 'Publicando…';
-      button.disabled = true;
-
-      try {
-        const entry = await publishEntry({ title, content, imageFile });
-        status.className = 'admin-status admin-status--ok';
-        status.textContent =
-          'Publicado en GitHub. Si estás en local: Terminal → git pull → F5 en Inicio y Archivo.';
+      function resetForm() {
         document.getElementById('publish-form').reset();
         document.getElementById('publish-preview').hidden = true;
-      } catch (err) {
-        status.className = 'admin-status admin-status--error';
-        status.textContent = err.message || 'No se pudo publicar.';
-      } finally {
-        button.disabled = false;
+        if (calendar) {
+          calendar.resetSelection();
+          calendar.refresh();
+        }
       }
-    });
+
+      document.getElementById('publish-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const status = document.getElementById('publish-status');
+        const button = document.getElementById('btn-publish');
+        const { title, content, imageFile } = readForm();
+
+        status.hidden = false;
+        status.className = 'admin-status';
+        status.textContent = 'Publicando…';
+        button.disabled = true;
+        document.getElementById('btn-schedule').disabled = true;
+
+        try {
+          await publishEntry({ title, content, imageFile });
+          status.className = 'admin-status admin-status--ok';
+          status.textContent =
+            'Publicado en GitHub. Si estás en local: Terminal → git pull → F5 en Inicio y Archivo.';
+          resetForm();
+        } catch (err) {
+          status.className = 'admin-status admin-status--error';
+          status.textContent = err.message || 'No se pudo publicar.';
+        } finally {
+          button.disabled = false;
+          document.getElementById('btn-schedule').disabled = false;
+        }
+      });
+
+      document.getElementById('btn-schedule').addEventListener('click', async () => {
+        const status = document.getElementById('publish-status');
+        const button = document.getElementById('btn-schedule');
+        const { title, content, imageFile, publishAt } = readForm();
+
+        if (!title || !content) {
+          status.hidden = false;
+          status.className = 'admin-status admin-status--error';
+          status.textContent = 'Completa título y texto antes de programar.';
+          return;
+        }
+
+        if (!publishAt) {
+          status.hidden = false;
+          status.className = 'admin-status admin-status--error';
+          status.textContent = 'Elige fecha y hora en el calendario o en el campo de abajo.';
+          return;
+        }
+
+        status.hidden = false;
+        status.className = 'admin-status';
+        status.textContent = 'Guardando programación…';
+        button.disabled = true;
+        document.getElementById('btn-publish').disabled = true;
+
+        try {
+          const entry = await scheduleEntry({ title, content, imageFile, publishAt });
+          const when = new Date(entry.publishAt).toLocaleString('es-ES', {
+            dateStyle: 'long',
+            timeStyle: 'short',
+          });
+          status.className = 'admin-status admin-status--ok';
+          status.textContent = `Programado para ${when}. Se publicará sola en GitHub a esa hora.`;
+          resetForm();
+        } catch (err) {
+          status.className = 'admin-status admin-status--error';
+          status.textContent = err.message || 'No se pudo programar.';
+        } finally {
+          button.disabled = false;
+          document.getElementById('btn-publish').disabled = false;
+        }
+      });
     })();
   </script>
 </body>

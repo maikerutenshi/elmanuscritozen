@@ -8,8 +8,8 @@ function slugify(text) {
     .slice(0, 50) || 'entrada';
 }
 
-function makePostId(title) {
-  const date = new Date().toISOString().slice(0, 10);
+function makePostId(title, when = new Date()) {
+  const date = (when instanceof Date ? when : new Date(when)).toISOString().slice(0, 10);
   return `${date}-${slugify(title)}`;
 }
 
@@ -147,6 +147,79 @@ async function ensureUniquePostId(baseId, posts) {
   return `${baseId}-${Date.now().toString(36)}`;
 }
 
+function buildExcerpt(content) {
+  const trimmed = content.trim();
+  return trimmed.slice(0, 140) + (trimmed.length > 140 ? '…' : '');
+}
+
+async function readScheduledList() {
+  const path = ZEN_ADMIN.scheduledIndexPath || 'posts/scheduled.json';
+  const file = await readRepoFile(path);
+  const list = file ? JSON.parse(file.content) : [];
+  return {
+    list: Array.isArray(list) ? list : [],
+    sha: file?.sha,
+    path,
+  };
+}
+
+async function scheduleEntry({ title, content, imageFile, publishAt }) {
+  const publishDate = new Date(publishAt);
+  if (Number.isNaN(publishDate.getTime())) {
+    throw new Error('Fecha u hora no válida.');
+  }
+  if (publishDate.getTime() <= Date.now()) {
+    throw new Error('La programación debe ser en el futuro.');
+  }
+
+  let postId = makePostId(title, publishDate);
+  const indexFile = await readRepoFile(ZEN_ADMIN.postsIndexPath);
+  const posts = indexFile ? JSON.parse(indexFile.content) : [];
+  if (!Array.isArray(posts)) {
+    throw new Error('posts/posts.json no tiene un formato válido.');
+  }
+
+  const scheduledData = await readScheduledList();
+  const scheduled = scheduledData.list;
+  postId = await ensureUniquePostId(postId, [...posts, ...scheduled]);
+
+  const htmlContent = textToHtml(content);
+  const htmlBase64 = toBase64Utf8(htmlContent);
+  const contentPath = `posts/scheduled/${postId}/content.html`;
+
+  let coverPath = ZEN_ADMIN.defaultCover || 'zen_hero.png';
+
+  if (imageFile) {
+    const jpegBlob = await resizeImageToJpeg(imageFile);
+    const imageBase64 = await blobToBase64(jpegBlob);
+    coverPath = `posts/scheduled/${postId}/cover.jpg`;
+    await writeRepoFile(coverPath, imageBase64, `Programar imagen: ${title}`);
+  }
+
+  await writeRepoFile(contentPath, htmlBase64, `Programar contenido: ${title}`);
+
+  const entry = {
+    id: postId,
+    title: title.trim(),
+    excerpt: buildExcerpt(content),
+    publishAt: publishDate.toISOString(),
+    cover: coverPath,
+    contentPath,
+  };
+
+  scheduled.push(entry);
+  scheduled.sort((a, b) => new Date(a.publishAt) - new Date(b.publishAt));
+
+  await writeRepoFile(
+    scheduledData.path,
+    toBase64Utf8(JSON.stringify(scheduled, null, 2) + '\n'),
+    `Programar entrada: ${title}`,
+    scheduledData.sha
+  );
+
+  return entry;
+}
+
 async function publishEntry({ title, content, imageFile }) {
   let postId = makePostId(title);
   const indexFile = await readRepoFile(ZEN_ADMIN.postsIndexPath);
@@ -172,11 +245,10 @@ async function publishEntry({ title, content, imageFile }) {
 
   await writeRepoFile(contentPath, htmlBase64, `Contenido: ${title}`);
 
-  const excerpt = content.trim().slice(0, 140) + (content.trim().length > 140 ? '…' : '');
   const entry = {
     id: postId,
     title: title.trim(),
-    excerpt,
+    excerpt: buildExcerpt(content),
     date: new Date().toISOString(),
     cover: coverPath,
     contentPath,
