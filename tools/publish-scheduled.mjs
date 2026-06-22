@@ -18,8 +18,18 @@ const POSTS_INDEX = path.join(root, 'posts/posts.json');
 const SCHEDULED_INDEX = path.join(root, 'posts/scheduled.json');
 const SITEMAP = path.join(root, 'sitemap.xml');
 
-const NOTIFY_WEBHOOK = process.env.POST_NOTIFY_WEBHOOK || '';
-const NOTIFY_TOKEN = process.env.POST_NOTIFY_TOKEN || '';
+function loadNotifyConfig() {
+  const configPath = path.join(root, 'admin-config.js');
+  const raw = fs.readFileSync(configPath, 'utf8');
+  const webhook = raw.match(/postNotifyWebhook:\s*'([^']*)'/)?.[1] || '';
+  const token = raw.match(/postNotifyToken:\s*'([^']*)'/)?.[1] || '';
+  return {
+    webhook: process.env.POST_NOTIFY_WEBHOOK || webhook,
+    token: process.env.POST_NOTIFY_TOKEN || token,
+  };
+}
+
+const NOTIFY = loadNotifyConfig();
 
 function readJson(filePath, fallback) {
   if (!fs.existsSync(filePath)) return fallback;
@@ -35,13 +45,13 @@ function postPublicUrl(postId) {
 }
 
 async function notifyPostPublished(entry) {
-  if (!NOTIFY_WEBHOOK) return;
+  if (!NOTIFY.webhook) return;
   try {
-    const response = await fetch(NOTIFY_WEBHOOK, {
+    const response = await fetch(NOTIFY.webhook, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        token: NOTIFY_TOKEN,
+        token: NOTIFY.token,
         title: entry.title,
         excerpt: entry.excerpt || '',
         postId: entry.id,

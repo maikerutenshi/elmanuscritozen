@@ -19,9 +19,6 @@ jobs:
           node-version: '20'
 
       - name: Publicar entradas pendientes
-        env:
-          POST_NOTIFY_WEBHOOK: ${{ secrets.POST_NOTIFY_WEBHOOK }}
-          POST_NOTIFY_TOKEN: ${{ secrets.POST_NOTIFY_TOKEN }}
         run: node tools/publish-scheduled.mjs
 
       - name: Guardar cambios en el repositorio
