@@ -983,13 +983,18 @@ body:has(.post-page) .navbar {
 
 .admin-section--wide {
   max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .admin-publish-layout {
   display: grid;
-  grid-template-columns: 240px minmax(720px, 1fr) 520px;
-  gap: 36px;
-  max-width: min(1880px, calc(100vw - 48px));
+  grid-template-columns: 320px minmax(0, 1.75fr) 520px;
+  gap: 32px;
+  width: 100%;
+  max-width: calc(100vw - 40px);
   margin: 0 auto;
   align-items: start;
 }
@@ -999,7 +1004,7 @@ body:has(.post-page) .navbar {
 }
 
 .admin-post-list-card {
-  padding: 28px 22px !important;
+  padding: 28px 24px !important;
   position: sticky;
   top: 100px;
   max-height: calc(100vh - 120px);
@@ -1063,11 +1068,11 @@ body:has(.post-page) .navbar {
 
 .post-list-title {
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 13px;
   color: #0d0d0f;
-  line-height: 1.35;
+  line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1307,8 +1312,8 @@ body:has(.post-page) .navbar {
 
 @media (max-width: 1400px) {
   .admin-publish-layout {
-    grid-template-columns: 220px minmax(0, 1fr) 460px;
-    gap: 28px;
+    grid-template-columns: 280px minmax(0, 1.5fr) 480px;
+    gap: 24px;
   }
 }
 
@@ -1566,6 +1571,13 @@ body:has(.post-page) .navbar {
 .admin-section {
   max-width: 700px;
   margin: 0 auto;
+}
+
+.admin-page-container .admin-section--wide {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0 20px;
 }
 .admin-card {
   background: var(--bg-card);
