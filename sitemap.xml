@@ -2,23 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://elmanuscritozen.com/</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://elmanuscritozen.com/archivo.html</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://elmanuscritozen.com/sobre.html</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://elmanuscritozen.com/dojo.html</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://elmanuscritozen.com/entrada/2026-06-23-mindfulness-y-budismo-zen-que-son-de-donde-vienen-/</loc>
+    <lastmod>2026-06-23</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://elmanuscritozen.com/entrada/2026-06-21-como-respirar-bien-para-meditar-respiracion-diafra/</loc>
+    <lastmod>2026-06-21</lastmod>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://elmanuscritozen.com/entrada/2026-06-19-construccion-del-ego-y-budismo-por-que-necesitas-u/</loc>
