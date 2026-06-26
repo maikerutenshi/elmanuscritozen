@@ -93,6 +93,7 @@ function buildEntryPageHtml(entry, contentHtml) {
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#f5f0e8" />
+  <meta name="robots" content="index, follow" />
   <title>${title} — El Manuscrito Zen</title>
   <meta name="description" content="${description}" />
   <link rel="canonical" href="${canonical}" />

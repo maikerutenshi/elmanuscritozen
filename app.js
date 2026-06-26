@@ -98,9 +98,11 @@ function buildArchiveItem(post, commentCount) {
     <article class="archive-item">
       <img src="${escapeAttr(post.cover)}" alt="${alt}" class="archive-item-img" onerror="this.src='zen_hero.png'" />
       <div class="archive-item-body">
-        <a href="${escapeAttr(postPageUrl(post.id))}" class="archive-item-title">
-          ${escapeHtml(post.title)}
-        </a>
+        <h2 class="archive-item-heading">
+          <a href="${escapeAttr(postPageUrl(post.id))}" class="archive-item-title">
+            ${escapeHtml(post.title)}
+          </a>
+        </h2>
         <div class="archive-item-meta">
           <time datetime="${escapeAttr(post.date)}">${formatArchiveDate(post.date)}</time>
           <span class="archive-item-comments">${formatCommentCount(commentCount)}</span>
@@ -135,7 +137,7 @@ function buildFeaturedCard(post) {
     <a href="${href}" class="featured-card post-card-link">
       <img src="${escapeAttr(post.cover)}" alt="${alt}" class="featured-img" onerror="this.src='zen_hero.png'" />
       <div class="featured-content">
-        <h3>${escapeHtml(post.title)}</h3>
+        <h2>${escapeHtml(post.title)}</h2>
         <p>${escapeHtml(post.excerpt || '')}</p>
       </div>
     </a>`;
@@ -148,7 +150,7 @@ function buildPostCard(post) {
     <a href="${href}" class="post-card post-card-link">
       <img src="${escapeAttr(post.cover)}" alt="${alt}" class="post-card-img" onerror="this.src='zen_hero.png'" />
       <div class="post-card-body">
-        <h4>${escapeHtml(post.title)}</h4>
+        <h2>${escapeHtml(post.title)}</h2>
         <p>${escapeHtml(post.excerpt || '')}</p>
       </div>
     </a>`;

@@ -393,10 +393,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   min-width: 0;
 }
 
-.archive-item-title {
-  display: block;
-  width: 100%;
+.archive-item-heading {
   margin: 0 0 6px;
+  padding: 0;
+  font: inherit;
+  font-weight: inherit;
+}
+
+.archive-item-title {
+  display: inline;
+  width: auto;
+  margin: 0;
   padding: 0;
   border: none;
   background: none;
@@ -511,8 +518,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   justify-content: center;
 }
 
-.featured-content h3,
-.post-card h4 {
+.featured-content h2,
+.post-card h2 {
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: 400;
@@ -520,7 +527,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 12px;
 }
 
-.post-card h4 {
+.post-card h2 {
   font-size: 1.2rem;
   padding-top: 20px;
 }
