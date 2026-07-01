@@ -52,7 +52,9 @@ service cloud.firestore {
         && (resource.data.uid == request.auth.uid || isCommentsAdmin());
     }
     match /dojo_subscribers/{subscriberId} {
-      allow create: if request.resource.data.name is string
+      allow create: if request.auth != null
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.name is string
         && request.resource.data.name.size() > 0
         && request.resource.data.name.size() <= 80
         && request.resource.data.email is string
@@ -66,7 +68,12 @@ service cloud.firestore {
         || (request.auth != null
           && resource.data.email == request.auth.token.email
           && request.resource.data.active == false
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['active', 'unsubscribedAt']));
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['active', 'unsubscribedAt']))
+        || (request.auth != null
+          && resource.data.email == request.auth.token.email
+          && request.resource.data.active == true
+          && request.resource.data.email == request.auth.token.email
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['active', 'name', 'marketingConsent', 'consentAt']));
       allow delete: if isCommentsAdmin();
     }
   }

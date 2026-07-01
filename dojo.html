@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="stylesheet" href="styles.css?v=15" />
 </head>
 <body>
   <header class="hero" id="hero">
@@ -156,6 +156,40 @@
       }
     }
 
+    async function upsertDojoSubscriber(name, email) {
+      const db = firebase.firestore();
+      const snapshot = await db.collection('dojo_subscribers').where('email', '==', email).get();
+
+      if (!snapshot.empty) {
+        const hasActive = snapshot.docs.some((doc) => doc.data().active !== false);
+        if (hasActive) {
+          return { status: 'already-active' };
+        }
+
+        const batch = db.batch();
+        snapshot.docs.forEach((doc) => {
+          batch.update(doc.ref, {
+            name,
+            active: true,
+            marketingConsent: true,
+            consentAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+        });
+        await batch.commit();
+        return { status: 'reactivated' };
+      }
+
+      await db.collection('dojo_subscribers').add({
+        name,
+        email,
+        active: true,
+        marketingConsent: true,
+        consentAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      return { status: 'created' };
+    }
+
     const form = document.getElementById('dojo-enroll-form');
     const submitBtn = form.querySelector('button[type="submit"]');
 
@@ -178,20 +212,23 @@
       try {
         initDojoFirebase();
         await ensureDojoAuthUser(name, email, password);
-        await firebase.firestore().collection('dojo_subscribers').add({
-          name,
-          email,
-          active: true,
-          marketingConsent: true,
-          consentAt: firebase.firestore.FieldValue.serverTimestamp(),
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
-        fetch(DOJO_MAKE_WEBHOOK, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, token: DOJO_MAKE_WEBHOOK_TOKEN }),
-        }).catch((err) => console.warn('Dojo email webhook:', err));
-        alert('¡Bienvenido al Dojo! Revisa tu correo en unos minutos. Ya puedes comentar en las entradas con el mismo correo y contraseña.');
+        const result = await upsertDojoSubscriber(name, email);
+
+        if (result.status === 'created' || result.status === 'reactivated') {
+          fetch(DOJO_MAKE_WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, token: DOJO_MAKE_WEBHOOK_TOKEN }),
+          }).catch((err) => console.warn('Dojo email webhook:', err));
+        }
+
+        if (result.status === 'already-active') {
+          alert('Ese correo ya está en el Dojo. Puedes comentar en las entradas con la misma contraseña.');
+        } else if (result.status === 'reactivated') {
+          alert('¡Bienvenido de nuevo al Dojo! Hemos reactivado tus avisos por correo.');
+        } else {
+          alert('¡Bienvenido al Dojo! Revisa tu correo en unos minutos. Ya puedes comentar en las entradas con el mismo correo y contraseña.');
+        }
         form.reset();
       } catch (error) {
         console.error('Dojo subscribe:', error.code || error.message || error);
