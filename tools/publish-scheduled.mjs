@@ -30,6 +30,10 @@ function loadNotifyConfig() {
 }
 
 const NOTIFY = loadNotifyConfig();
+const NOTIFY_PENDING = path.join(root, '.notify-pending.json');
+const args = new Set(process.argv.slice(2));
+const deferNotify = args.has('--defer-notify');
+const notifyOnly = args.has('--notify-only');
 
 function readJson(filePath, fallback) {
   if (!fs.existsSync(filePath)) return fallback;
@@ -44,8 +48,32 @@ function postPublicUrl(postId) {
   return `https://elmanuscritozen.com/entrada/${postId}/`;
 }
 
-async function notifyPostPublished(entry) {
+async function waitForPublicUrl(url, maxMs = 20 * 60 * 1000, intervalMs = 30 * 1000) {
+  const start = Date.now();
+  while (Date.now() - start < maxMs) {
+    try {
+      const response = await fetch(url, { method: 'GET', redirect: 'follow' });
+      if (response.ok) {
+        console.log(`En línea: ${url}`);
+        return true;
+      }
+      console.log(`Esperando despliegue (${response.status}): ${url}`);
+    } catch (err) {
+      console.log(`Esperando despliegue (${err.message}): ${url}`);
+    }
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+  console.warn(`Tiempo de espera agotado: ${url}`);
+  return false;
+}
+
+async function notifyPostPublished(entry, { waitForDeploy = false } = {}) {
   if (!NOTIFY.webhook) return;
+  const url = postPublicUrl(entry.id);
+  if (waitForDeploy && !(await waitForPublicUrl(url))) {
+    console.warn(`No se envía aviso Dojo: la entrada aún no está online (${entry.id})`);
+    return;
+  }
   try {
     const response = await fetch(NOTIFY.webhook, {
       method: 'POST',
@@ -55,15 +83,31 @@ async function notifyPostPublished(entry) {
         title: entry.title,
         excerpt: entry.excerpt || '',
         postId: entry.id,
-        url: postPublicUrl(entry.id),
+        url,
       }),
     });
     if (!response.ok) {
       console.warn('Aviso Dojo:', response.status);
+    } else {
+      console.log(`Aviso Dojo enviado: ${entry.id}`);
     }
   } catch (err) {
     console.warn('Aviso Dojo:', err.message);
   }
+}
+
+function savePendingNotifications(entries) {
+  if (!entries.length) return;
+  writeJson(NOTIFY_PENDING, entries);
+}
+
+function loadPendingNotifications() {
+  if (!fs.existsSync(NOTIFY_PENDING)) return [];
+  return readJson(NOTIFY_PENDING, []);
+}
+
+function clearPendingNotifications() {
+  if (fs.existsSync(NOTIFY_PENDING)) fs.unlinkSync(NOTIFY_PENDING);
 }
 
 function moveScheduledToPublished(item) {
@@ -136,10 +180,34 @@ function publishDueEntries() {
   return published;
 }
 
+async function notifyPendingEntries() {
+  const pending = loadPendingNotifications();
+  if (!pending.length) {
+    console.log('No hay avisos Dojo pendientes.');
+    return;
+  }
+
+  for (const entry of pending) {
+    await notifyPostPublished(entry, { waitForDeploy: true });
+  }
+  clearPendingNotifications();
+}
+
 async function main() {
+  if (notifyOnly) {
+    await notifyPendingEntries();
+    return;
+  }
+
   const published = publishDueEntries();
   if (!published) {
     process.exit(0);
+  }
+
+  if (deferNotify) {
+    savePendingNotifications(published);
+    console.log(`Avisos Dojo diferidos (${published.length}).`);
+    return;
   }
 
   for (const entry of published) {

@@ -19,10 +19,15 @@ jobs:
           node-version: '20'
 
       - name: Publicar entradas pendientes
-        run: node tools/publish-scheduled.mjs
+        run: node tools/publish-scheduled.mjs --defer-notify
 
       - name: Guardar cambios en el repositorio
+        id: commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'Publicar entradas programadas'
           file_pattern: 'posts/** entrada/** sitemap.xml'
+
+      - name: Esperar despliegue y avisar al Dojo
+        if: steps.commit.outputs.changes_detected == 'true'
+        run: node tools/publish-scheduled.mjs --notify-only
