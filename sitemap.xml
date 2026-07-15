@@ -2,23 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://elmanuscritozen.com/</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://elmanuscritozen.com/archivo.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://elmanuscritozen.com/sobre.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://elmanuscritozen.com/dojo.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://elmanuscritozen.com/entrada/2026-07-15-las-cuatro-nobles-verdades-y-el-octuple-sendero-de/</loc>
+    <lastmod>2026-07-15</lastmod>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://elmanuscritozen.com/entrada/2026-07-13-el-cambio-real-empieza-dentro-segun-el-budismo-zen/</loc>
