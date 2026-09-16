@@ -129,6 +129,8 @@ function moveScheduledToPublished(item) {
   return {
     id: item.id,
     title: item.title,
+    seoTitle: item.seoTitle || '',
+    metaDescription: item.metaDescription || '',
     excerpt: item.excerpt || '',
     date: item.publishAt,
     cover: coverPath,

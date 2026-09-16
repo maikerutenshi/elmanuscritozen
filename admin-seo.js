@@ -12,6 +12,62 @@ function seoPlainText(text) {
   return seoEscapeHtml(String(text).replace(/\s+/g, ' ').trim());
 }
 
+function stripHtmlToText(html) {
+  return String(html || '')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function clampSeoText(text, max) {
+  const clean = String(text || '')
+    .replace(/\s+/g, ' ')
+    .replace(/[…]+$/g, '')
+    .trim();
+  if (!clean) return '';
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max);
+  const lastPunct = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('? '), cut.lastIndexOf('! '));
+  if (lastPunct >= Math.min(90, Math.floor(max * 0.55))) {
+    return cut.slice(0, lastPunct + 1).trim();
+  }
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${(lastSpace > 40 ? cut.slice(0, lastSpace) : cut).trim()}…`;
+}
+
+function defaultSeoTitle(title) {
+  return clampSeoText(title, 58);
+}
+
+function defaultMetaDescription(title, content) {
+  let text = stripHtmlToText(content).replace(/^O:\s*/i, '');
+  const skipFirst = /^(hay una (pregunta|escena|trampa|cosa|frase)|son las |son algo más|estoy pensando|llevo (toda|un rato)|tengo un amigo|déjame empezar)/i;
+  const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
+  const kept = [];
+  for (const sentence of sentences) {
+    if (!kept.length && (skipFirst.test(sentence) || sentence.length < 50)) continue;
+    kept.push(sentence);
+    if (kept.join(' ').length >= 120) break;
+  }
+  return clampSeoText(kept.join(' ') || `${title} En El Manuscrito Zen.`, 155);
+}
+
+function resolveSeoTitle(entry) {
+  return defaultSeoTitle(entry.seoTitle || entry.title || 'El Manuscrito Zen');
+}
+
+function resolveMetaDescription(entry, contentHtml) {
+  if (entry.metaDescription) return clampSeoText(entry.metaDescription, 160);
+  return defaultMetaDescription(entry.title || '', contentHtml || entry.excerpt || '');
+}
+
 function seoFormatDateEs(iso) {
   try {
     return new Date(iso).toLocaleDateString('es-ES', {
@@ -38,22 +94,29 @@ function absoluteAssetUrl(path) {
   return `${SEO_SITE_BASE}/${String(path).replace(/^\//, '')}`;
 }
 
-function buildArticleJsonLd(entry) {
+function buildArticleJsonLd(entry, description) {
   return JSON.stringify({
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: entry.title,
-    description: entry.excerpt || '',
+    description: description || entry.metaDescription || entry.excerpt || '',
+    inLanguage: 'es',
     datePublished: entry.date,
     dateModified: entry.date,
     image: [absoluteAssetUrl(entry.cover)],
     author: {
       '@type': 'Organization',
       name: 'El Manuscrito Zen',
+      url: SEO_SITE_BASE,
     },
     publisher: {
       '@type': 'Organization',
       name: 'El Manuscrito Zen',
+      url: SEO_SITE_BASE,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SEO_SITE_BASE}/enso.png`,
+      },
     },
     mainEntityOfPage: postPublicUrl(entry.id),
   });
@@ -73,12 +136,14 @@ function buildCoverFigureHtml(entry) {
 
 function buildEntryPageHtml(entry, contentHtml) {
   const title = seoEscapeHtml(entry.title);
-  const description = seoPlainText(entry.excerpt || entry.title);
+  const seoTitle = seoPlainText(resolveSeoTitle(entry));
+  const description = seoPlainText(resolveMetaDescription(entry, contentHtml));
   const canonical = postPublicUrl(entry.id);
   const ogImage = absoluteAssetUrl(entry.cover);
   const dateLabel = seoFormatDateEs(entry.date);
   const dateAttr = seoEscapeHtml(entry.date);
   const postId = seoEscapeHtml(entry.id);
+  const jsonLdDescription = resolveMetaDescription(entry, contentHtml);
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -94,21 +159,25 @@ function buildEntryPageHtml(entry, contentHtml) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#f5f0e8" />
   <meta name="robots" content="index, follow" />
-  <title>${title} — El Manuscrito Zen</title>
+  <title>${seoTitle} — El Manuscrito Zen</title>
   <meta name="description" content="${description}" />
+  <meta name="author" content="El Manuscrito Zen" />
   <link rel="canonical" href="${canonical}" />
-  <meta property="og:title" content="${title}" />
+  <meta property="og:site_name" content="El Manuscrito Zen" />
+  <meta property="og:title" content="${seoTitle}" />
   <meta property="og:description" content="${description}" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="${canonical}" />
   <meta property="og:image" content="${ogImage}" />
+  <meta property="og:image:alt" content="${title}" />
   <meta property="og:locale" content="es_ES" />
   <meta property="article:published_time" content="${dateAttr}" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:title" content="${seoTitle}" />
   <meta name="twitter:description" content="${description}" />
   <meta name="twitter:image" content="${ogImage}" />
-  <script type="application/ld+json">${buildArticleJsonLd(entry)}</script>
+  <meta name="twitter:image:alt" content="${title}" />
+  <script type="application/ld+json">${buildArticleJsonLd(entry, jsonLdDescription)}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
@@ -274,6 +343,10 @@ if (typeof module !== 'undefined' && module.exports) {
     SEO_SITE_BASE,
     postPublicPath,
     postPublicUrl,
+    defaultSeoTitle,
+    defaultMetaDescription,
+    resolveSeoTitle,
+    resolveMetaDescription,
     buildEntryPageHtml,
     buildPreviewPageHtml,
     buildSitemapXml,
@@ -281,6 +354,10 @@ if (typeof module !== 'undefined' && module.exports) {
 } else if (typeof window !== 'undefined') {
   window.ZEN_SEO = {
     SEO_SITE_BASE,
+    defaultSeoTitle,
+    defaultMetaDescription,
+    resolveSeoTitle,
+    resolveMetaDescription,
     buildEntryPageHtml,
     buildPreviewPageHtml,
     buildSitemapXml,
