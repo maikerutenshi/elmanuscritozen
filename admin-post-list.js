@@ -46,7 +46,10 @@ function initPublishedPostList({ containerId }) {
 
   async function refresh() {
     const data = await loadCalendarData();
-    renderPublishedPostList(container, data.published);
+    const scheduledPosts = data.scheduled || [];
+    const publishedPosts = data.published || [];
+    const allPosts = [...scheduledPosts, ...publishedPosts];
+    renderPublishedPostList(container, allPosts);
   }
 
   refresh().catch((err) => {
