@@ -152,6 +152,17 @@ function buildExcerpt(content) {
   return trimmed.slice(0, 140) + (trimmed.length > 140 ? '…' : '');
 }
 
+function seoFieldsFromContent(title, content, overrides = {}) {
+  const seo = typeof ZEN_SEO !== 'undefined' ? ZEN_SEO : {};
+  const seoTitle =
+    String(overrides.seoTitle || '').trim() ||
+    (seo.defaultSeoTitle ? seo.defaultSeoTitle(title) : title);
+  const metaDescription =
+    String(overrides.metaDescription || '').trim() ||
+    (seo.defaultMetaDescription ? seo.defaultMetaDescription(title, content) : buildExcerpt(content));
+  return { seoTitle, metaDescription };
+}
+
 async function readScheduledList() {
   const path = ZEN_ADMIN.scheduledIndexPath || 'posts/scheduled.json';
   const file = await readRepoFile(path);
@@ -163,7 +174,7 @@ async function readScheduledList() {
   };
 }
 
-async function scheduleEntry({ title, content, imageFile, publishAt }) {
+async function scheduleEntry({ title, content, imageFile, publishAt, seoTitle, metaDescription }) {
   const publishDate = new Date(publishAt);
   if (Number.isNaN(publishDate.getTime())) {
     throw new Error('Fecha u hora no válida.');
@@ -198,9 +209,12 @@ async function scheduleEntry({ title, content, imageFile, publishAt }) {
 
   await writeRepoFile(contentPath, htmlBase64, `Programar contenido: ${title}`);
 
+  const seo = seoFieldsFromContent(title.trim(), content, { seoTitle, metaDescription });
   const entry = {
     id: postId,
     title: title.trim(),
+    seoTitle: seo.seoTitle,
+    metaDescription: seo.metaDescription,
     excerpt: buildExcerpt(content),
     publishAt: publishDate.toISOString(),
     cover: coverPath,
@@ -220,7 +234,7 @@ async function scheduleEntry({ title, content, imageFile, publishAt }) {
   return entry;
 }
 
-async function publishEntry({ title, content, imageFile }) {
+async function publishEntry({ title, content, imageFile, seoTitle, metaDescription }) {
   let postId = makePostId(title);
   const indexFile = await readRepoFile(ZEN_ADMIN.postsIndexPath);
   const posts = indexFile ? JSON.parse(indexFile.content) : [];
@@ -245,9 +259,12 @@ async function publishEntry({ title, content, imageFile }) {
 
   await writeRepoFile(contentPath, htmlBase64, `Contenido: ${title}`);
 
+  const seo = seoFieldsFromContent(title.trim(), content, { seoTitle, metaDescription });
   const entry = {
     id: postId,
     title: title.trim(),
+    seoTitle: seo.seoTitle,
+    metaDescription: seo.metaDescription,
     excerpt: buildExcerpt(content),
     date: new Date().toISOString(),
     cover: coverPath,

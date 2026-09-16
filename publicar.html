@@ -50,6 +50,18 @@
             </div>
 
             <div class="form-control">
+              <label for="post-seo-title">Título para Google (opcional)</label>
+              <input type="text" id="post-seo-title" maxlength="60" placeholder="Hasta 60 caracteres. Si lo dejas vacío, se recorta el título." />
+              <p class="admin-hint">Es lo que se ve en el resultado de búsqueda. El título literario de la entrada no cambia.</p>
+            </div>
+
+            <div class="form-control">
+              <label for="post-meta-description">Descripción para Google (opcional)</label>
+              <textarea id="post-meta-description" rows="3" maxlength="160" placeholder="140-160 caracteres. Di qué va a encontrar quien pulse."></textarea>
+              <p class="admin-hint">Si lo dejas vacío, se genera a partir del texto, saltando el primer párrafo literario.</p>
+            </div>
+
+            <div class="form-control">
               <label for="post-cover">Imagen (JPG, opcional)</label>
               <input type="file" id="post-cover" accept="image/jpeg,image/jpg" />
               <p class="admin-hint">Si no subes imagen, se usará la imagen zen por defecto.</p>
@@ -84,9 +96,9 @@
   </main>
 
   <script src="admin-config.js?v=4"></script>
-  <script src="admin-seo.js?v=2"></script>
+  <script src="admin-seo.js?v=3"></script>
   <script src="admin-auth.js?v=3"></script>
-  <script src="admin-publish.js?v=6"></script>
+  <script src="admin-publish.js?v=7"></script>
   <script src="admin-preview.js?v=2"></script>
   <script src="admin-calendar.js?v=4"></script>
   <script src="admin-post-list.js?v=1"></script>
@@ -145,6 +157,8 @@
         return {
           title: document.getElementById('post-title').value.trim(),
           content: document.getElementById('post-content').value.trim(),
+          seoTitle: document.getElementById('post-seo-title').value.trim(),
+          metaDescription: document.getElementById('post-meta-description').value.trim(),
           imageFile: document.getElementById('post-cover').files[0] || null,
           publishAt: document.getElementById('publish-datetime').value,
         };
@@ -179,7 +193,7 @@
 
         const status = document.getElementById('publish-status');
         const button = document.getElementById('btn-publish');
-        const { title, content, imageFile } = readForm();
+        const { title, content, imageFile, seoTitle, metaDescription } = readForm();
 
         status.hidden = false;
         status.className = 'admin-status';
@@ -188,7 +202,7 @@
         document.getElementById('btn-schedule').disabled = true;
 
         try {
-          await publishEntry({ title, content, imageFile });
+          await publishEntry({ title, content, imageFile, seoTitle, metaDescription });
           status.className = 'admin-status admin-status--ok';
           status.textContent =
             'Publicado en GitHub. Si estás en local: Terminal → git pull → F5 en Inicio y Archivo.';
@@ -205,7 +219,7 @@
       document.getElementById('btn-schedule').addEventListener('click', async () => {
         const status = document.getElementById('publish-status');
         const button = document.getElementById('btn-schedule');
-        const { title, content, imageFile, publishAt } = readForm();
+        const { title, content, imageFile, publishAt, seoTitle, metaDescription } = readForm();
 
         if (!title || !content) {
           status.hidden = false;
@@ -228,7 +242,7 @@
         document.getElementById('btn-publish').disabled = true;
 
         try {
-          const entry = await scheduleEntry({ title, content, imageFile, publishAt });
+          const entry = await scheduleEntry({ title, content, imageFile, publishAt, seoTitle, metaDescription });
           const when = new Date(entry.publishAt).toLocaleString('es-ES', {
             dateStyle: 'long',
             timeStyle: 'short',
