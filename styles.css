@@ -1042,12 +1042,34 @@ body:has(.post-page) .navbar {
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  padding: 9px 0;
+  width: 100%;
+  padding: 9px 6px;
+  border: 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.post-list-item:hover {
+  background: rgba(47, 92, 64, 0.06);
+}
+
+.post-list-item--active {
+  background: rgba(47, 92, 64, 0.1);
 }
 
 .post-list-item:last-child {
   border-bottom: none;
+}
+
+.post-list-badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #3d6f99;
 }
 
 .post-list-num {

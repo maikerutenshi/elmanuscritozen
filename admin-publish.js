@@ -31,6 +31,32 @@ function textToHtml(content) {
   return `<div class="post-body">\n${body}\n</div>`;
 }
 
+function decodeHtmlEntities(text) {
+  return String(text || '')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ');
+}
+
+function htmlToPlainText(html) {
+  const inner = String(html || '')
+    .replace(/<div[^>]*class="post-body"[^>]*>/i, '')
+    .replace(/<\/div>\s*$/i, '')
+    .trim();
+
+  return inner
+    .split(/<\/p>/i)
+    .map((part) => part.replace(/<p[^>]*>/i, '').trim())
+    .filter(Boolean)
+    .map((paragraph) =>
+      decodeHtmlEntities(paragraph.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, ''))
+    )
+    .join('\n\n');
+}
+
 function escapeHtml(text) {
   return String(text)
     .replace(/&/g, '&amp;')
@@ -296,6 +322,155 @@ async function publishEntry({ title, content, imageFile, seoTitle, metaDescripti
   }
 
   await notifyPostPublished(entry);
+
+  return entry;
+}
+
+async function loadPostForEditor(postId) {
+  const data = await loadCalendarData();
+  const scheduled = data.scheduled.find((post) => post.id === postId);
+  const published = data.published.find((post) => post.id === postId);
+  const entry = scheduled || published;
+  if (!entry) {
+    throw new Error('No se encontró la entrada.');
+  }
+
+  const contentFile = await readRepoFile(entry.contentPath);
+  if (!contentFile) {
+    throw new Error('No se pudo cargar el texto de la entrada.');
+  }
+
+  return {
+    entry,
+    kind: scheduled ? 'scheduled' : 'published',
+    content: htmlToPlainText(contentFile.content),
+  };
+}
+
+async function saveExistingEntry({
+  postId,
+  kind,
+  title,
+  content,
+  imageFile,
+  seoTitle,
+  metaDescription,
+  publishAt,
+}) {
+  const htmlContent = textToHtml(content);
+  const htmlBase64 = toBase64Utf8(htmlContent);
+  const seo = seoFieldsFromContent(title.trim(), content, { seoTitle, metaDescription });
+
+  if (kind === 'scheduled') {
+    const scheduledData = await readScheduledList();
+    const index = scheduledData.list.findIndex((post) => post.id === postId);
+    if (index < 0) {
+      throw new Error('Esa entrada programada ya no está en la cola.');
+    }
+
+    const current = scheduledData.list[index];
+    let coverPath = current.cover;
+    if (imageFile) {
+      const jpegBlob = await resizeImageToJpeg(imageFile);
+      const imageBase64 = await blobToBase64(jpegBlob);
+      coverPath = current.cover && current.cover.startsWith('posts/scheduled/')
+        ? current.cover
+        : `posts/scheduled/${postId}/cover.jpg`;
+      await writeOrUpdateRepoFile(coverPath, imageBase64, `Actualizar imagen: ${title}`);
+    }
+
+    await writeOrUpdateRepoFile(current.contentPath, htmlBase64, `Actualizar contenido: ${title}`);
+
+    let nextPublishAt = current.publishAt;
+    if (publishAt) {
+      const publishDate = new Date(publishAt);
+      if (Number.isNaN(publishDate.getTime())) {
+        throw new Error('Fecha u hora no válida.');
+      }
+      if (publishDate.getTime() <= Date.now()) {
+        throw new Error('La programación debe ser en el futuro.');
+      }
+      nextPublishAt = publishDate.toISOString();
+    }
+
+    const updated = {
+      ...current,
+      title: title.trim(),
+      seoTitle: seo.seoTitle,
+      metaDescription: seo.metaDescription,
+      excerpt: buildExcerpt(content),
+      publishAt: nextPublishAt,
+      cover: coverPath,
+    };
+    scheduledData.list[index] = updated;
+    scheduledData.list.sort((a, b) => new Date(a.publishAt) - new Date(b.publishAt));
+
+    await writeRepoFile(
+      scheduledData.path,
+      toBase64Utf8(JSON.stringify(scheduledData.list, null, 2) + '\n'),
+      `Actualizar programada: ${title}`,
+      scheduledData.sha
+    );
+    return updated;
+  }
+
+  const indexFile = await readRepoFile(ZEN_ADMIN.postsIndexPath);
+  const posts = indexFile ? JSON.parse(indexFile.content) : [];
+  if (!Array.isArray(posts)) {
+    throw new Error('posts/posts.json no tiene un formato válido.');
+  }
+
+  const index = posts.findIndex((post) => post.id === postId);
+  if (index < 0) {
+    throw new Error('Esa entrada ya no está en el índice.');
+  }
+
+  const current = posts[index];
+  let coverPath = current.cover;
+  if (imageFile) {
+    const jpegBlob = await resizeImageToJpeg(imageFile);
+    const imageBase64 = await blobToBase64(jpegBlob);
+    coverPath = current.cover && current.cover.startsWith(`posts/${postId}/`)
+      ? current.cover
+      : `posts/${postId}/cover.jpg`;
+    await writeOrUpdateRepoFile(coverPath, imageBase64, `Actualizar imagen: ${title}`);
+  }
+
+  await writeOrUpdateRepoFile(current.contentPath, htmlBase64, `Actualizar contenido: ${title}`);
+
+  const entry = {
+    ...current,
+    title: title.trim(),
+    seoTitle: seo.seoTitle,
+    metaDescription: seo.metaDescription,
+    excerpt: buildExcerpt(content),
+    cover: coverPath,
+    date: current.date,
+    id: current.id,
+    contentPath: current.contentPath,
+  };
+  posts[index] = entry;
+
+  await writeRepoFile(
+    ZEN_ADMIN.postsIndexPath,
+    toBase64Utf8(JSON.stringify(posts, null, 2) + '\n'),
+    `Actualizar índice: ${title}`,
+    indexFile?.sha
+  );
+
+  if (typeof ZEN_SEO !== 'undefined') {
+    const entryPageHtml = ZEN_SEO.buildEntryPageHtml(entry, htmlContent);
+    await writeOrUpdateRepoFile(
+      `entrada/${postId}/index.html`,
+      toBase64Utf8(entryPageHtml),
+      `Actualizar página SEO: ${title}`
+    );
+    await writeOrUpdateRepoFile(
+      'sitemap.xml',
+      toBase64Utf8(ZEN_SEO.buildSitemapXml(posts)),
+      'Actualizar sitemap'
+    );
+  }
 
   return entry;
 }

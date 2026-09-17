@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=31" />
+  <link rel="stylesheet" href="styles.css?v=32" />
 </head>
 <body>
   <main class="admin-page-container">
@@ -25,15 +25,15 @@
       <div class="admin-publish-layout">
         <aside class="admin-card admin-post-list-card">
           <h3>Publicadas</h3>
-          <p class="admin-subtitle">Numeradas desde la primera entrada.</p>
+          <p class="admin-subtitle">Clic en un título para editarlo. La dirección de la web no cambia.</p>
           <div class="published-post-list" id="published-post-list"></div>
         </aside>
 
         <div class="admin-card admin-form-card">
           <div class="admin-card-header">
             <div>
-              <h3>Nueva entrada</h3>
-              <p class="admin-subtitle">Escribe tu reflexión. La imagen JPG es opcional.</p>
+              <h3 id="form-heading">Nueva entrada</h3>
+              <p class="admin-subtitle" id="form-subtitle">Escribe tu reflexión. La imagen JPG es opcional.</p>
             </div>
             <button type="button" class="btn-logout" id="btn-logout">Salir</button>
           </div>
@@ -64,14 +64,14 @@
             <div class="form-control">
               <label for="post-cover">Imagen (JPG, opcional)</label>
               <input type="file" id="post-cover" accept="image/jpeg,image/jpg" />
-              <p class="admin-hint">Si no subes imagen, se usará la imagen zen por defecto.</p>
+              <p class="admin-hint" id="cover-hint">Si no subes imagen, se usará la imagen zen por defecto.</p>
             </div>
 
             <div class="publish-preview" id="publish-preview" hidden>
               <img id="publish-preview-img" alt="Vista previa" />
             </div>
 
-            <div class="form-control">
+            <div class="form-control" id="schedule-field">
               <label for="publish-datetime">Fecha y hora de publicación (hora de España)</label>
               <input type="datetime-local" id="publish-datetime" />
               <p class="admin-hint">La hora es la de tu reloj en España. También puedes elegir el día en el calendario.</p>
@@ -81,6 +81,8 @@
               <button type="button" class="btn-admin-action btn-preview" id="btn-preview">Vista previa</button>
               <button type="submit" class="btn-submit-post" id="btn-publish">Publicar ahora</button>
               <button type="button" class="btn-admin-action btn-schedule" id="btn-schedule">Programar</button>
+              <button type="button" class="btn-submit-post" id="btn-save-edit" hidden>Guardar cambios</button>
+              <button type="button" class="btn-admin-action" id="btn-cancel-edit" hidden>Nueva entrada</button>
             </div>
             <p class="admin-status" id="publish-status" hidden></p>
           </form>
@@ -98,10 +100,10 @@
   <script src="admin-config.js?v=4"></script>
   <script src="admin-seo.js?v=3"></script>
   <script src="admin-auth.js?v=3"></script>
-  <script src="admin-publish.js?v=7"></script>
+  <script src="admin-publish.js?v=8"></script>
   <script src="admin-preview.js?v=2"></script>
   <script src="admin-calendar.js?v=4"></script>
-  <script src="admin-post-list.js?v=1"></script>
+  <script src="admin-post-list.js?v=2"></script>
   <script>
     (async () => {
       if (!requireAdmin()) return;
@@ -137,7 +139,37 @@
 
       const postList = initPublishedPostList({
         containerId: 'published-post-list',
+        onSelect: ({ postId }) => loadEntryIntoForm(postId),
       });
+
+      let editing = null;
+
+      const formHeading = document.getElementById('form-heading');
+      const formSubtitle = document.getElementById('form-subtitle');
+      const coverHint = document.getElementById('cover-hint');
+      const scheduleField = document.getElementById('schedule-field');
+      const btnPublish = document.getElementById('btn-publish');
+      const btnSchedule = document.getElementById('btn-schedule');
+      const btnSaveEdit = document.getElementById('btn-save-edit');
+      const btnCancelEdit = document.getElementById('btn-cancel-edit');
+
+      function setEditingMode(next) {
+        editing = next;
+        const isEdit = Boolean(next);
+        formHeading.textContent = isEdit ? 'Editar entrada' : 'Nueva entrada';
+        formSubtitle.textContent = isEdit
+          ? 'La dirección pública no cambia. Puedes retocar título, texto, Google e imagen.'
+          : 'Escribe tu reflexión. La imagen JPG es opcional.';
+        coverHint.textContent = isEdit
+          ? 'Si no subes imagen, se mantiene la actual.'
+          : 'Si no subes imagen, se usará la imagen zen por defecto.';
+        btnPublish.hidden = isEdit;
+        btnSchedule.hidden = isEdit;
+        btnSaveEdit.hidden = !isEdit;
+        btnCancelEdit.hidden = !isEdit;
+        scheduleField.hidden = isEdit && next.kind === 'published';
+        if (postList) postList.setActive(next?.postId || '');
+      }
 
       document.getElementById('post-cover').addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -145,7 +177,7 @@
         const img = document.getElementById('publish-preview-img');
 
         if (!file) {
-          preview.hidden = true;
+          if (!editing) preview.hidden = true;
           return;
         }
 
@@ -167,11 +199,54 @@
       function resetForm() {
         document.getElementById('publish-form').reset();
         document.getElementById('publish-preview').hidden = true;
+        document.getElementById('publish-preview-img').removeAttribute('src');
+        setEditingMode(null);
         if (calendar) {
           calendar.resetSelection();
           calendar.refresh();
         }
         if (postList) postList.refresh();
+      }
+
+      async function loadEntryIntoForm(postId) {
+        const status = document.getElementById('publish-status');
+        status.hidden = false;
+        status.className = 'admin-status';
+        status.textContent = 'Cargando entrada…';
+
+        try {
+          const loaded = await loadPostForEditor(postId);
+          document.getElementById('post-title').value = loaded.entry.title || '';
+          document.getElementById('post-content').value = loaded.content || '';
+          document.getElementById('post-seo-title').value = loaded.entry.seoTitle || '';
+          document.getElementById('post-meta-description').value = loaded.entry.metaDescription || '';
+          document.getElementById('post-cover').value = '';
+
+          if (loaded.kind === 'scheduled' && loaded.entry.publishAt) {
+            document.getElementById('publish-datetime').value = toDatetimeLocalValue(
+              new Date(loaded.entry.publishAt)
+            );
+          } else {
+            document.getElementById('publish-datetime').value = '';
+          }
+
+          const preview = document.getElementById('publish-preview');
+          const img = document.getElementById('publish-preview-img');
+          const coverSrc = loaded.entry.cover ? await readRepoImageDataUrl(loaded.entry.cover) : '';
+          if (coverSrc) {
+            img.src = coverSrc;
+            preview.hidden = false;
+          } else {
+            preview.hidden = true;
+          }
+
+          setEditingMode({ postId: loaded.entry.id, kind: loaded.kind });
+          status.hidden = true;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (err) {
+          status.className = 'admin-status admin-status--error';
+          status.textContent = err.message || 'No se pudo cargar la entrada.';
+        }
       }
 
       document.getElementById('btn-preview').addEventListener('click', () => {
@@ -190,6 +265,7 @@
 
       document.getElementById('publish-form').addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (editing) return;
 
         const status = document.getElementById('publish-status');
         const button = document.getElementById('btn-publish');
@@ -258,6 +334,57 @@
           button.disabled = false;
           document.getElementById('btn-publish').disabled = false;
         }
+      });
+
+      btnSaveEdit.addEventListener('click', async () => {
+        const status = document.getElementById('publish-status');
+        if (!editing) return;
+
+        const { title, content, imageFile, publishAt, seoTitle, metaDescription } = readForm();
+        if (!title || !content) {
+          status.hidden = false;
+          status.className = 'admin-status admin-status--error';
+          status.textContent = 'Completa título y texto antes de guardar.';
+          return;
+        }
+
+        status.hidden = false;
+        status.className = 'admin-status';
+        status.textContent = 'Guardando cambios…';
+        btnSaveEdit.disabled = true;
+        btnCancelEdit.disabled = true;
+
+        try {
+          await saveExistingEntry({
+            postId: editing.postId,
+            kind: editing.kind,
+            title,
+            content,
+            imageFile,
+            seoTitle,
+            metaDescription,
+            publishAt: editing.kind === 'scheduled' ? publishAt : '',
+          });
+          status.className = 'admin-status admin-status--ok';
+          status.textContent =
+            editing.kind === 'scheduled'
+              ? 'Programada actualizada. El texto nuevo saldrá cuando se publique.'
+              : 'Cambios guardados en GitHub. En uno o dos minutos se verán en la web.';
+          if (calendar) calendar.refresh();
+          if (postList) postList.refresh();
+        } catch (err) {
+          status.className = 'admin-status admin-status--error';
+          status.textContent = err.message || 'No se pudieron guardar los cambios.';
+        } finally {
+          btnSaveEdit.disabled = false;
+          btnCancelEdit.disabled = false;
+        }
+      });
+
+      btnCancelEdit.addEventListener('click', () => {
+        const status = document.getElementById('publish-status');
+        resetForm();
+        status.hidden = true;
       });
     })();
   </script>
